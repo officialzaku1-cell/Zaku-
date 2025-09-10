@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zaku Store</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body { background: #f9f9f9; color: #333; }
+
+    /* ================= LOADING SCREEN ================= */
+    #loader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: row;
+      font-size: 3rem;
+      font-weight: bold;
+      color: gold;
+      letter-spacing: 8px;
+    }
+
+    #loader span {
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+    }
+
+    #loader span:nth-child(1) { animation-delay: 0s; }
+    #loader span:nth-child(2) { animation-delay: 0.5s; }
+    #loader span:nth-child(3) { animation-delay: 1s; }
+    #loader span:nth-child(4) { animation-delay: 1.5s; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hide loader smoothly */
+    .hidden {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+
+    /* ======= HEADER ======= */
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 30px; background: #111; color: #fff;
+      position: sticky; top: 0; z-index: 100;
+    }
+
+    .logo { font-size: 1.5rem; font-weight: bold; color: #ffcc00; }
+
+    .search-box input {
+      padding: 8px 12px; border-radius: 6px; border: none; outline: none; width: 200px;
+    }
+
+    .cart-icon { position: relative; cursor: pointer; font-size: 20px; }
+    .cart-icon span {
+      position: absolute; top: -8px; right: -10px;
+      background: #ff4b4b; color: #fff; font-size: 12px;
+      padding: 2px 6px; border-radius: 50%; display: none;
+    }
+    .cart-icon span.non-empty { display: inline-block; }
+
+    main {
+      padding: 30px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff; border-radius: 10px; overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: translateY(-5px); }
+    .card img { width: 100%; height: 180px; object-fit: cover; }
+
+    .card-content { padding: 15px; }
+    .card-content h3 { font-size: 1.1rem; margin-bottom: 10px; }
+    .card-content p { font-size: 0.9rem; margin-bottom: 10px; }
+
+    .card-content button {
+      padding: 8px 14px; border: none; border-radius: 6px;
+      background: #111; color: #fff; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .card-content button:hover { background: #ffcc00; color: #111; }
+
+    /* Cart Window */
+    .whole-cart-window {
+      position: fixed; top: 70px; right: 20px; width: 300px; max-height: 80vh;
+      background: #fff; box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      border-radius: 10px; overflow-y: auto; padding: 15px;
+      display: none; z-index: 200;
+    }
+
+    .cart-animate { animation: slideDown 0.3s ease; }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cart-item {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 8px;
+    }
+    .cart-item img { width: 50px; height: 50px; border-radius: 8px; margin-right: 10px; }
+
+    .cart-total { font-weight: bold; margin-top: 10px; text-align: right; }
+
+    .checkout-btn {
+      width: 100%; margin-top: 15px; padding: 10px;
+      border: none; border-radius: 8px; font-size: 1rem; font-weight: bold;
+      background: linear-gradient(135deg, #ffcc00, #111); color: #111;
+      cursor: pointer; transition: transform 0.2s, opacity 0.2s;
+    }
+    .checkout-btn:hover { transform: scale(1.05); opacity: 0.9; }
+
+    /* Toast */
+    .zaku-toast {
+      position: fixed; bottom: 20px; right: 20px;
+      background: #000; color: #fff;
+      padding: 12px 20px; border-radius: 8px;
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.3s ease; z-index: 1000;
+    }
+    .zaku-toast.show { opacity: 1; transform: translateY(0); }
+
+    @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+    .bounce { animation: bounce 0.5s ease; }
+  </style>
+</head>
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div id="loader">
+    <span>Z</span><span>A</span><span>K</span><span>U</span>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">Zaku</div>
+    <div class="search-box"><input type="text" id="searchInput" placeholder="Search products..."></div>
+    <div class="cart-icon" id="cartIcon">🛒 <span id="itemCount">0</span></div>
+  </header>
+
+  <main id="productList">
+    <div class="card" data-name="Perfume Oil" data-price="5000">
+      <img src="https://via.placeholder.com/200x180.png?text=Perfume+Oil" alt="">
+      <div class="card-content">
+        <h3>Perfume Oil</h3>
+        <p>₦5000</p>
+        <button>Add to Cart</button>
+      </div>
+    </div>
+    <div class="card" data-name="Custom Tie" data-price="3000">
+      <img src="https://via.placeholder.com/200x180.png?text=Custom+Tie" alt="">
+      <div class="card-content">
+        <h3>Custom Tie</h3>
+        <p>₦3000</p>
+        <button>Add to Cart</button>
+      </div>
+    </div>
+    <div class="card" data-name="Hair Oil" data-price="2500">
+      <img src="https://via.placeholder.com/200x180.png?text=Hair+Oil" alt="">
+      <div class="card-content">
+        <h3>Hair Oil</h3>
+        <p>₦2500</p>
+        <button>Add to Cart</button>
+      </div>
+    </div>
+  </main>
+
+  <div class="whole-cart-window hide" id="cartWindow">
+    <h3>Your Cart</h3>
+    <div id="cartItems"></div>
+    <div class="cart-total" id="cartTotal">Total: ₦0</div>
+    <button class="checkout-btn" id="checkoutBtn">Checkout</button>
+  </div>
+
+  <script>
+    // ========== LOADING SCREEN ==========
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        document.getElementById("loader").classList.add("hidden");
+      }, 2200); // keep for ~2 seconds before hiding
+    });
+
+    // ========== CART LOGIC ==========
+    const cartIcon = document.getElementById("cartIcon");
+    const itemCount = document.getElementById("itemCount");
+    const cartWindow = document.getElementById("cartWindow");
+    const cartItemsContainer = document.getElementById("cartItems");
+    const cartTotal = document.getElementById("cartTotal");
+    const searchInput = document.getElementById("searchInput");
+    const cards = document.querySelectorAll(".card");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+
+    let cart = JSON.parse(localStorage.getItem("zakuCart")) || [];
+
+    function updateCartUI() {
+      cartItemsContainer.innerHTML = "";
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += item.price * item.qty;
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+          <img src="${item.img}" alt="">
+          <div>
+            <p>${item.name}</p>
+            <small>₦${item.price} x ${item.qty}</small>
+          </div>
+          <button onclick="removeItem(${index})">❌</button>
+        `;
+        cartItemsContainer.appendChild(div);
+      });
+      cartTotal.textContent = `Total: ₦${total}`;
+      itemCount.textContent = cart.length;
+      itemCount.classList.toggle("non-empty", cart.length > 0);
+      localStorage.setItem("zakuCart", JSON.stringify(cart));
+    }
+
+    function addItem(name, price, img) {
+      const existing = cart.find(i => i.name === name);
+      if (existing) { existing.qty++; } 
+      else { cart.push({ name, price, img, qty: 1 }); }
+      updateCartUI(); showToast(`${name} added to cart ✅`); bounceCartIcon();
+    }
+
+    function removeItem(index) { cart.splice(index, 1); updateCartUI(); }
+
+    function showToast(message) {
+      const toast = document.createElement("div");
+      toast.className = "zaku-toast"; toast.innerText = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add("show"), 50);
+      setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 300); }, 2000);
+    }
+
+    function bounceCartIcon() {
+      cartIcon.classList.add("bounce");
+      setTimeout(() => cartIcon.classList.remove("bounce"), 500);
+    }
+
+    checkoutBtn.addEventListener("click", () => {
+      if (cart.length === 0) {
+        showToast("Your cart is empty ❌");
+        return;
+      }
+      localStorage.setItem("zakuCart", JSON.stringify(cart));
+      window.location.href = "zaku1.html"; 
+    });
+
+    cartIcon.addEventListener("click", () => {
+      cartWindow.style.display = cartWindow.style.display === "block" ? "none" : "block";
+      cartWindow.classList.add("cart-animate");
+      setTimeout(() => cartWindow.classList.remove("cart-animate"), 300);
+    });
+
+    document.querySelectorAll(".card button").forEach(btn => {
+      btn.addEventListener("click", e => {
+        const card = e.target.closest(".card");
+        const name = card.dataset.name;
+        const price = parseInt(card.dataset.price);
+        const img = card.querySelector("img").src;
+        addItem(name, price, img);
+      });
+    });
+
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+      cards.forEach(card => {
+        const itemText = card.innerText.toLowerCase();
+        card.style.display = itemText.includes(query) ? "block" : "none";
+      });
+    });
+
+    updateCartUI();
+  </script>
+  
+  
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js")
+      .then(() => console.log("✅ Service Worker Registered"))
+      .catch(err => console.error("❌ SW failed:", err));
+  }
+</script>
+
+</body>
+</html>

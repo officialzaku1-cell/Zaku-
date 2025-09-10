@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZAKU Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f9f9f9;
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: #405be6;
+      color: white;
+      flex-wrap: wrap;
+    }
+    h2 { margin: 0; font-size: 1.2rem; }
+
+    .menu-toggle { font-size: 2rem; cursor: pointer; display: block; }
+
+    nav {
+      position: fixed;
+      left: -260px;
+      top: 0;
+      height: 100%;
+      width: 260px;
+      background: #333;
+      color: white;
+      padding-top: 60px;
+      transition: left 0.3s;
+      z-index: 1000;
+    }
+    nav.active { left: 0; }
+    nav ul { list-style: none; padding: 0; margin: 0; }
+    nav ul li {
+      padding: 15px 20px;
+      border-bottom: 1px solid #444;
+      cursor: pointer;
+    }
+    nav ul li:hover { background: #555; }
+
+    /* Orders Table */
+    #ordersTableContainer {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      margin: 20px auto;
+      display: none;
+      overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+    th { background: #405be6; color: white; }
+    tr:nth-child(even) { background: #f2f2f2; }
+    .status-paid { color: green; font-weight: bold; }
+    .status-failed { color: red; font-weight: bold; }
+
+    /* Login */
+    #loginForm {
+      max-width: 300px;
+      margin: 100px auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      text-align: center;
+    }
+    input[type="password"], input[type="date"], input[type="text"], select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 8px 12px;
+      background: #405be6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+    button:hover { background: #2e46c0; }
+
+    body.dark { background: #1a1a1a; color: #f1f1f1; }
+    body.dark table { background: #2b2b2b; color: #f1f1f1; }
+    body.dark th { background: #222; }
+    body.dark nav { background: #111; }
+
+    .save-btn { cursor:pointer; padding:5px 10px; border:none; border-radius:5px; color:white; background:#405be6; }
+    .save-btn:hover { background:#2e46c0; }
+
+    /* Highlight Enhancements */
+    .today-due { background: #fff3cd !important; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%{background:#fff3cd;} 50%{background:#ffe69c;} 100%{background:#fff3cd;} }
+    .reminder-sent { background-color: #ffecb3 !important; }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px;
+    }
+    .filters input, .filters select, .filters button {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header id="adminHeader" style="display:none;">
+    <h2>ZAKU Orders Dashboard</h2>
+    <span class="menu-toggle" id="menuToggle">☰</span>
+  </header>
+
+  <!-- Side Menu -->
+  <nav id="sideMenu">
+    <ul>
+      <li onclick="toggleDarkMode()">🌙 Toggle Dark/Light</li>
+      <li onclick="logout()">🚪 Logout</li>
+    </ul>
+  </nav>
+
+  <!-- Login Form -->
+  <div id="loginForm">
+    <h3>Admin Login</h3>
+    <input type="password" id="passwordInput" placeholder="Enter Password">
+    <button onclick="checkPassword()">Login</button>
+    <p id="error" style="color:red;"></p>
+  </div>
+
+  <!-- Filters -->
+  <div id="filtersContainer" class="filters" style="display:none;">
+    <input type="text" id="searchInput" placeholder="Search orders...">
+    <select id="statusFilter">
+      <option value="all">All Status</option>
+      <option value="paid">Paid</option>
+      <option value="delivered">Delivered</option>
+      <option value="pending">Pending</option>
+      <option value="failed">Failed</option>
+    </select>
+    <input type="date" id="fromDate">
+    <input type="date" id="toDate">
+    <button id="clearFiltersBtn">Clear Filters</button>
+  </div>
+
+  <!-- Orders Table -->
+  <div id="ordersTableContainer">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Transaction ID</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Location</th>
+          <th>Hall</th>
+          <th>Room</th>
+          <th>Tie Type</th>
+          <th>Design Option</th>
+          <th>Design Link</th>
+          <th>Amount (₦)</th>
+          <th>Delivery Date</th>
+          <th>Actions</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="ordersTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const scriptURL = "YOUR_SCRIPT_URL"; // replace with Apps Script endpoint
+    const adminPassword = "zaku2025";
+    let allOrders = [];
+
+    const menuToggle = document.getElementById("menuToggle");
+    const sideMenu = document.getElementById("sideMenu");
+
+    menuToggle.addEventListener("click", () => { sideMenu.classList.toggle("active"); });
+    document.addEventListener("click", (e) => {
+      if (!sideMenu.contains(e.target) && !menuToggle.contains(e.target)) sideMenu.classList.remove("active");
+    });
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("darkMode", document.body.classList.contains("dark"));
+    }
+    window.onload = () => {
+      if (localStorage.getItem("darkMode") === "true") document.body.classList.add("dark");
+    };
+
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value;
+      if (input === adminPassword) {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("ordersTableContainer").style.display = "block";
+        document.getElementById("adminHeader").style.display = "flex";
+        document.getElementById("filtersContainer").style.display = "flex";
+        loadOrders();
+      } else {
+        document.getElementById("error").textContent = "❌ Wrong password!";
+      }
+    }
+
+    function logout() { location.reload(); }
+
+    async function loadOrders() {
+      try {
+        const res = await fetch(scriptURL + "?admin=true");
+        const orders = await res.json();
+        allOrders = orders;
+        applyFilters();
+      } catch (err) { console.error("Failed to load orders:", err); }
+    }
+
+    function applyFilters() {
+      let filtered = [...allOrders];
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value;
+      const from = document.getElementById("fromDate").value;
+      const to = document.getElementById("toDate").value;
+
+      if (search) {
+        filtered = filtered.filter(o =>
+          Object.values(o).some(v => String(v).toLowerCase().includes(search))
+        );
+      }
+      if (status !== "all") {
+        filtered = filtered.filter(o => (o["Status"] || "").toLowerCase() === status);
+      }
+      if (from) filtered = filtered.filter(o => new Date(o["Delivery Date"]) >= new Date(from));
+      if (to) filtered = filtered.filter(o => new Date(o["Delivery Date"]) <= new Date(to));
+
+      displayOrders(filtered);
+    }
+
+    document.getElementById("searchInput").addEventListener("input", applyFilters);
+    document.getElementById("statusFilter").addEventListener("change", applyFilters);
+    document.getElementById("fromDate").addEventListener("change", applyFilters);
+    document.getElementById("toDate").addEventListener("change", applyFilters);
+    document.getElementById("clearFiltersBtn").addEventListener("click", () => {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("statusFilter").value = "all";
+      document.getElementById("fromDate").value = "";
+      document.getElementById("toDate").value = "";
+      applyFilters();
+    });
+
+    function displayOrders(orders) {
+      const table = document.getElementById("ordersTable");
+      table.innerHTML = "";
+
+      const today = new Date().toISOString().split('T')[0];
+
+      orders.forEach((order, index) => {
+        const rowNumber = order.rowNumber || index+2;
+        const deliveryDateValue = order["Delivery Date"] ? new Date(order["Delivery Date"]).toISOString().split('T')[0] : "";
+        const row = document.createElement("tr");
+
+        // Highlighting
+        if(deliveryDateValue === today) row.classList.add("today-due");
+        if(order["ReminderSent"]) row.classList.add("reminder-sent");
+
+        row.innerHTML = `
+          <td>${order["Timestamp"] || "-"}</td>
+          <td>${order["tx_ref"] || "-"}</td>
+          <td>${order["Name"] || "-"}</td>
+          <td>${order["Email"] || "-"}</td>
+          <td>${order["Location"] || "-"}</td>
+          <td>${order["Hall"] || "-"}</td>
+          <td>${order["Room"] || "-"}</td>
+          <td>${order["Tie Type"] || "-"}</td>
+          <td>${order["Design Option"] || "-"}</td>
+          <td>${order["Design Link"] || "None"}</td>
+          <td>₦${order["Amount"] || 0}</td>
+          <td><input type="date" id="date-${rowNumber}" value="${deliveryDateValue}"></td>
+          <td>
+            <button class="save-btn" onclick="updateDeliveryDate(${rowNumber}, document.getElementById('date-${rowNumber}').value)">Save</button>
+            <button class="save-btn" onclick="markDelivered(${rowNumber})" style="background: green; margin-left:5px;">Delivered ✅</button>
+            <button class="save-btn" onclick="sendReminder(${rowNumber})" style="background: orange; margin-left:5px;">Send Reminder ⏰</button>
+          </td>
+          <td class="status-${(order["Status"] || "Paid").toLowerCase()}">${order["Status"] || "Paid"}</td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    async function updateDeliveryDate(rowNumber, date) {
+      try {
+        const res = await fetch(scriptURL, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({action:"updateDate", row: rowNumber, deliveryDate: date})
+        });
+        const data = await res.json();
+        if(data.status==="success"){ alert("✅ Delivery date updated!"); loadOrders(); }
+        else alert("❌ Failed: " + data.message);
+      } catch(err){ console.error(err); alert("❌ Error updating delivery date."); }
+    }
+
+    async function markDelivered(rowNumber) {
+      try {
+        const res = await fetch(scriptURL,{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({action:"markDelivered", row:rowNumber})
+        });
+        const data = await res.json();
+        if(data.status==="success"){ alert("✅ Order marked as delivered!"); loadOrders(); }
+        else alert("❌ Failed: "+data.message);
+      } catch(err){ console.error(err); alert("❌ Error marking as delivered."); }
+    }
+
+    async function sendReminder(rowNumber) {
+      try {
+        const res = await fetch(scriptURL,{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({action:"sendReminder", row:rowNumber})
+        });
+        const data = await res.json();
+        if(data.status==="success"){ alert("✅ Reminder sent to customer!"); loadOrders(); }
+        else alert("❌ Failed: "+data.message);
+      } catch(err){ console.error(err); alert("❌ Error sending reminder."); }
+    }
+  </script>
+</body>
+</html>

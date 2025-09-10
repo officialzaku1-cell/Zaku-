@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zaku Checkout</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .checkout-container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    button {
+      background: #000;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="checkout-container">
+    <h2>Checkout</h2>
+    <form id="checkoutForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" required>
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" required>
+
+      <!-- ✅ Location Dropdown -->
+      <label for="location">Location</label>
+      <select id="location" required>
+        <option value="">-- Select Location --</option>
+        <option value="Covenant University">Covenant University</option>
+        <option value="Crawford University">Crawford University</option>
+        <option value="Bells University">Bells University</option>
+      </select>
+
+      <label for="hall">Hall / Hostel</label>
+      <input type="text" id="hall" required>
+
+      <label for="room">Room Number</label>
+      <input type="text" id="room" required>
+
+      <!-- ✅ Tie Type -->
+      <label for="tieType">Type of Tie</label>
+      <select id="tieType" required>
+        <option value="Fat Tie">Fat Tie</option>
+        <option value="Slim Tie">Slim Tie</option>
+      </select>
+
+      <!-- ✅ Design Option -->
+      <label for="designOption">Personal Design</label>
+      <select id="designOption" required>
+        <option value="none">None (already selected a design)</option>
+        <option value="custom">Customized my design</option>
+      </select>
+
+      <div id="designLinkContainer" style="display:none;">
+        <label for="designLink">Design Link</label>
+        <input type="url" id="designLink" placeholder="Paste your design link">
+      </div>
+
+      <button type="submit">Pay & Place Order</button>
+    </form>
+  </div>
+
+  <script src="https://checkout.flutterwave.com/v3.js"></script>
+  <script>
+    // Show/hide design link input
+    document.getElementById("designOption").addEventListener("change", function () {
+      document.getElementById("designLinkContainer").style.display =
+        this.value === "custom" ? "block" : "none";
+    });
+
+    document.getElementById("checkoutForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // Collect form data
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const location = document.getElementById("location").value;
+      const hall = document.getElementById("hall").value;
+      const room = document.getElementById("room").value;
+      const tieType = document.getElementById("tieType").value;
+      const designChoice = document.getElementById("designOption").value;
+      const designLink = document.getElementById("designLink").value;
+
+      // Example: set total dynamically from cart (hardcoded here for demo)
+      const totalAmount = 3000;
+
+      // ✅ Trigger Flutterwave payment
+      FlutterwaveCheckout({
+        public_key: "FLWPUBK_TEST-xxxxxxxxxxxxxxxxxxxxx-X",
+        tx_ref: "tx-" + Date.now(),
+        amount: totalAmount,
+        currency: "NGN",
+        payment_options: "card, banktransfer, ussd",
+        customer: { email: email, name: name },
+        callback: function (response) {
+          if (response.status === "successful") {
+            // ✅ Order data to send to Google Sheets
+            const orderData = {
+              name,
+              email,
+              location,
+              hall,
+              room,
+              tieType,
+              designChoice,
+              designLink,
+              total: totalAmount,
+              paymentRef: response.transaction_id,
+              date: new Date().toLocaleString()
+            };
+
+            // Send to Google Apps Script
+            fetch("YOUR_GOOGLE_APPS_SCRIPT_URL", {
+              method: "POST",
+              body: JSON.stringify(orderData)
+            })
+              .then(res => res.text())
+              .then(data => {
+                alert("Order successful! Your order has been placed.");
+                window.location.href = "success.html";
+              })
+              .catch(err => {
+                alert("Payment went through but failed to save order.");
+              });
+          } else {
+            alert("Payment failed. Please try again.");
+          }
+        },
+        onclose: function () {
+          console.log("Payment modal closed.");
+        },
+      });
+    });
+  </script>
+  
+   <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js")
+      .then(() => console.log("✅ Service Worker Registered"))
+      .catch(err => console.error("❌ SW failed:", err));
+  }
+</script>
+</body>
+</html>

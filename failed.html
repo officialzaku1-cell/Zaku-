@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Failed - ZAKU</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f9f9f9;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .failed-container {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      max-width: 400px;
+      animation: slideUp 0.8s ease-in-out;
+    }
+
+    /* ❌ Animated Cross */
+    .crossmark {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 4px solid #dc3545;
+      position: relative;
+      margin-bottom: 20px;
+      animation: scaleUp 0.6s ease-in-out;
+    }
+
+    .crossmark::before,
+    .crossmark::after {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 36px;
+      width: 4px;
+      height: 40px;
+      background: #dc3545;
+      transform: rotate(45deg);
+      animation: drawCross 0.6s ease forwards;
+      opacity: 0;
+    }
+
+    .crossmark::after {
+      transform: rotate(-45deg);
+    }
+
+    h1 {
+      color: #dc3545;
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ffcc00, #111);
+      color: #111;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes scaleUp {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes drawCross {
+      from { opacity: 0; height: 0; }
+      to { opacity: 1; height: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="failed-container">
+    
+    <h1>❌ Payment Failed</h1>
+    <p>Something went wrong with your payment. Please try again.</p>
+    <button onclick="goBack()">Try Again</button>
+  </div>
+
+  <script>
+    function goBack() {
+      window.location.href = "index.html"; // Redirect back to store
+    }
+  </script>
+  
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js")
+      .then(() => console.log("✅ Service Worker Registered"))
+      .catch(err => console.error("❌ SW failed:", err));
+  }
+</script>
+
+</body>
+</html>
