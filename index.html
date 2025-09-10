@@ -83,7 +83,15 @@
       transition: transform 0.2s;
     }
     .card:hover { transform: translateY(-5px); }
-    .card img { width: 100%; height: 180px; object-fit: cover; }
+
+    .card img { 
+  width: 100%; 
+  height: 180px; 
+  object-fit: contain;   /* ✅ This keeps the full image visible */
+  padding: 10px;         /* ✅ Added small padding so it doesn't touch edges */
+  background: #fff;      /* ✅ Optional, adds clean background for images */
+}
+
 
     .card-content { padding: 15px; }
     .card-content h3 { font-size: 1.1rem; margin-bottom: 10px; }
