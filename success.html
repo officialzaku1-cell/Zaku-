@@ -43,6 +43,11 @@
     .btn:hover {
       background: #333;
     }
+    .product-img {
+      width: 120px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -56,37 +61,55 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEBAPP_URL"; // 🔑 replace with your deployed URL
+    // ✅ Replace with your deployed Google Apps Script Web App URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/XXXXXX/exec"; 
 
+    // Get tx_ref from Flutterwave redirect
     const urlParams = new URLSearchParams(window.location.search);
     const txRef = urlParams.get("tx_ref");
 
+    // Get order from sessionStorage
     const order = JSON.parse(sessionStorage.getItem("orderData"));
 
     if (order) {
+      // Show order summary on page
       document.getElementById("orderSummary").innerHTML = `
+        ${order.productImg ? `<img src="${order.productImg}" class="product-img" alt="${order.productName}">` : ""}
         <p><b>Customer:</b> ${order.name}</p>
         <p><b>Email:</b> ${order.email}</p>
         <p><b>Location:</b> ${order.location}</p>
         <p><b>Hall:</b> ${order.hall}</p>
         <p><b>Room:</b> ${order.room}</p>
         <p><b>Tie Type:</b> ${order.tieType}</p>
-        <p><b>Design:</b> ${order.designChoice}</p>
+        <p><b>Design Option:</b> ${order.designChoice}</p>
         ${order.designLink ? `<p><b>Design Link:</b> ${order.designLink}</p>` : ""}
-        <p><b>Product:</b> ${order.product}</p>
+        <p><b>Product:</b> ${order.productName}</p>
         <p><b>Total:</b> ₦${order.total}</p>
         <p><b>Date:</b> ${order.date}</p>
         <p><b>Tx Ref:</b> ${txRef || "N/A"}</p>
       `;
 
-      // 🔄 Save to Google Sheets
-      fetch(`${SCRIPT_URL}?name=${encodeURIComponent(order.name)}&email=${encodeURIComponent(order.email)}&location=${encodeURIComponent(order.location)}&hall=${encodeURIComponent(order.hall)}&room=${encodeURIComponent(order.room)}&tieType=${encodeURIComponent(order.tieType)}&designChoice=${encodeURIComponent(order.designChoice)}&designLink=${encodeURIComponent(order.designLink)}&product=${encodeURIComponent(order.product)}&amount=${encodeURIComponent(order.total)}&tx_ref=${encodeURIComponent(txRef)}`)
+      // ✅ Send order to Google Sheet
+      const params = new URLSearchParams({
+        name: order.name,
+        email: order.email,
+        location: order.location,
+        hall: order.hall,
+        room: order.room,
+        tieType: order.tieType,
+        designChoice: order.designChoice,
+        designLink: order.designLink,
+        product: order.productName,
+        productImg: order.productImg,
+        amount: order.total,
+        tx_ref: txRef
+      });
+
+      fetch(`${SCRIPT_URL}?${params.toString()}`)
         .then(res => res.text())
         .then(data => console.log("Google Sheet response:", data))
         .catch(err => console.error("Error sending to sheet:", err));
 
-      // Clear session after storing
-      sessionStorage.removeItem("orderData");
     } else {
       document.getElementById("orderSummary").innerHTML =
         "<p>No order found. Please return to the store.</p>";
