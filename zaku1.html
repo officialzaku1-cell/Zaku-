@@ -5,56 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zaku Checkout</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-    }
-    .checkout-container {
-      max-width: 500px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .product-summary {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .product-summary img {
-      width: 120px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    label {
-      font-weight: bold;
-      margin-top: 10px;
-      display: block;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-    button {
-      background: #000;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #333;
-    }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; }
+    .checkout-container { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; margin-bottom: 20px; }
+    .product-summary { text-align: center; margin-bottom: 20px; }
+    .product-summary img { width: 120px; border-radius: 8px; margin-bottom: 10px; }
+    label { font-weight: bold; margin-top: 10px; display: block; }
+    input, select, button { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+    button { background: #000; color: #fff; border: none; cursor: pointer; }
+    button:hover { background: #333; }
   </style>
 </head>
 <body>
@@ -127,6 +86,7 @@
     document.getElementById("checkoutForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
+      // Create order object with product and tie info
       const orderData = {
         name: document.getElementById("name").value,
         email: document.getElementById("email").value,
@@ -143,10 +103,10 @@
         date: new Date().toLocaleString()
       };
 
-      // Save temporarily
+      // ✅ Save to sessionStorage for success page
       sessionStorage.setItem("orderData", JSON.stringify(orderData));
 
-      // ✅ Redirect to your Flutterwave Payment Link
+      // ✅ Redirect to Flutterwave Payment Link
       window.location.href = "https://flutterwave.com/pay/yourpaymentlink";
     });
   </script>
