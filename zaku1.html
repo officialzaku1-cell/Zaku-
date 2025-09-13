@@ -23,6 +23,15 @@
       text-align: center;
       margin-bottom: 20px;
     }
+    .product-summary {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .product-summary img {
+      width: 120px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
     label {
       font-weight: bold;
       margin-top: 10px;
@@ -51,6 +60,10 @@
 <body>
   <div class="checkout-container">
     <h2>Checkout</h2>
+
+    <!-- Product summary (from store) -->
+    <div id="checkoutProduct" class="product-summary"></div>
+
     <form id="checkoutForm">
       <label for="name">Full Name</label>
       <input type="text" id="name" required>
@@ -58,7 +71,6 @@
       <label for="email">Email Address</label>
       <input type="email" id="email" required>
 
-      <!-- ✅ Location Dropdown -->
       <label for="location">Location</label>
       <select id="location" required>
         <option value="">-- Select Location --</option>
@@ -73,14 +85,12 @@
       <label for="room">Room Number</label>
       <input type="text" id="room" required>
 
-      <!-- ✅ Tie Type -->
       <label for="tieType">Type of Tie</label>
       <select id="tieType" required>
         <option value="Fat Tie">Fat Tie</option>
         <option value="Slim Tie">Slim Tie</option>
       </select>
 
-      <!-- ✅ Design Option -->
       <label for="designOption">Personal Design</label>
       <select id="designOption" required>
         <option value="none">None (already selected a design)</option>
@@ -96,87 +106,49 @@
     </form>
   </div>
 
-  <script src="https://checkout.flutterwave.com/v3.js"></script>
   <script>
+    // ✅ Load selected product from localStorage
+    const product = JSON.parse(localStorage.getItem("zakuSelectedProduct"));
+    if (product) {
+      document.getElementById("checkoutProduct").innerHTML = `
+        <img src="${product.img}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>₦${product.price}</p>
+      `;
+    }
+
     // Show/hide design link input
     document.getElementById("designOption").addEventListener("change", function () {
       document.getElementById("designLinkContainer").style.display =
         this.value === "custom" ? "block" : "none";
     });
 
+    // Handle checkout form
     document.getElementById("checkoutForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
-      // Collect form data
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const location = document.getElementById("location").value;
-      const hall = document.getElementById("hall").value;
-      const room = document.getElementById("room").value;
-      const tieType = document.getElementById("tieType").value;
-      const designChoice = document.getElementById("designOption").value;
-      const designLink = document.getElementById("designLink").value;
+      const orderData = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        location: document.getElementById("location").value,
+        hall: document.getElementById("hall").value,
+        room: document.getElementById("room").value,
+        tieType: document.getElementById("tieType").value,
+        designChoice: document.getElementById("designOption").value,
+        designLink: document.getElementById("designLink").value,
+        productName: product ? product.name : "",
+        productPrice: product ? product.price : "",
+        productImg: product ? product.img : "",
+        total: product ? product.price : 3000,
+        date: new Date().toLocaleString()
+      };
 
-      // Example: set total dynamically from cart (hardcoded here for demo)
-      const totalAmount = 3000;
+      // Save temporarily
+      sessionStorage.setItem("orderData", JSON.stringify(orderData));
 
-      // ✅ Trigger Flutterwave payment
-      FlutterwaveCheckout({
-        public_key: "FLWPUBK_TEST-xxxxxxxxxxxxxxxxxxxxx-X",
-        tx_ref: "tx-" + Date.now(),
-        amount: totalAmount,
-        currency: "NGN",
-        payment_options: "card, banktransfer, ussd",
-        customer: { email: email, name: name },
-        callback: function (response) {
-          if (response.status === "successful") {
-            // ✅ Order data to send to Google Sheets
-            const orderData = {
-              name,
-              email,
-              location,
-              hall,
-              room,
-              tieType,
-              designChoice,
-              designLink,
-              total: totalAmount,
-              paymentRef: response.transaction_id,
-              date: new Date().toLocaleString()
-            };
-
-            // Send to Google Apps Script
-            fetch("YOUR_GOOGLE_APPS_SCRIPT_URL", {
-              method: "POST",
-              body: JSON.stringify(orderData)
-            })
-              .then(res => res.text())
-              .then(data => {
-                alert("Order successful! Your order has been placed.");
-                window.location.href = "success.html";
-              })
-              .catch(err => {
-                alert("Payment went through but failed to save order.");
-              });
-          } else {
-            alert("Payment failed. Please try again.");
-          }
-        },
-        onclose: function () {
-          console.log("Payment modal closed.");
-        },
-      });
+      // ✅ Redirect to your Flutterwave Payment Link
+      window.location.href = "https://flutterwave.com/pay/yourpaymentlink";
     });
   </script>
-  
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js")
-      .then(() => console.log("✅ Service Worker Registered"))
-      .catch(err => console.error("❌ Service Worker failed:", err));
-  }
-</script>
-
-  
 </body>
 </html>
