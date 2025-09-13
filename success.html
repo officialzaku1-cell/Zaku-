@@ -3,81 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Success - ZAKU</title>
+  <title>Payment Successful - Zaku Store</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
     body {
-      font-family: 'Poppins', sans-serif;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
       margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: #f9f9f9;
+      padding: 20px;
       text-align: center;
     }
-
-    .success-container {
+    .receipt {
+      max-width: 500px;
+      margin: auto;
       background: #fff;
-      padding: 40px 30px;
+      padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      max-width: 400px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-
-    h1 {
-      color: #28a745;
-      font-size: 2rem;
-      margin-bottom: 20px;
+    h2 {
+      color: green;
+      margin-bottom: 15px;
     }
-
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-      color: #333;
+    .order-details {
+      text-align: left;
+      margin-top: 20px;
     }
-
-    button {
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      background: linear-gradient(135deg, #ffcc00, #111);
-      color: #111;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.2s, opacity 0.2s;
+    .order-details p {
+      margin: 6px 0;
     }
-
-    button:hover {
-      transform: scale(1.05);
-      opacity: 0.9;
+    .btn {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 10px 20px;
+      background: black;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+    .btn:hover {
+      background: #333;
     }
   </style>
 </head>
 <body>
-  <div class="success-container">
-    <h1>✅ Payment Successful!</h1>
-    <p>Thank you for your purchase. Your order will be delivered on Saturday.</p>
-    <button onclick="goBack()">Continue Shopping</button>
+  <div class="receipt">
+    <h2>✅ Payment Successful!</h2>
+    <p>Thank you for shopping with <b>Zaku Store</b>.</p>
+
+    <div class="order-details" id="orderSummary"></div>
+
+    <a href="index.html" class="btn">Back to Store</a>
   </div>
 
   <script>
-    function goBack() {
-      window.location.href = "index.html"; // Redirect to main store page
+    const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEBAPP_URL"; // 🔑 replace with your deployed URL
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const txRef = urlParams.get("tx_ref");
+
+    const order = JSON.parse(sessionStorage.getItem("orderData"));
+
+    if (order) {
+      document.getElementById("orderSummary").innerHTML = `
+        <p><b>Customer:</b> ${order.name}</p>
+        <p><b>Email:</b> ${order.email}</p>
+        <p><b>Location:</b> ${order.location}</p>
+        <p><b>Hall:</b> ${order.hall}</p>
+        <p><b>Room:</b> ${order.room}</p>
+        <p><b>Tie Type:</b> ${order.tieType}</p>
+        <p><b>Design:</b> ${order.designChoice}</p>
+        ${order.designLink ? `<p><b>Design Link:</b> ${order.designLink}</p>` : ""}
+        <p><b>Product:</b> ${order.product}</p>
+        <p><b>Total:</b> ₦${order.total}</p>
+        <p><b>Date:</b> ${order.date}</p>
+        <p><b>Tx Ref:</b> ${txRef || "N/A"}</p>
+      `;
+
+      // 🔄 Save to Google Sheets
+      fetch(`${SCRIPT_URL}?name=${encodeURIComponent(order.name)}&email=${encodeURIComponent(order.email)}&location=${encodeURIComponent(order.location)}&hall=${encodeURIComponent(order.hall)}&room=${encodeURIComponent(order.room)}&tieType=${encodeURIComponent(order.tieType)}&designChoice=${encodeURIComponent(order.designChoice)}&designLink=${encodeURIComponent(order.designLink)}&product=${encodeURIComponent(order.product)}&amount=${encodeURIComponent(order.total)}&tx_ref=${encodeURIComponent(txRef)}`)
+        .then(res => res.text())
+        .then(data => console.log("Google Sheet response:", data))
+        .catch(err => console.error("Error sending to sheet:", err));
+
+      // Clear session after storing
+      sessionStorage.removeItem("orderData");
+    } else {
+      document.getElementById("orderSummary").innerHTML =
+        "<p>No order found. Please return to the store.</p>";
     }
   </script>
-  
-  <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js")
-      .then(() => console.log("✅ Service Worker Registered"))
-      .catch(err => console.error("❌ Service Worker failed:", err));
-  }
-</script>
-
-
 </body>
 </html>
