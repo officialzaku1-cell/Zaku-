@@ -14,13 +14,14 @@
     input, select, button { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
     button { background: #000; color: #fff; border: none; cursor: pointer; }
     button:hover { background: #333; }
+    .note { font-size: 13px; color: #666; margin-bottom: 10px; }
   </style>
 </head>
 <body>
   <div class="checkout-container">
     <h2>Checkout</h2>
 
-    <!-- Product summary (from store) -->
+    <!-- Product summary -->
     <div id="checkoutProduct" class="product-summary"></div>
 
     <form id="checkoutForm">
@@ -61,11 +62,56 @@
         <input type="url" id="designLink" placeholder="Paste your design link">
       </div>
 
-      <button type="submit">Pay & Place Order</button>
+      <label for="receipt">Upload Payment Receipt</label>
+      <input type="file" id="receipt" accept="image/*" required>
+      <p class="note">Please upload a clear screenshot/photo of your Flutterwave payment receipt.</p>
+
+      <a href="https://flutterwave.com/pay/o0dqtghhsfpa" target="_blank">
+        <button type="button">Click Here to Pay with Flutterwave</button>
+      </a>
+
+      <button type="submit">Submit Order</button>
     </form>
   </div>
+  
+  
+  
+  <!-- Spinner (hidden by default) -->
+<div id="loadingSpinner" style="
+  display:none;
+  text-align:center;
+  margin:15px 0;
+  font-size:14px;
+  color:#555;
+">
+  <div class="spinner" style="
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #000;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    margin: 0 auto 10px auto;
+    animation: spin 1s linear infinite;
+  "></div>
+  Sending your order...
+</div>
 
+<style>
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+  
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   <script>
+    (function() {
+      emailjs.init("YY4CxWOe6PLFrzQ4x"); // Replace with your EmailJS Public Key
+    })();
+
     // ✅ Load selected product from localStorage
     const product = JSON.parse(localStorage.getItem("zakuSelectedProduct"));
     if (product) {
@@ -86,29 +132,73 @@
     document.getElementById("checkoutForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
-      // Create order object with product and tie info
-      const orderData = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        location: document.getElementById("location").value,
-        hall: document.getElementById("hall").value,
-        room: document.getElementById("room").value,
-        tieType: document.getElementById("tieType").value,
-        designChoice: document.getElementById("designOption").value,
-        designLink: document.getElementById("designLink").value,
-        productName: product ? product.name : "",
-        productPrice: product ? product.price : "",
-        productImg: product ? product.img : "",
-        total: product ? product.price : 3000,
-        date: new Date().toLocaleString()
-      };
+      const receiptFile = document.getElementById("receipt").files[0];
+      if (!receiptFile) {
+        alert("Please upload your payment receipt.");
+        return;
+      }
+      
+      // Show spinner when form starts sending
+document.getElementById("loadingSpinner").style.display = "block";
 
-      // ✅ Save to sessionStorage for success page
-      sessionStorage.setItem("orderData", JSON.stringify(orderData));
+      // 🔼 Upload receipt to Cloudinary
+      const formData = new FormData();
+      formData.append("file", receiptFile);
+      formData.append("upload_preset", "Receipt_upload");
+ // e.g. zaku_unsigned
 
-      // ✅ Redirect to Flutterwave Payment Link
-      window.location.href = "https://flutterwave.com/pay/yourpaymentlink";
+      fetch("https://api.cloudinary.com/v1_1/dmqfprtcj/image/upload", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        const receiptUrl = data.secure_url; // ✅ hosted receipt link
+
+        // Collect order data
+        const orderData = {
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          location: document.getElementById("location").value,
+          hall: document.getElementById("hall").value,
+          room: document.getElementById("room").value,
+          tieType: document.getElementById("tieType").value,
+          designChoice: document.getElementById("designOption").value,
+          designLink: document.getElementById("designLink").value,
+          productName: product ? product.name : "",
+          productPrice: product ? product.price : "",
+          total: product ? product.price : 3000,
+          receipt: receiptUrl,
+          date: new Date().toLocaleString()
+        };
+
+        // Send via EmailJS
+        // Upload to Cloudinary and send via EmailJS...
+emailjs.send("service_osgs50m", "template_i3e2mac", orderData)
+  .then(function(response) {
+    // Hide spinner
+    document.getElementById("loadingSpinner").style.display = "none";
+
+    alert("✅ Form submitted successfully!");
+    setTimeout(() => {
+      window.location.href = "success.html";
+    }, 2000);
+  }, function(error) {
+    // Hide spinner
+    document.getElementById("loadingSpinner").style.display = "none";
+
+    alert("❌ Failed to submit form. Please try again.");
+  });
+      })
+      .catch(err => {
+        alert("Failed to upload receipt. Try again.");
+        console.error(err);
+      });
     });
   </script>
 </body>
 </html>
+
+
+
+
