@@ -15,9 +15,13 @@
     button { background: #000; color: #fff; border: none; cursor: pointer; }
     button:hover { background: #333; }
     .note { font-size: 13px; color: #666; margin-bottom: 10px; }
+    #loadingSpinner { display:none; text-align:center; margin:15px 0; font-size:14px; color:#555; }
+    .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #000; border-radius: 50%; width: 30px; height: 30px; margin: 0 auto 10px auto; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
+
   <div class="checkout-container">
     <h2>Checkout</h2>
 
@@ -72,47 +76,20 @@
 
       <button type="submit">Submit Order</button>
     </form>
+
+    <!-- Spinner -->
+    <div id="loadingSpinner">
+      <div class="spinner"></div>
+      Sending your order...
+    </div>
   </div>
-  
-  
-  
-  <!-- Spinner (hidden by default) -->
-<div id="loadingSpinner" style="
-  display:none;
-  text-align:center;
-  margin:15px 0;
-  font-size:14px;
-  color:#555;
-">
-  <div class="spinner" style="
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #000;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    margin: 0 auto 10px auto;
-    animation: spin 1s linear infinite;
-  "></div>
-  Sending your order...
-</div>
-
-<style>
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-</style>
-
-  
 
   <!-- EmailJS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   <script>
-    (function() {
-      emailjs.init("YY4CxWOe6PLFrzQ4x"); // Replace with your EmailJS Public Key
-    })();
+    emailjs.init("YY4CxWOe6PLFrzQ4x"); // Replace with your public key
 
-    // ✅ Load selected product from localStorage
+    // Load selected product
     const product = JSON.parse(localStorage.getItem("zakuSelectedProduct"));
     if (product) {
       document.getElementById("checkoutProduct").innerHTML = `
@@ -122,13 +99,13 @@
       `;
     }
 
-    // Show/hide design link input
+    // Show/hide design link
     document.getElementById("designOption").addEventListener("change", function () {
       document.getElementById("designLinkContainer").style.display =
         this.value === "custom" ? "block" : "none";
     });
 
-    // Handle checkout form
+    // Form submit
     document.getElementById("checkoutForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
@@ -137,15 +114,14 @@
         alert("Please upload your payment receipt.");
         return;
       }
-      
-      // Show spinner when form starts sending
-document.getElementById("loadingSpinner").style.display = "block";
 
-      // 🔼 Upload receipt to Cloudinary
+      // Show spinner
+      document.getElementById("loadingSpinner").style.display = "block";
+
+      // Upload receipt to Cloudinary
       const formData = new FormData();
       formData.append("file", receiptFile);
-      formData.append("upload_preset", "Receipt_upload");
- // e.g. zaku_unsigned
+      formData.append("upload_preset", "Receipts_upload"); // Replace with your unsigned preset
 
       fetch("https://api.cloudinary.com/v1_1/dmqfprtcj/image/upload", {
         method: "POST",
@@ -153,7 +129,8 @@ document.getElementById("loadingSpinner").style.display = "block";
       })
       .then(res => res.json())
       .then(data => {
-        const receiptUrl = data.secure_url; // ✅ hosted receipt link
+        const receiptUrl = data.secure_url;
+        console.log("Cloudinary receipt URL:", receiptUrl);
 
         // Collect order data
         const orderData = {
@@ -172,33 +149,32 @@ document.getElementById("loadingSpinner").style.display = "block";
           date: new Date().toLocaleString()
         };
 
-        // Send via EmailJS
-        // Upload to Cloudinary and send via EmailJS...
-emailjs.send("service_osgs50m", "template_i3e2mac", orderData)
-  .then(function(response) {
-    // Hide spinner
-    document.getElementById("loadingSpinner").style.display = "none";
+        // Send email via EmailJS
+        emailjs.send("service_osgs50m", "template_i3e2mac", orderData)
+        .then(response => {
+          console.log("EmailJS response:", response);
 
-    alert("✅ Form submitted successfully!");
-    setTimeout(() => {
-      window.location.href = "success.html";
-    }, 2000);
-  }, function(error) {
-    // Hide spinner
-    document.getElementById("loadingSpinner").style.display = "none";
+          // Hide spinner
+          document.getElementById("loadingSpinner").style.display = "none";
 
-    alert("❌ Failed to submit form. Please try again.");
-  });
+          alert("✅ Form submitted successfully!");
+          setTimeout(() => {
+            window.location.href = "success.html";
+          }, 2000);
+        })
+        .catch(error => {
+          console.error("EmailJS error:", error);
+          document.getElementById("loadingSpinner").style.display = "none";
+          alert("❌ Failed to submit form. Please try again.");
+        });
+
       })
       .catch(err => {
-        alert("Failed to upload receipt. Try again.");
-        console.error(err);
+        console.error("Cloudinary upload error:", err);
+        document.getElementById("loadingSpinner").style.display = "none";
+        alert("Failed to upload receipt. Please try again.");
       });
     });
   </script>
 </body>
 </html>
-
-
-
-
