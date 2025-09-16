@@ -19,16 +19,6 @@
     .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #000; border-radius: 50%; width: 30px; height: 30px; margin: 0 auto 10px auto; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
-
-  <!-- EmailJS SDK -->
-<script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-<script type="text/javascript">
-   (function(){
-      emailjs.init("YY4CxWOe6PLFrzQ4x"); // Replace with your EmailJS User ID
-   })();
-</script>
-
-  
 </head>
 <body>
 
@@ -94,12 +84,8 @@
     </div>
   </div>
 
-  <!-- EmailJS SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   <script>
-    emailjs.init("YY4CxWOe6PLFrzQ4x"); // Replace with your public key
-
-    // Load selected product
+    // Load selected product from localStorage
     const product = JSON.parse(localStorage.getItem("zakuSelectedProduct"));
     if (product) {
       document.getElementById("checkoutProduct").innerHTML = `
@@ -109,14 +95,14 @@
       `;
     }
 
-    // Show/hide design link
-    document.getElementById("designOption").addEventListener("change", function () {
+    // Show/hide design link field
+    document.getElementById("designOption").addEventListener("change", function() {
       document.getElementById("designLinkContainer").style.display =
         this.value === "custom" ? "block" : "none";
     });
 
-    // Form submit
-    document.getElementById("checkoutForm").addEventListener("submit", function (e) {
+    // Handle form submission
+    document.getElementById("checkoutForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
       const receiptFile = document.getElementById("receipt").files[0];
@@ -125,13 +111,12 @@
         return;
       }
 
-      // Show spinner
       document.getElementById("loadingSpinner").style.display = "block";
 
       // Upload receipt to Cloudinary
       const formData = new FormData();
       formData.append("file", receiptFile);
-      formData.append("upload_preset", "Receipts_upload"); // Replace with your unsigned preset
+      formData.append("upload_preset", "Receipt_upload"); // Replace with your unsigned preset
 
       fetch("https://api.cloudinary.com/v1_1/dmqfprtcj/image/upload", {
         method: "POST",
@@ -140,9 +125,7 @@
       .then(res => res.json())
       .then(data => {
         const receiptUrl = data.secure_url;
-        console.log("Cloudinary receipt URL:", receiptUrl);
 
-        // Collect order data
         const orderData = {
           name: document.getElementById("name").value,
           email: document.getElementById("email").value,
@@ -155,34 +138,36 @@
           productName: product ? product.name : "",
           productPrice: product ? product.price : "",
           total: product ? product.price : 3000,
-          receipt: receiptUrl,
-          date: new Date().toLocaleString()
+          receipt: receiptUrl
         };
 
-        // Send email via EmailJS
-        emailjs.send("service_osgs50m", "template_i3e2mac", orderData)
-        .then(response => {
-          console.log("EmailJS response:", response);
-
-          // Hide spinner
-          document.getElementById("loadingSpinner").style.display = "none";
-
-          alert("✅ Form submitted successfully!");
-          setTimeout(() => {
-            window.location.href = "success.html";
-          }, 2000);
+        // Send to Google Apps Script Web App
+        fetch("https://script.google.com/macros/s/AKfycbz9GInt5rP8XZUAz7lKw19D2-_fdar-0h0ZZT8y6iCErbXDNYlPQsQn_x-uXnulJAWeGg/exec", { // Replace with your Apps Script URL
+          method: "POST",
+          body: JSON.stringify(orderData)
         })
-        .catch(error => {
-          console.error("EmailJS error:", error);
+        .then(res => res.json())
+        .then(resp => {
           document.getElementById("loadingSpinner").style.display = "none";
-          alert("❌ Failed to submit form. Please try again.");
+          if(resp.status === "success") {
+            alert("✅ Order submitted successfully! Check your email for confirmation.");
+            setTimeout(() => window.location.href = "success.html", 2000);
+          } else {
+            console.error(resp.message);
+            alert("❌ Failed to submit order. Check console.");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById("loadingSpinner").style.display = "none";
+          alert("❌ Error submitting order.");
         });
 
       })
       .catch(err => {
-        console.error("Cloudinary upload error:", err);
+        console.error(err);
         document.getElementById("loadingSpinner").style.display = "none";
-        alert("Failed to upload receipt. Please try again.");
+        alert("❌ Failed to upload receipt.");
       });
     });
   </script>
