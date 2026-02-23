@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="IMG_20250912_104016_293.webp">
+<title>ZAKU Food</title>
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
+
+/* PRELOADER */
+#preloader{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+.loader{
+  width:40px;
+  height:40px;
+  border:5px solid #ddd;
+  border-top:5px solid #0d6efd;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{100%{transform:rotate(360deg);}}
+
+/* CLOSED OVERLAY */
+#closedOverlay{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:white;
+  z-index:9998;
+  justify-content:center;
+  align-items:center;
+  font-size:32px;
+  color:#0d6efd;
+  font-weight:bold;
+}
+
+/* HEADER */
+header{
+  background:#333;
+  color:#FFD700;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.search-bar{
+  padding:8px;
+  border-radius:5px;
+  border:none;
+  width:220px;
+}
+.cart-icon{
+  cursor:pointer;
+  position:relative;
+  font-size:20px;
+}
+.cart-count{
+  position:absolute;
+  top:-8px;
+  right:-10px;
+  background:red;
+  color:white;
+  border-radius:50%;
+  padding:2px 6px;
+  font-size:12px;
+}
+
+/* CART */
+.cart-dropdown{
+  position:absolute;
+  right:15px;
+  top:70px;
+  width:350px;
+  background:white;
+  color:black;
+  border-radius:10px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.2);
+  display:none;
+  padding:15px;
+  z-index:100;
+}
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+  font-size:14px;
+  align-items:center;
+}
+.checkout{
+  margin-top:10px;
+  width:100%;
+  padding:8px;
+  background:green;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+.checkout:disabled{
+  background:gray;
+  cursor:not-allowed;
+}
+
+/* CUSTOMER FORM */
+#customerForm{
+  margin-top:15px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+#customerForm input,
+#customerForm select{
+  padding:6px;
+  border-radius:5px;
+  border:1px solid #ccc;
+}
+
+/* PRODUCTS */
+.container{padding:20px;}
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+}
+.card{
+  background:white;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 3px 10px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
+.card:hover{transform:translateY(-5px);}
+.card img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+}
+.card-body{padding:15px;}
+.card button{
+  margin-top:10px;
+  width:100%;
+  padding:8px;
+  background:#333;
+  color:#FFD700;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+@media(max-width:600px){
+  .cart-dropdown{width:90%;right:5%;}
+  .search-bar{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div id="preloader"><div class="loader"></div></div>
+<div id="closedOverlay">ORDER TOMORROW</div>
+
+<header>
+  <h2>ZAKU Food</h2>
+  <input type="text" id="searchInput" class="search-bar" placeholder="Search meals..." onkeyup="searchProducts()">
+  <span class="cart-icon" onclick="toggleCart()">🛒
+    <span class="cart-count" id="cartCount">0</span>
+  </span>
+</header>
+
+<div class="cart-dropdown" id="cartDropdown">
+  <div id="cartItems"></div>
+  <hr>
+  <p>Delivery: ₦250</p>
+  <h4>Total: ₦<span id="total">0</span></h4>
+
+  <form id="customerForm">
+    <input type="text" id="customerName" placeholder="Your Name" required>
+    <input type="email" id="customerEmail" placeholder="Email" required>
+    <select id="customerHall" required>
+      <option value="">Select Hall</option>
+      <option value="Mary">Mary</option>
+      <option value="Daniel">Daniel</option>
+      <option value="John">John</option>
+    </select>
+    <input type="text" id="roomNumber" placeholder="Room Number" required>
+    <input type="tel" id="phoneNumber" placeholder="Phone Number" required>
+  </form>
+
+  <button class="checkout" onclick="checkout()">Checkout</button>
+</div>
+
+<div class="container">
+  <div class="products" id="productList"></div>
+</div>
+
+<script>
+const deliveryFee = 250;
+
+const products = [
+  {id:1,name:"Jollof Rice",price:2500,image:"https://source.unsplash.com/400x300/?jollof"},
+  {id:2,name:"Fried Rice",price:3000,image:"https://source.unsplash.com/400x300/?fried-rice"},
+  {id:3,name:"Indomie Special",price:1500,image:"https://source.unsplash.com/400x300/?noodles"},
+  {id:4,name:"Shawarma",price:2000,image:"https://source.unsplash.com/400x300/?shawarma"},
+  {id:5,name:"Test",price:100,image:"https://source.unsplash.com/400x300/?drink"},
+  {id:5,name:"Zobo Drink",price:700,image:"https://source.unsplash.com/400x300/?drink"}
+
+];
+
+let cart=[];
+
+window.addEventListener("load",function(){
+  setTimeout(()=>{
+    document.getElementById("preloader").style.display="none";
+  },800);
+
+  checkClosingTime();
+  setInterval(checkClosingTime,60000);
+});
+
+function checkClosingTime(){
+  const now=new Date();
+  const nigeriaHours=(now.getUTCHours()+1)%24;
+  const overlay=document.getElementById("closedOverlay");
+  const buttons=document.querySelectorAll(".card button,.checkout");
+
+  if(nigeriaHours>=18 && nigeriaHours<21){
+    overlay.style.display="flex";
+    buttons.forEach(b=>b.disabled=true);
+  }else{
+    overlay.style.display="none";
+    buttons.forEach(b=>b.disabled=false);
+  }
+}
+
+function renderProducts(items=products){
+  const list=document.getElementById("productList");
+  list.innerHTML="";
+  items.forEach(p=>{
+    list.innerHTML+=`
+      <div class="card">
+        <img src="${p.image}">
+        <div class="card-body">
+          <h4>${p.name}</h4>
+          <p>₦${p.price}</p>
+          <button onclick="addToCart(${p.id})">Add to Cart</button>
+        </div>
+      </div>`;
+  });
+}
+
+function searchProducts(){
+  const query=document.getElementById("searchInput").value.toLowerCase();
+  const filtered=products.filter(p=>p.name.toLowerCase().includes(query));
+  renderProducts(filtered);
+}
+
+function addToCart(id){
+  const item=cart.find(p=>p.id===id);
+  if(item)item.qty++;
+  else{
+    const product=products.find(p=>p.id===id);
+    cart.push({...product,qty:1});
+  }
+  renderCart();
+}
+
+function renderCart(){
+  const items=document.getElementById("cartItems");
+  const totalDisplay=document.getElementById("total");
+  const cartCount=document.getElementById("cartCount");
+  items.innerHTML="";
+  let total=0,count=0;
+
+  cart.forEach(item=>{
+    total+=item.price*item.qty;
+    count+=item.qty;
+    items.innerHTML+=`
+      <div class="cart-item">
+        ${item.name} (x${item.qty})
+        <div>
+          <button onclick="changeQty(${item.id},-1)">-</button>
+          <button onclick="changeQty(${item.id},1)">+</button>
+        </div>
+      </div>`;
+  });
+
+  if(cart.length>0) total+=deliveryFee;
+  totalDisplay.textContent=total;
+  cartCount.textContent=count;
+}
+
+function changeQty(id,amount){
+  const item=cart.find(p=>p.id===id);
+  item.qty+=amount;
+  if(item.qty<=0) cart=cart.filter(p=>p.id!==id);
+  renderCart();
+}
+
+function toggleCart(){
+  const dropdown=document.getElementById("cartDropdown");
+  dropdown.style.display=dropdown.style.display==="block"?"none":"block";
+}
+
+function checkout(){
+  if(cart.length===0){alert("Cart is empty!");return;}
+
+  const name=document.getElementById("customerName").value.trim();
+  const email=document.getElementById("customerEmail").value.trim();
+  const hall=document.getElementById("customerHall").value.trim();
+  const room=document.getElementById("roomNumber").value.trim();
+  const phone=document.getElementById("phoneNumber").value.trim();
+
+  if(!name||!email||!hall||!room||!phone){
+    alert("Please fill all details");
+    return;
+  }
+
+  let total=0;
+  let itemsList=cart.map(i=>`${i.name} x${i.qty}`).join(", ");
+  cart.forEach(i=>{total+=i.price*i.qty;});
+  total+=deliveryFee;
+
+  FlutterwaveCheckout({
+    public_key:"YOUR_PUBLIC_KEY",
+    tx_ref:"ZAKU-"+Date.now(),
+    amount:total,
+    currency:"NGN",
+    payment_options:"card,banktransfer,ussd",
+    customer:{email,name,phone_number:phone},
+    callback:function(data){
+      if(data.status==="successful"){
+        fetch("https://script.google.com/macros/s/AKfycbxmDdhWwq1BZI8m7YJ524mB9Oc4HO3ggO1HJ4pBwI6EcSnkrfiKvxx_giUoWZqKjNnC5Q/exec",{
+          method:"POST",
+          body:JSON.stringify({name,email,hall,room,phone,items:itemsList,total}),
+          headers:{"Content-Type":"application/json"}
+        });
+
+        alert("Payment Successful!");
+        cart=[];
+        renderCart();
+        document.getElementById("customerForm").reset();
+        toggleCart();
+      }
+    },
+    customizations:{
+      title:"ZAKU Campus Food",
+      description:"Campus Food Payment"
+    }
+  });
+}
+
+renderProducts();
+renderCart();
+</script>
+</body>
+</html>
