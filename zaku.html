@@ -9,128 +9,54 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
 
-/* PRELOADER */
 #preloader{
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
+  position:fixed;width:100%;height:100%;
+  background:white;display:flex;justify-content:center;align-items:center;z-index:9999;
 }
 .loader{
-  width:40px;
-  height:40px;
-  border:5px solid #ddd;
-  border-top:5px solid #FFD700;
-  border-radius:50%;
+  width:40px;height:40px;border:5px solid #ddd;
+  border-top:5px solid #FFD700;border-radius:50%;
   animation:spin 1s linear infinite;
 }
 @keyframes spin{100%{transform:rotate(360deg);}}
 
-/* CLOSED OVERLAY */
 #closedOverlay{
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:white;
-  z-index:9998;
-  justify-content:center;
-  align-items:center;
-  font-size:32px;
-  color:#FFD700;
-  font-weight:bold;
+  display:none;position:fixed;width:100%;height:100%;
+  background:white;z-index:9998;
+  justify-content:center;align-items:center;
+  font-size:32px;color:#FFD700;font-weight:bold;
 }
 
-/* HEADER */
 header{
-  background:#333;
-  color:#FFD700;
-  padding:15px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:10px;
+  background:#333;color:#FFD700;padding:15px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;
 }
-.search-bar{
-  padding:8px;
-  border-radius:5px;
-  border:none;
-  width:220px;
-}
-.cart-icon{
-  cursor:pointer;
-  position:relative;
-  font-size:20px;
-}
+.search-bar{padding:8px;border-radius:5px;border:none;width:220px;}
+.cart-icon{cursor:pointer;position:relative;font-size:20px;}
 .cart-count{
-  position:absolute;
-  top:-8px;
-  right:-10px;
-  background:red;
-  color:white;
-  border-radius:50%;
-  padding:2px 6px;
-  font-size:12px;
+  position:absolute;top:-8px;right:-10px;background:red;color:white;
+  border-radius:50%;padding:2px 6px;font-size:12px;
 }
 
-/* CART */
 .cart-dropdown{
-  position:absolute;
-  right:15px;
-  top:70px;
-  width:350px;
-  background:white;
-  color:black;
-  border-radius:10px;
+  position:absolute;right:15px;top:70px;width:350px;
+  background:white;color:black;border-radius:10px;
   box-shadow:0 3px 10px rgba(0,0,0,0.2);
-  display:none;
-  padding:15px;
-  z-index:100;
+  display:none;padding:15px;z-index:100;
 }
 .cart-item{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:10px;
-  font-size:14px;
-  align-items:center;
+  display:flex;justify-content:space-between;margin-bottom:10px;
 }
 .checkout{
-  margin-top:10px;
-  width:100%;
-  padding:8px;
-  background:#333;
-  color:#FFD700;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-}
-.checkout:disabled{
-  background:gray;
-  cursor:not-allowed;
+  margin-top:10px;width:100%;padding:8px;
+  background:#333;color:#FFD700;border:none;border-radius:5px;cursor:pointer;
 }
 
-/* CUSTOMER FORM */
-#customerForm{
-  margin-top:15px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-#customerForm input,
-#customerForm select{
-  padding:6px;
-  border-radius:5px;
-  border:1px solid #ccc;
+#customerForm{margin-top:15px;display:flex;flex-direction:column;gap:8px;}
+#customerForm input,#customerForm select{
+  padding:6px;border-radius:5px;border:1px solid #ccc;
 }
 
-/* PRODUCTS */
 .container{padding:20px;}
 .products{
   display:grid;
@@ -138,40 +64,83 @@ header{
   gap:20px;
 }
 .card{
-  background:white;
-  border-radius:10px;
-  overflow:hidden;
+  background:white;border-radius:10px;overflow:hidden;
   box-shadow:0 3px 10px rgba(0,0,0,0.1);
-  transition:0.3s;
 }
-.card:hover{transform:translateY(-5px);}
 .card img{
-  width:100%;
-  height:150px;
-  object-fit:cover;
+  width:100%;height:150px;object-fit:cover;
 }
 .card-body{padding:15px;}
 .card button{
-  margin-top:10px;
+  margin-top:10px;width:100%;padding:8px;
+  background:#333;color:#FFD700;border:none;border-radius:5px;cursor:pointer;
+}
+
+ #instructionOverlay{
+  position:fixed;
   width:100%;
-  padding:8px;
+  height:100%;
+  background:white;
+  z-index:10000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
+}
+
+.instruction-box{
+  max-width:400px;
+}
+
+.instruction-box h2{
+  color:#FFD700;
+  margin-bottom:15px;
+}
+
+.instruction-box ol{
+  text-align:left;
+  margin:15px 0;
+}
+
+.instruction-box button{
+  margin-top:15px;
+  padding:10px 20px;
   background:#333;
   color:#FFD700;
   border:none;
   border-radius:5px;
   cursor:pointer;
-}
-
-@media(max-width:600px){
-  .cart-dropdown{width:90%;right:5%;}
-  .search-bar{width:100%;}
-}
+} 
+  
 </style>
 </head>
+
 <body>
 
 <div id="preloader"><div class="loader"></div></div>
 <div id="closedOverlay">ORDER TOMORROW</div>
+
+ <div id="instructionOverlay">
+  <div class="instruction-box">
+    <h2>Welcome to ZAKU Food 🍝</h2>
+    
+    <p><strong>Please follow these steps:</strong></p>
+    <ol>
+      <li>Select your food items</li>
+      <li>Click the cart 🛒 to review</li>
+      <li>Fill in your correct details</li>
+      <li>Make payment to confirm order</li>
+      <li>Wait for delivery 🚚</li>
+    </ol>
+
+    <p style="margin-top:10px;color:red;">
+      ⚠️ Ensure your hall & room number is correct
+    </p>
+
+    <button onclick="startApp()">Start Ordering</button>
+  </div>
+</div> 
 
 <header>
   <h2>ZAKU Food</h2>
@@ -184,7 +153,7 @@ header{
 <div class="cart-dropdown" id="cartDropdown">
   <div id="cartItems"></div>
   <hr>
-  <p>Delivery: ₦300</p>
+  <p>Delivery: ₦<span id="deliveryFeeText">300</span></p>
   <h4>Total: ₦<span id="total">0</span></h4>
 
   <form id="customerForm">
@@ -212,16 +181,11 @@ header{
 const deliveryFee = 300;
 
 const products = [
-  {id:1,name:"Boil + 2 Pomo",price:1970},
-  {id:2,name:"Boil + 2 Pomo + Egg",price:2300},
-  {id:3,name:"Gizzdodo + 2 Pomo",price:1970},
-  {id:4,name:"Gizzdodo + 2 Pomo + Egg",price:2300},
-  {id:5,name:"Indomie Special",price:1500},
-  {id:6,name:"Shawarma",price:2000},
-  {id:7,name:"Test",price:100},
-  {id:8,name:"ICE",price:257},
-  {id:9,name:"Drink",price:520}
-
+  {id:1,name:"Boil + 2 Pomo",price:1970,image:"https://via.placeholder.com/300"},
+  {id:2,name:"Boil + Egg",price:2300,image:"https://via.placeholder.com/300"},
+  {id:3,name:"Gizzdodo",price:1970,image:"https://via.placeholder.com/300"},
+  {id:4,name:"Indomie Special",price:1500,image:"https://via.placeholder.com/300"},
+  {id:5,name:"Shawarma",price:2000,image:"https://via.placeholder.com/300"},
 ];
 
 let cart=[];
@@ -249,27 +213,31 @@ function checkClosingTime(){
     buttons.forEach(b=>b.disabled=false);
   }
 }
+  
+
+function calculateTotal(){
+  let total=0;
+  cart.forEach(item=>{
+    total+=item.price*item.qty;
+  });
+  if(cart.length>0) total+=deliveryFee;
+  return total;
+}
 
 function renderProducts(items=products){
   const list=document.getElementById("productList");
   list.innerHTML="";
   items.forEach(p=>{
     list.innerHTML+=`
-      <div class="card">
-        <img src="${p.image}">
-        <div class="card-body">
-          <h4>${p.name}</h4>
-          <p>₦${p.price}</p>
-          <button onclick="addToCart(${p.id})">Add to Cart</button>
-        </div>
-      </div>`;
+    <div class="card">
+      <img src="${p.image}">
+      <div class="card-body">
+        <h4>${p.name}</h4>
+        <p>₦${p.price}</p>
+        <button onclick="addToCart(${p.id})">Add to Cart</button>
+      </div>
+    </div>`;
   });
-}
-
-function searchProducts(){
-  const query=document.getElementById("searchInput").value.toLowerCase();
-  const filtered=products.filter(p=>p.name.toLowerCase().includes(query));
-  renderProducts(filtered);
 }
 
 function addToCart(id){
@@ -286,24 +254,23 @@ function renderCart(){
   const items=document.getElementById("cartItems");
   const totalDisplay=document.getElementById("total");
   const cartCount=document.getElementById("cartCount");
+
   items.innerHTML="";
-  let total=0,count=0;
+  let count=0;
 
   cart.forEach(item=>{
-    total+=item.price*item.qty;
     count+=item.qty;
     items.innerHTML+=`
-      <div class="cart-item">
-        ${item.name} (x${item.qty})
-        <div>
-          <button onclick="changeQty(${item.id},-1)">-</button>
-          <button onclick="changeQty(${item.id},1)">+</button>
-        </div>
-      </div>`;
+    <div class="cart-item">
+      ${item.name} (x${item.qty})
+      <div>
+        <button onclick="changeQty(${item.id},-1)">-</button>
+        <button onclick="changeQty(${item.id},1)">+</button>
+      </div>
+    </div>`;
   });
 
-  if(cart.length>0) total+=deliveryFee;
-  totalDisplay.textContent=total;
+  totalDisplay.textContent=calculateTotal();
   cartCount.textContent=count;
 }
 
@@ -329,49 +296,43 @@ function checkout(){
   const phone=document.getElementById("phoneNumber").value.trim();
 
   if(!name||!email||!hall||!room||!phone){
-    alert("Please fill all details");
-    return;
+    alert("Fill all details");return;
   }
 
-  let total=0;
-  let itemsList=cart.map(i=>`${i.name} x${i.qty}`).join(", ");
-  cart.forEach(i=>{total+=i.price*i.qty;});
-  total+=deliveryFee;
+  let total=calculateTotal();
 
   FlutterwaveCheckout({
-    public_key:"FLWPUBK-fed1998222c5eac3a4e4001f97b1ab0a-X",
+    public_key:"FLWPUBK-xxxx",
     tx_ref:"ZAKU-"+Date.now(),
     amount:total,
     currency:"NGN",
-    payment_options:"card,banktransfer,ussd",
     customer:{email,name,phone_number:phone},
-    callback:function(data){
-      if(data.status==="successful"){
-        fetch("https://script.google.com/macros/s/AKfycbxmDdhWwq1BZI8m7YJ524mB9Oc4HO3ggO1HJ4pBwI6EcSnkrfiKvxx_giUoWZqKjNnC5Q/exec",{
-          method:"POST",
-          body:JSON.stringify({name,email,hall,room,phone,items:itemsList,total}),
-          headers:{"Content-Type":"application/json"}
-        });
-
-        alert("Payment Successful!");
-        cart=[];
-        renderCart();
-        document.getElementById("customerForm").reset();
-        toggleCart();
-      }
-    },
-    customizations:{
-      title:"ZAKU Campus Food",
-      description:"Campus Food Payment"
+    callback:function(){
+      alert("Payment Successful!");
+      cart=[];
+      renderCart();
+      document.getElementById("customerForm").reset();
+      toggleCart();
     }
   });
 }
 
+function searchProducts(){
+  const query=document.getElementById("searchInput").value.toLowerCase();
+  const filtered=products.filter(p=>p.name.toLowerCase().includes(query));
+  renderProducts(filtered);
+}
+
+document.getElementById("deliveryFeeText").textContent=deliveryFee;
+
 renderProducts();
 renderCart();
+
+  function startApp(){
+  document.getElementById("instructionOverlay").style.display="none";
+}
+  
 </script>
+
 </body>
-
 </html>
-
-
