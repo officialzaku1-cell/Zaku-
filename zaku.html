@@ -307,13 +307,35 @@ function checkout(){
     amount:total,
     currency:"NGN",
     customer:{email,name,phone_number:phone},
-    callback:function(){
-      alert("Payment Successful!");
-      cart=[];
-      renderCart();
-      document.getElementById("customerForm").reset();
-      toggleCart();
-    }
+    callback:function(data){
+  if(data.status === "successful"){
+
+    let itemsList = cart.map(i => `${i.name} x${i.qty}`).join(", ");
+
+    fetch("YOUR_GOOGLE_SCRIPT_URL_HERE", {
+      method:"POST",
+      body:JSON.stringify({
+        name,
+        email,
+        hall,
+        room,
+        phone,
+        items:itemsList,
+        total
+      }),
+      headers:{
+        "Content-Type":"application/json"
+      }
+    });
+
+    alert("Payment Successful!");
+
+    cart=[];
+    renderCart();
+    document.getElementById("customerForm").reset();
+    toggleCart();
+  }
+}
   });
 }
 
