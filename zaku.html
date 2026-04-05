@@ -312,7 +312,7 @@ function checkout(){
 
     let itemsList = cart.map(i => `${i.name} x${i.qty}`).join(", ");
 
-    fetch("YOUR_GOOGLE_SCRIPT_URL_HERE", {
+    fetch("https://script.google.com/macros/s/AKfycbxmDdhWwq1BZI8m7YJ524mB9Oc4HO3ggO1HJ4pBwI6EcSnkrfiKvxx_giUoWZqKjNnC5Q/exec", {
       method:"POST",
       body:JSON.stringify({
         name,
