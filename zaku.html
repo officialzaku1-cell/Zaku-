@@ -302,42 +302,54 @@ function checkout(){
 
   let total=calculateTotal();
 
-  FlutterwaveCheckout({
-    public_key:"FLWPUBK-fed1998222c5eac3a4e4001f97b1ab0a-X",
-    tx_ref:"ZAKU-"+Date.now(),
-    amount:total,
-    currency:"NGN",
-    customer:{email,name,phone_number:phone},
-    callback:function(data){
-  if(data.status === "successful"){
+ FlutterwaveCheckout({
+  public_key: "FLWPUBK-fed1998222c5eac3a4e4001f97b1ab0a-X",
+  tx_ref: "ZAKU-" + Date.now(),
+  amount: total,
+  currency: "NGN",
+  customer: { email, name, phone_number: phone },
+  
+  callback: function(data){
+    if(data.status === "successful") {
 
-    let itemsList = cart.map(i => `${i.name} x${i.qty}`).join(", ");
+      let itemsList = cart.map(i => `${i.name} x${i.qty}`).join(", ");
 
-    fetch("https://script.google.com/macros/s/AKfycbxmDdhWwq1BZI8m7YJ524mB9Oc4HO3ggO1HJ4pBwI6EcSnkrfiKvxx_giUoWZqKjNnC5Q/exec", {
-      method:"POST",
-      body:JSON.stringify({
-        name,
-        email,
-        hall,
-        room,
-        phone,
-        items:itemsList,
-        total
-      }),
-      headers:{
-        "Content-Type":"application/json"
-      }
-    });
+      // Send order data to Apps Script
+      fetch("https://script.google.com/macros/s/AKfycbxmDdhWwq1BZI8m7YJ524mB9Oc4HO3ggO1HJ4pBwI6EcSnkrfiKvxx_giUoWZqKjNnC5Q/exec", {  // 🔥 replace with your deployed script URL
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          hall,
+          room,
+          phone,
+          items: itemsList,
+          total
+        })
+      })
+      .then(res => res.json())
+      .then(resp => {
+        if(resp.status === "success") {
+          alert("Payment Successful! ✅ Confirmation sent to your email.");
+        } else {
+          alert("Payment Successful, but there was an issue saving your order.");
+          console.error(resp);
+        }
+      })
+      .catch(err => {
+        alert("Payment Successful, but failed to save order.");
+        console.error(err);
+      });
 
-    alert("Payment Successful!");
-
-    cart=[];
-    renderCart();
-    document.getElementById("customerForm").reset();
-    toggleCart();
+      // Clear cart & reset form
+      cart = [];
+      renderCart();
+      document.getElementById("customerForm").reset();
+      toggleCart();
+    }
   }
-}
-  });
+});
 }
 
 function searchProducts(){
