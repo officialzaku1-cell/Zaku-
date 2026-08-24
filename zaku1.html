@@ -1,176 +1,1917 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/x-icon" href="IMG_20250912_104016_293.webp">
-  <title>Zaku Checkout</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; }
-    .checkout-container { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    h2 { text-align: center; margin-bottom: 20px; }
-    .product-summary { text-align: center; margin-bottom: 20px; }
-    .product-summary img { width: 120px; border-radius: 8px; margin-bottom: 10px; }
-    label { font-weight: bold; margin-top: 10px; display: block; }
-    input, select, button { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
-    button { background: #000; color: #fff; border: none; cursor: pointer; }
-    button:hover { background: #333; }
-    .note { font-size: 13px; color: #666; margin-bottom: 10px; }
-    #loadingSpinner { display:none; text-align:center; margin:15px 0; font-size:14px; color:#555; }
-    .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #000; border-radius: 50%; width: 30px; height: 30px; margin: 0 auto 10px auto; animation: spin 1s linear infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="icon" type="image/x-icon" href="IMG_20250912_104016_293.webp">
+
+    <title>Zaku | Checkout</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: #f7f7f5;
+            color: #171717;
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font-family: inherit;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            background: #111111;
+            color: white;
+            padding: 18px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            opacity: .75;
+        }
+
+        /* =========================
+           PAGE
+        ========================= */
+
+        .checkout-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 45px auto 80px;
+        }
+
+        .page-title {
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+        }
+
+        .page-title p {
+            margin-top: 8px;
+            color: #707070;
+            font-size: 15px;
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 28px;
+            border: 1px solid #e7e7e7;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 22px;
+        }
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #dddddd;
+            border-radius: 10px;
+            padding: 13px 14px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+            transition: .2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #111111;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .required {
+            color: #d71920;
+        }
+
+        /* =========================
+           PAYMENT
+        ========================= */
+
+        .payment-card {
+            margin-top: 25px;
+        }
+
+        .payment-notice {
+            background: #fff8e7;
+            border: 1px solid #f1d58c;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .payment-notice strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .bank-details {
+            background: #111111;
+            color: white;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+
+        .bank-label {
+            font-size: 11px;
+            color: #a7a7a7;
+            text-transform: uppercase;
+            letter-spacing: .7px;
+            margin-bottom: 5px;
+        }
+
+        .bank-value {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 17px;
+        }
+
+        .account-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .account-number {
+            font-size: 25px;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        .copy-btn {
+            border: none;
+            background: white;
+            color: #111111;
+            padding: 9px 13px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            opacity: .85;
+        }
+
+        .amount-box {
+            background: #f1f1ef;
+            border-radius: 12px;
+            padding: 17px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .amount-box span:first-child {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .amount {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        /* =========================
+           RECEIPT
+        ========================= */
+
+        .receipt-box {
+            border: 2px dashed #d4d4d4;
+            border-radius: 13px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .receipt-box:hover {
+            border-color: #111;
+            background: #fafafa;
+        }
+
+        .receipt-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .receipt-box h3 {
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .receipt-box p {
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 15px;
+        }
+
+        .receipt-box input {
+            display: none;
+        }
+
+        .choose-file {
+            display: inline-block;
+            background: #111;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .file-name {
+            display: none;
+            margin-top: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* =========================
+           ORDER SUMMARY
+        ========================= */
+
+        .summary {
+            position: sticky;
+            top: 25px;
+        }
+
+        .cart-items {
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            padding: 13px 0;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .cart-image {
+            width: 65px;
+            height: 65px;
+            border-radius: 9px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .cart-info {
+            flex: 1;
+        }
+
+        .cart-name {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .cart-size,
+        .cart-qty {
+            font-size: 11px;
+            color: #777;
+        }
+
+        .cart-price {
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin: 13px 0;
+            font-size: 14px;
+        }
+
+        .summary-line.total {
+            border-top: 1px solid #ddd;
+            padding-top: 18px;
+            margin-top: 20px;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .delivery-note {
+            margin-top: 18px;
+            background: #f7f7f5;
+            border-radius: 10px;
+            padding: 13px;
+            font-size: 11px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* =========================
+           SUBMIT
+        ========================= */
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 22px;
+            border: none;
+            background: #111111;
+            color: white;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .submit-btn:hover {
+            background: #2b2b2b;
+        }
+
+        .submit-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .secure-text {
+            text-align: center;
+            color: #777;
+            font-size: 11px;
+            margin-top: 12px;
+        }
+
+        /* =========================
+           SUCCESS
+        ========================= */
+
+        .success-message {
+            display: none;
+            text-align: center;
+            background: white;
+            border-radius: 18px;
+            padding: 55px 25px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .success-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: #111;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+        }
+
+        .success-message h2 {
+            font-size: 26px;
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            max-width: 500px;
+            margin: auto;
+            color: #666;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .order-number {
+            display: inline-block;
+            background: #f2f2f2;
+            padding: 11px 18px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 800;
+        }
+
+        .home-btn {
+            display: inline-block;
+            margin-top: 25px;
+            background: #111;
+            color: white;
+            text-decoration: none;
+            padding: 13px 20px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 850px) {
+
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary {
+                position: static;
+            }
+
+            .page-title h1 {
+                font-size: 29px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .checkout-container {
+                width: 94%;
+                margin-top: 30px;
+            }
+
+            .header {
+                padding: 16px 5%;
+            }
+
+            .logo {
+                font-size: 23px;
+            }
+
+            .card {
+                padding: 20px;
+                border-radius: 14px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .account-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .account-number {
+                font-size: 22px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-  <div class="checkout-container">
-    <h2>Checkout</h2>
+<header class="header">
 
-    <!-- Product summary -->
-    <div id="checkoutProduct" class="product-summary"></div>
-
-    <form id="checkoutForm">
-      <label for="name">Full Name</label>
-      <input type="text" id="name" required>
-
-      <label for="email">Email Address</label>
-      <input type="email" id="email" required>
-
-      <label for="location">Location</label>
-      <select id="location" required>
-        <option value="">-- Select Location --</option>
-        <option value="Covenant University">Covenant University</option>
-        <option value="Crawford University">Crawford University</option>
-        <option value="Bells University">Bells University</option>
-      </select>
-
-      <label for="hall">Hall / Hostel</label>
-      <input type="text" id="hall" required>
-
-      <label for="room">Room Number</label>
-      <input type="text" id="room" required>
-
-      <label for="tieType">Type of Tie</label>
-      <select id="tieType" required>
-        <option value="Fat Tie">Fat Tie</option>
-        <option value="Slim Tie">Slim Tie</option>
-      </select>
-
-      <label for="designOption">Personal Design</label>
-      <select id="designOption" required>
-        <option value="none">None (already selected a design)</option>
-        <option value="custom">Customized my design</option>
-      </select>
-
-      <div id="designLinkContainer" style="display:none;">
-        <label for="designLink">Design Link</label>
-        <input type="url" id="designLink" placeholder="Paste your design link">
-      </div>
-
-      <label for="receipt">Upload Payment Receipt</label>
-      <input type="file" id="receipt" accept="image/*" required>
-      <p class="note">Please upload a clear screenshot/photo of your Flutterwave payment receipt.</p>
-
-      <a href="https://flutterwave.com/pay/o0dqtghhsfpa" target="_blank">
-        <button type="button">Click Here to Pay with Flutterwave</button>
-      </a>
-
-      <button type="submit">Submit Order</button>
-    </form>
-
-    <!-- Spinner -->
-    <div id="loadingSpinner">
-      <div class="spinner"></div>
-      Sending your order...
+    <div class="logo">
+        Zaku
     </div>
-  </div>
 
-  <script>
-    // Load selected product from localStorage
-    const product = JSON.parse(localStorage.getItem("zakuSelectedProduct"));
-    if (product) {
-      document.getElementById("checkoutProduct").innerHTML = `
-        <img src="${product.img}" alt="${product.name}">
-        <h3>${product.name}</h3>
-        <p>₦${product.price}</p>
-      `;
+    <a href="index.html" class="back-btn">
+        ← Continue Shopping
+    </a>
+
+</header>
+
+
+<main class="checkout-container">
+
+    <div class="page-title">
+        <h1>Checkout</h1>
+        <p>Complete your details and payment to place your Zaku order.</p>
+    </div>
+
+
+    <!-- =========================
+         SUCCESS MESSAGE
+    ========================= -->
+
+    <section class="success-message" id="successMessage">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h2>Order Submitted!</h2>
+
+        <p>
+            Thank you for shopping with Zaku.
+            Your payment receipt has been received and your order
+            is now waiting for payment verification.
+        </p>
+
+        <div class="order-number" id="successOrderNumber">
+            Order: ZAKU-000000
+        </div>
+
+        <br>
+
+        <a href="index.html" class="home-btn">
+            Continue Shopping
+        </a>
+
+    </section>
+
+
+    <!-- =========================
+         CHECKOUT CONTENT
+    ========================= -->
+
+    <div class="checkout-grid" id="checkoutContent">
+
+        <!-- LEFT SIDE -->
+
+        <div>
+
+            <!-- CUSTOMER DETAILS -->
+
+            <section class="card">
+
+                <h2 class="card-title">
+                    Customer Information
+                </h2>
+
+                <form id="checkoutForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label>
+                                Full Name <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="fullName"
+                                placeholder="Enter your full name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                WhatsApp Number <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                placeholder="08012345678"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Email Address <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder="you@example.com"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                State <span class="required">*</span>
+                            </label>
+
+                            <select id="state" required>
+
+                                <option value="">
+                                    Select State
+                                </option>
+
+                                <option>Lagos</option>
+                                <option>Oyo</option>
+                                <option>Ogun</option>
+                                <option>Abuja (FCT)</option>
+                                <option>Rivers</option>
+                                <option>Enugu</option>
+                                <option>Imo</option>
+                                <option>Delta</option>
+                                <option>Anambra</option>
+                                <option>Abia</option>
+                                <option>Kano</option>
+                                <option>Kaduna</option>
+                                <option>Other</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group full">
+
+                            <label>
+                                Delivery Address <span class="required">*</span>
+                            </label>
+
+                            <textarea
+                                id="address"
+                                placeholder="Enter your complete delivery address"
+                                required
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="form-group full">
+
+                            <label>
+                                Order Note (Optional)
+                            </label>
+
+                            <textarea
+                                id="orderNote"
+                                placeholder="Any additional information about your order?"
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- PAYMENT -->
+
+            <section class="card payment-card">
+
+                <h2 class="card-title">
+                    Payment
+                </h2>
+
+
+                <div class="payment-notice">
+
+                    <strong>
+                        Pay by Bank Transfer
+                    </strong>
+
+                    Transfer the exact order amount to the Zaku
+                    account below. After making the transfer,
+                    upload your payment receipt before submitting
+                    your order.
+
+                </div>
+
+
+                <div class="bank-details">
+
+                    <div class="bank-label">
+                        Bank Name
+                    </div>
+
+                    <div class="bank-value" id="bankName">
+                        Your Bank
+                    </div>
+
+
+                    <div class="bank-label">
+                        Account Name
+                    </div>
+
+                    <div class="bank-value" id="accountName">
+                        Zaku
+                    </div>
+
+
+                    <div class="bank-label">
+                        Account Number
+                    </div>
+
+                    <div class="account-row">
+
+                        <div
+                            class="account-number"
+                            id="accountNumber"
+                        >
+                            0000000000
+                        </div>
+
+                        <button
+                            type="button"
+                            class="copy-btn"
+                            id="copyAccount"
+                        >
+                            Copy
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="amount-box">
+
+                    <span>
+                        Amount to Transfer
+                    </span>
+
+                    <span
+                        class="amount"
+                        id="paymentAmount"
+                    >
+                        ₦0
+                    </span>
+
+                </div>
+
+
+                <!-- RECEIPT -->
+
+                <div class="form-group">
+
+                    <label>
+                        Upload Payment Receipt
+                        <span class="required">*</span>
+                    </label>
+
+                    <div
+                        class="receipt-box"
+                        id="receiptBox"
+                    >
+
+                        <div class="receipt-icon">
+                            📄
+                        </div>
+
+                        <h3>
+                            Upload your transfer receipt
+                        </h3>
+
+                        <p>
+                            JPG, PNG or PDF — maximum 5MB
+                        </p>
+
+                        <label
+                            for="receipt"
+                            class="choose-file"
+                        >
+                            Choose Receipt
+                        </label>
+
+                        <input
+                            type="file"
+                            id="receipt"
+                            accept="image/jpeg,image/png,application/pdf"
+                        >
+
+                        <div
+                            class="file-name"
+                            id="fileName"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="submit-btn"
+                    id="submitOrder"
+                >
+                    Submit Order
+                </button>
+
+                <div class="secure-text">
+                    Your order will be reviewed and payment verified manually.
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+
+        <aside class="card summary">
+
+            <h2 class="card-title">
+                Order Summary
+            </h2>
+
+            <div
+                class="cart-items"
+                id="cartItems"
+            >
+                <!-- JavaScript inserts cart -->
+            </div>
+
+
+            <div class="summary-line">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <strong id="subtotal">
+                    ₦0
+                </strong>
+
+            </div>
+
+
+            <div class="summary-line">
+
+                <span>
+                    Delivery
+                </span>
+
+                <strong id="delivery">
+                    ₦0
+                </strong>
+
+            </div>
+
+
+            <div class="summary-line total">
+
+                <span>
+                    Total
+                </span>
+
+                <strong id="total">
+                    ₦0
+                </strong>
+
+            </div>
+
+
+            <div class="delivery-note">
+
+                🚚 Delivery charges may vary depending on your
+                location. You will be contacted by Zaku after
+                your order has been verified.
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</main>
+
+
+<script>
+
+    /* =========================================
+       ZAKU CHECKOUT
+       CLOUDINARY + GOOGLE SHEETS
+    ========================================= */
+
+
+    /*
+       =========================================
+       BANK DETAILS
+    =========================================
+    */
+
+    const BANK_DETAILS = {
+
+        bankName: "Your Bank",
+
+        accountName: "Zaku",
+
+        accountNumber: "0000000000"
+
+    };
+
+
+    /*
+       =========================================
+       CLOUDINARY
+    =========================================
+
+       CHANGE THESE TWO VALUES
+    */
+
+    const CLOUDINARY_CLOUD_NAME =
+        "dmqfprtcj";
+
+
+    const CLOUDINARY_UPLOAD_PRESET =
+        "Receipt_upload";
+
+
+    /*
+       =========================================
+       GOOGLE APPS SCRIPT
+    =========================================
+
+       PUT YOUR DEPLOYED WEB APP URL HERE
+    */
+
+    const GOOGLE_SCRIPT_URL =
+        "YOUR_GOOGLE_APPS_SCRIPT_URL";
+
+
+    /*
+       =========================================
+       CART
+    =========================================
+    */
+
+    let cart = [];
+
+
+    try {
+
+        cart =
+            JSON.parse(
+                localStorage.getItem("zakuCart")
+            ) || [];
+
+    } catch (error) {
+
+        cart = [];
+
     }
 
-    // Show/hide design link field
-    document.getElementById("designOption").addEventListener("change", function() {
-      document.getElementById("designLinkContainer").style.display =
-        this.value === "custom" ? "block" : "none";
-    });
 
-    // Handle form submission
-    document.getElementById("checkoutForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+    /*
+       =========================================
+       ELEMENTS
+    =========================================
+    */
 
-      const receiptFile = document.getElementById("receipt").files[0];
-      if (!receiptFile) {
-        alert("Please upload your payment receipt.");
-        return;
-      }
+    const cartItems =
+        document.getElementById("cartItems");
 
-      document.getElementById("loadingSpinner").style.display = "block";
+    const subtotalElement =
+        document.getElementById("subtotal");
 
-      // Upload receipt to Cloudinary
-      const formData = new FormData();
-      formData.append("file", receiptFile);
-      formData.append("upload_preset", "Receipt_upload"); // Replace with your unsigned preset
+    const deliveryElement =
+        document.getElementById("delivery");
 
-      fetch("https://api.cloudinary.com/v1_1/dmqfprtcj/image/upload", {
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        const receiptUrl = data.secure_url;
+    const totalElement =
+        document.getElementById("total");
 
-        const orderData = {
-          name: document.getElementById("name").value,
-          email: document.getElementById("email").value,
-          location: document.getElementById("location").value,
-          hall: document.getElementById("hall").value,
-          room: document.getElementById("room").value,
-          tieType: document.getElementById("tieType").value,
-          designChoice: document.getElementById("designOption").value,
-          designLink: document.getElementById("designLink").value,
-          productName: product ? product.name : "",
-          productPrice: product ? product.price : "",
-          total: product ? product.price : 3000,
-          receipt: receiptUrl
-        };
+    const paymentAmount =
+        document.getElementById("paymentAmount");
 
-        // Send to Google Apps Script Web App
-        fetch("https://script.google.com/macros/s/AKfycbz9GInt5rP8XZUAz7lKw19D2-_fdar-0h0ZZT8y6iCErbXDNYlPQsQn_x-uXnulJAWeGg/exec", { // Replace with your Apps Script URL
-          method: "POST",
-          body: JSON.stringify(orderData)
-        })
-        .then(res => res.json())
-        .then(resp => {
-          document.getElementById("loadingSpinner").style.display = "none";
-          if(resp.status === "success") {
-            alert("✅ Order submitted successfully! Check your email for confirmation.");
-            setTimeout(() => window.location.href = "success.html", 2000);
-          } else {
-            console.error(resp.message);
-            alert("❌ Failed to submit order. Check console.");
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          document.getElementById("loadingSpinner").style.display = "none";
-          alert("❌ Error submitting order.");
+    const bankName =
+        document.getElementById("bankName");
+
+    const accountName =
+        document.getElementById("accountName");
+
+    const accountNumber =
+        document.getElementById("accountNumber");
+
+    const receipt =
+        document.getElementById("receipt");
+
+    const fileName =
+        document.getElementById("fileName");
+
+    const submitOrder =
+        document.getElementById("submitOrder");
+
+
+    /*
+       =========================================
+       BANK INFORMATION
+    =========================================
+    */
+
+    bankName.textContent =
+        BANK_DETAILS.bankName;
+
+    accountName.textContent =
+        BANK_DETAILS.accountName;
+
+    accountNumber.textContent =
+        BANK_DETAILS.accountNumber;
+
+
+    /*
+       =========================================
+       FORMAT NAIRA
+    =========================================
+    */
+
+    function formatNaira(amount) {
+
+        return "₦" +
+            Number(amount || 0).toLocaleString(
+                "en-NG"
+            );
+
+    }
+
+
+    /*
+       =========================================
+       PRICE
+    =========================================
+    */
+
+    function getPrice(item) {
+
+        return Number(
+            item.price ||
+            item.amount ||
+            0
+        );
+
+    }
+
+
+    /*
+       =========================================
+       QUANTITY
+    =========================================
+    */
+
+    function getQuantity(item) {
+
+        return Number(
+            item.quantity ||
+            item.qty ||
+            1
+        );
+
+    }
+
+
+    /*
+       =========================================
+       SUBTOTAL
+    =========================================
+    */
+
+    function calculateSubtotal() {
+
+        return cart.reduce(
+            function(total, item) {
+
+                return total +
+                    (
+                        getPrice(item) *
+                        getQuantity(item)
+                    );
+
+            },
+            0
+        );
+
+    }
+
+
+    /*
+       =========================================
+       DELIVERY
+    =========================================
+    */
+
+    const DELIVERY_FEE = 0;
+
+
+    /*
+       =========================================
+       DISPLAY CART
+    =========================================
+    */
+
+    function displayCart() {
+
+        cartItems.innerHTML = "";
+
+
+        if (cart.length === 0) {
+
+            cartItems.innerHTML = `
+                <p style="
+                    color:#777;
+                    font-size:13px;
+                    padding:15px 0;
+                ">
+                    Your cart is empty.
+                </p>
+            `;
+
+            updateTotals();
+
+            return;
+
+        }
+
+
+        cart.forEach(function(item) {
+
+            const price =
+                getPrice(item);
+
+            const quantity =
+                getQuantity(item);
+
+            const itemTotal =
+                price * quantity;
+
+
+            const image =
+                item.image ||
+                item.img ||
+                "https://via.placeholder.com/100";
+
+
+            const name =
+                item.name ||
+                "Zaku Product";
+
+
+            const size =
+                item.size ||
+                "";
+
+
+            cartItems.innerHTML += `
+
+                <div class="cart-item">
+
+                    <img
+                        src="${image}"
+                        class="cart-image"
+                        alt="${name}"
+                    >
+
+                    <div class="cart-info">
+
+                        <div class="cart-name">
+                            ${name}
+                        </div>
+
+                        ${
+                            size
+                            ?
+                            `
+                            <div class="cart-size">
+                                Size: ${size}
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+                        <div class="cart-qty">
+                            Quantity: ${quantity}
+                        </div>
+
+                    </div>
+
+                    <div class="cart-price">
+                        ${formatNaira(itemTotal)}
+                    </div>
+
+                </div>
+
+            `;
+
         });
 
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById("loadingSpinner").style.display = "none";
-        alert("❌ Failed to upload receipt.");
-      });
-    });
-  </script>
+
+        updateTotals();
+
+    }
+
+
+    /*
+       =========================================
+       UPDATE TOTALS
+    =========================================
+    */
+
+    function updateTotals() {
+
+        const subtotal =
+            calculateSubtotal();
+
+        const total =
+            subtotal +
+            DELIVERY_FEE;
+
+
+        subtotalElement.textContent =
+            formatNaira(subtotal);
+
+
+        deliveryElement.textContent =
+            DELIVERY_FEE === 0
+            ? "To be confirmed"
+            : formatNaira(
+                DELIVERY_FEE
+            );
+
+
+        totalElement.textContent =
+            formatNaira(total);
+
+
+        paymentAmount.textContent =
+            formatNaira(total);
+
+    }
+
+
+    /*
+       =========================================
+       COPY ACCOUNT NUMBER
+    =========================================
+    */
+
+    document
+        .getElementById("copyAccount")
+        .addEventListener(
+            "click",
+            async function() {
+
+                try {
+
+                    await navigator.clipboard.writeText(
+                        BANK_DETAILS.accountNumber
+                    );
+
+                    this.textContent =
+                        "Copied!";
+
+
+                    setTimeout(
+                        () => {
+
+                            this.textContent =
+                                "Copy";
+
+                        },
+                        1500
+                    );
+
+
+                } catch(error) {
+
+                    alert(
+                        "Please copy the account number manually."
+                    );
+
+                }
+
+            }
+        );
+
+
+    /*
+       =========================================
+       RECEIPT SELECTION
+    =========================================
+    */
+
+    receipt.addEventListener(
+        "change",
+        function() {
+
+            const file =
+                this.files[0];
+
+
+            if (!file) {
+
+                fileName.style.display =
+                    "none";
+
+                return;
+
+            }
+
+
+            /*
+               Maximum 5MB
+            */
+
+            if (
+                file.size >
+                5 * 1024 * 1024
+            ) {
+
+                alert(
+                    "Receipt must not exceed 5MB."
+                );
+
+                this.value = "";
+
+                fileName.style.display =
+                    "none";
+
+                return;
+
+            }
+
+
+            /*
+               Allowed file types
+            */
+
+            const allowedTypes = [
+
+                "image/jpeg",
+
+                "image/png",
+
+                "application/pdf"
+
+            ];
+
+
+            if (
+                !allowedTypes.includes(
+                    file.type
+                )
+            ) {
+
+                alert(
+                    "Please upload a JPG, PNG or PDF receipt."
+                );
+
+                this.value = "";
+
+                fileName.style.display =
+                    "none";
+
+                return;
+
+            }
+
+
+            fileName.textContent =
+                "Selected: " +
+                file.name;
+
+
+            fileName.style.display =
+                "block";
+
+        }
+    );
+
+
+    /*
+       =========================================
+       GENERATE ORDER NUMBER
+    =========================================
+    */
+
+    function generateOrderNumber() {
+
+        const random =
+            Math.floor(
+                100000 +
+                Math.random() * 900000
+            );
+
+
+        return "ZAKU-" + random;
+
+    }
+
+
+    /*
+       =========================================
+       UPLOAD RECEIPT TO CLOUDINARY
+    =========================================
+    */
+
+    async function uploadReceiptToCloudinary(file) {
+
+        const cloudinaryURL =
+            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "file",
+            file
+        );
+
+
+        formData.append(
+            "upload_preset",
+            CLOUDINARY_UPLOAD_PRESET
+        );
+
+
+        /*
+           Upload
+        */
+
+        const response =
+            await fetch(
+                cloudinaryURL,
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Cloudinary upload failed."
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (!result.secure_url) {
+
+            throw new Error(
+                "Cloudinary did not return a receipt URL."
+            );
+
+        }
+
+
+        return result.secure_url;
+
+    }
+
+
+    /*
+       =========================================
+       SUBMIT ORDER
+    =========================================
+    */
+
+    submitOrder.addEventListener(
+        "click",
+        async function() {
+
+            const form =
+                document.getElementById(
+                    "checkoutForm"
+                );
+
+
+            /*
+               Validate form
+            */
+
+            if (!form.checkValidity()) {
+
+                form.reportValidity();
+
+                return;
+
+            }
+
+
+            /*
+               Cart check
+            */
+
+            if (cart.length === 0) {
+
+                alert(
+                    "Your cart is empty."
+                );
+
+                return;
+
+            }
+
+
+            /*
+               Receipt check
+            */
+
+            if (!receipt.files.length) {
+
+                alert(
+                    "Please upload your payment receipt."
+                );
+
+                return;
+
+            }
+
+
+            const file =
+                receipt.files[0];
+
+
+            /*
+               Validate receipt
+            */
+
+            if (
+                file.size >
+                5 * 1024 * 1024
+            ) {
+
+                alert(
+                    "Receipt must not exceed 5MB."
+                );
+
+                return;
+
+            }
+
+
+            /*
+               Disable button
+            */
+
+            submitOrder.disabled =
+                true;
+
+
+            submitOrder.textContent =
+                "Uploading Receipt...";
+
+
+            try {
+
+                /*
+                   =================================
+                   STEP 1
+                   UPLOAD RECEIPT
+                   TO CLOUDINARY
+                   =================================
+                */
+
+                const receiptURL =
+                    await uploadReceiptToCloudinary(
+                        file
+                    );
+
+
+                /*
+                   =================================
+                   STEP 2
+                   CREATE ORDER
+                   =================================
+                */
+
+                const orderNumber =
+                    generateOrderNumber();
+
+
+                const subtotal =
+                    calculateSubtotal();
+
+
+                const total =
+                    subtotal +
+                    DELIVERY_FEE;
+
+
+                const orderData = {
+
+                    orderNumber:
+                        orderNumber,
+
+
+                    customer: {
+
+                        fullName:
+                            document
+                                .getElementById(
+                                    "fullName"
+                                )
+                                .value
+                                .trim(),
+
+
+                        phone:
+                            document
+                                .getElementById(
+                                    "phone"
+                                )
+                                .value
+                                .trim(),
+
+
+                        email:
+                            document
+                                .getElementById(
+                                    "email"
+                                )
+                                .value
+                                .trim(),
+
+
+                        state:
+                            document
+                                .getElementById(
+                                    "state"
+                                )
+                                .value,
+
+
+                        address:
+                            document
+                                .getElementById(
+                                    "address"
+                                )
+                                .value
+                                .trim(),
+
+
+                        note:
+                            document
+                                .getElementById(
+                                    "orderNote"
+                                )
+                                .value
+                                .trim()
+
+                    },
+
+
+                    items:
+                        cart,
+
+
+                    subtotal:
+                        subtotal,
+
+
+                    delivery:
+                        DELIVERY_FEE,
+
+
+                    total:
+                        total,
+
+
+                    paymentMethod:
+                        "Bank Transfer",
+
+
+                    paymentStatus:
+                        "Pending Verification",
+
+
+                    bankName:
+                        BANK_DETAILS.bankName,
+
+
+                    accountName:
+                        BANK_DETAILS.accountName,
+
+
+                    receiptUrl:
+                        receiptURL,
+
+
+                    createdAt:
+                        new Date()
+                            .toISOString()
+
+                };
+
+
+                /*
+                   =================================
+                   STEP 3
+                   SEND ORDER TO GOOGLE SHEETS
+                   =================================
+                */
+
+                submitOrder.textContent =
+                    "Submitting Order...";
+
+
+                const response =
+                    await fetch(
+                        GOOGLE_SCRIPT_URL,
+                        {
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "text/plain;charset=utf-8"
+
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    orderData
+                                )
+
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!result.success) {
+
+                    throw new Error(
+                        result.message ||
+                        "Order submission failed."
+                    );
+
+                }
+
+
+                /*
+                   =================================
+                   STEP 4
+                   SAVE LAST ORDER
+                   =================================
+                */
+
+                localStorage.setItem(
+                    "zakuLastOrder",
+                    JSON.stringify(
+                        orderData
+                    )
+                );
+
+
+                /*
+                   =================================
+                   STEP 5
+                   SHOW SUCCESS
+                   =================================
+                */
+
+                document
+                    .getElementById(
+                        "checkoutContent"
+                    )
+                    .style.display =
+                    "none";
+
+
+                document
+                    .getElementById(
+                        "successMessage"
+                    )
+                    .style.display =
+                    "block";
+
+
+                document
+                    .getElementById(
+                        "successOrderNumber"
+                    )
+                    .textContent =
+                    "Order: " +
+                    orderNumber;
+
+
+                /*
+                   CLEAR CART
+                */
+
+                localStorage.removeItem(
+                    "zakuCart"
+                );
+
+
+            } catch(error) {
+
+                console.error(
+                    "Zaku Order Error:",
+                    error
+                );
+
+
+                alert(
+                    "We could not submit your order. Please check your internet connection and try again."
+                );
+
+
+                submitOrder.disabled =
+                    false;
+
+
+                submitOrder.textContent =
+                    "Submit Order";
+
+            }
+
+        }
+    );
+
+
+    /*
+       =========================================
+       INITIALIZE
+    =========================================
+    */
+
+    displayCart();
+
+</script>
+
 </body>
 </html>
