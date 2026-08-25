@@ -5703,121 +5703,17 @@ button {
 
 
 
-<script>
-
 /* =========================================================
-   ZAKU FRONTEND JAVASCRIPT
+   ZAKU — MAIN INDEX.JS
+   CART + SIZE SELECTION + CHECKOUT CONNECTION
 ========================================================= */
 
 
 /* =========================================================
-   ELEMENTS
+   GLOBAL VARIABLES
 ========================================================= */
 
-const menuButton =
-    document.getElementById("menuButton");
-
-const navLinks =
-    document.getElementById("navLinks");
-
-const filters =
-    document.querySelectorAll(".filter");
-
-const products =
-    document.querySelectorAll(".product-card");
-
-const addButtons =
-    document.querySelectorAll(".add-cart");
-
-const cartCount =
-    document.getElementById("cartCount");
-
-const cartButton =
-    document.getElementById("cartButton");
-
-const cartDrawer =
-    document.getElementById("cartDrawer");
-
-const cartOverlay =
-    document.getElementById("cartOverlay");
-
-const closeCart =
-    document.getElementById("closeCart");
-
-const cartItemsContainer =
-    document.getElementById("cartItems");
-
-const cartEmpty =
-    document.getElementById("cartEmpty");
-
-const cartSubtotal =
-    document.getElementById("cartSubtotal");
-
-const cartHeaderCount =
-    document.getElementById("cartHeaderCount");
-
-const checkoutButton =
-    document.getElementById("checkoutButton");
-
-const toast =
-    document.getElementById("toast");
-
-const toastMessage =
-    document.getElementById("toastMessage");
-
-
-/* =========================================================
-   PREVIEW ELEMENTS
-========================================================= */
-
-const previewOverlay =
-    document.getElementById("previewOverlay");
-
-const previewClose =
-    document.getElementById("previewClose");
-
-const previewImage =
-    document.getElementById("previewImage");
-
-const previewName =
-    document.getElementById("previewName");
-
-const previewCategory =
-    document.getElementById("previewCategory");
-
-const previewRating =
-    document.getElementById("previewRating");
-
-const previewDescription =
-    document.getElementById("previewDescription");
-
-const previewPrice =
-    document.getElementById("previewPrice");
-
-const previewAdd =
-    document.getElementById("previewAdd");
-
-const sizeSection =
-    document.getElementById("sizeSection");
-
-const sizeOptions =
-    document.getElementById("sizeOptions");
-
-const sizeError =
-    document.getElementById("sizeError");
-
-const selectedSizeText =
-    document.getElementById("selectedSizeText");
-
-
-/* =========================================================
-   CART
-========================================================= */
-
-let cart = JSON.parse(
-    localStorage.getItem("zakuCart")
-) || [];
-
+let cart = [];
 
 let previewProduct = null;
 
@@ -5825,19 +5721,88 @@ let selectedSize = null;
 
 
 /* =========================================================
-   FORMAT NAIRA
+   DOM ELEMENTS
 ========================================================= */
 
-function formatPrice(price) {
+const products =
+    document.querySelectorAll(".product-card");
 
-    return "₦" +
-        Number(price).toLocaleString(
-            "en-NG",
-            {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-            }
-        );
+const cartDrawer =
+    document.getElementById("cartDrawer");
+
+const cartOverlay =
+    document.getElementById("cartOverlay");
+
+const cartItemsContainer =
+    document.getElementById("cartItems");
+
+const cartCount =
+    document.getElementById("cartCount");
+
+const cartSubtotal =
+    document.getElementById("cartSubtotal");
+
+const cartTotal =
+    document.getElementById("cartTotal");
+
+const checkoutButton =
+    document.querySelector(".checkout");
+
+const cartClose =
+    document.getElementById("cartClose");
+
+const previewOverlay =
+    document.getElementById("previewOverlay");
+
+const previewClose =
+    document.getElementById("previewClose");
+
+const previewAdd =
+    document.getElementById("previewAdd");
+
+const previewImage =
+    document.getElementById("previewImage");
+
+const previewName =
+    document.getElementById("previewName");
+
+const previewPrice =
+    document.getElementById("previewPrice");
+
+const previewDescription =
+    document.getElementById("previewDescription");
+
+const previewSizes =
+    document.getElementById("previewSizes");
+
+const sizeError =
+    document.getElementById("sizeError");
+
+
+/* =========================================================
+   LOAD CART FROM LOCAL STORAGE
+========================================================= */
+
+try {
+
+    const savedCart =
+        localStorage.getItem("zakuCart");
+
+    if (savedCart) {
+
+        cart =
+            JSON.parse(savedCart);
+
+    }
+
+} catch (error) {
+
+    console.error(
+        "Unable to load Zaku cart:",
+        error
+    );
+
+    cart = [];
 
 }
 
@@ -5857,35 +5822,7 @@ function saveCart() {
 
 
 /* =========================================================
-   TOAST
-========================================================= */
-
-let toastTimer;
-
-
-function showToast(message) {
-
-    toastMessage.textContent =
-        message;
-
-    toast.classList.add("show");
-
-    clearTimeout(toastTimer);
-
-    toastTimer =
-        setTimeout(() => {
-
-            toast.classList.remove(
-                "show"
-            );
-
-        }, 2000);
-
-}
-
-
-/* =========================================================
-   PRODUCT DATA
+   PRODUCT DATA FROM HTML
 ========================================================= */
 
 function getProductData(card) {
@@ -5893,35 +5830,36 @@ function getProductData(card) {
     return {
 
         id:
-            card.dataset.id,
+            card.dataset.id || "",
 
         name:
-            card.dataset.name,
+            card.dataset.name || "Product",
 
         price:
-            Number(card.dataset.price),
+            Number(card.dataset.price || 0),
 
         image:
-            card.dataset.image,
+            card.dataset.image || "",
 
-        category:
-            card.dataset.type,
+        type:
+            card.dataset.type || "",
 
         rating:
-            Number(card.dataset.rating),
-
-        description:
-            card.dataset.description,
-
-        hasSize:
-            card.dataset.hasSize === "true",
+            card.dataset.rating || "",
 
         sizes:
             card.dataset.sizes
                 ? card.dataset.sizes
                     .split(",")
                     .map(size => size.trim())
-                : []
+                    .filter(Boolean)
+                : [],
+
+        hasSize:
+            card.dataset.hasSize === "true",
+
+        description:
+            card.dataset.description || ""
 
     };
 
@@ -5929,443 +5867,485 @@ function getProductData(card) {
 
 
 /* =========================================================
-   CART UNIQUE KEY
+   ADD PRODUCT TO CART
 ========================================================= */
 
-function getCartKey(
-    productId,
-    size = null
-) {
+function addToCart(product, size = null) {
 
-    return size
-        ? `${productId}__${size}`
-        : productId;
+    /*
+       Products with sizes should have
+       separate cart entries for each size.
+    */
 
-}
+    const existingItem =
+        cart.find(item =>
 
+            item.id === product.id &&
+            item.size === size
 
-/* =========================================================
-   UPDATE CART COUNT
-========================================================= */
-
-function updateCartCount() {
-
-    const totalQuantity =
-        cart.reduce(
-            (total, item) =>
-                total + item.quantity,
-            0
         );
 
 
-    cartCount.textContent =
-        totalQuantity;
+    if (existingItem) {
+
+        existingItem.quantity += 1;
+
+    } else {
+
+        cart.push({
+
+            id:
+                product.id,
+
+            name:
+                product.name,
+
+            price:
+                Number(product.price),
+
+            image:
+                product.image,
+
+            size:
+                size,
+
+            quantity:
+                1
+
+        });
+
+    }
 
 
-    cartHeaderCount.textContent =
-        totalQuantity === 1
-            ? "1 item"
-            : `${totalQuantity} items`;
+    saveCart();
 
-}
+    updateCart();
 
-
-/* =========================================================
-   UPDATE SUBTOTAL
-========================================================= */
-
-function updateSubtotal() {
-
-    const subtotal =
-        cart.reduce(
-            (total, item) =>
-                total +
-                item.price *
-                item.quantity,
-            0
-        );
-
-
-    cartSubtotal.textContent =
-        formatPrice(subtotal);
-
-}
-
-
-/* =========================================================
-   UPDATE PRODUCT BUTTONS
-========================================================= */
-
-function updateProductButtons() {
-
-    products.forEach(card => {
-
-        const product =
-            getProductData(card);
-
-        const button =
-            card.querySelector(".add-cart");
-
-
-        const existing =
-            cart.some(
-                item =>
-                    item.productId === product.id
-            );
-
-
-        if (existing) {
-
-            button.classList.add(
-                "in-cart"
-            );
-
-            button.innerHTML = `
-                <i class="fa-solid fa-check"></i>
-                <span class="add-text">
-                    In Cart
-                </span>
-            `;
-
-        } else {
-
-            button.classList.remove(
-                "in-cart"
-            );
-
-            button.innerHTML = `
-                <i class="fa-solid fa-plus"></i>
-                <span class="add-text">
-                    Add
-                </span>
-            `;
-
-        }
-
-    });
+    showToast(
+        product.name + " added to cart"
+    );
 
 }
 
 
 /* =========================================================
-   RENDER CART
+   UPDATE CART UI
 ========================================================= */
 
-function renderCart() {
+function updateCart() {
+
+    if (!cartItemsContainer)
+        return;
+
 
     cartItemsContainer.innerHTML = "";
 
 
     if (cart.length === 0) {
 
-        cartEmpty.style.display =
-            "flex";
+        cartItemsContainer.innerHTML = `
 
-        cartItemsContainer.style.display =
-            "none";
+            <div class="empty-cart">
 
-    } else {
+                <i class="fa-solid fa-bag-shopping"></i>
 
-        cartEmpty.style.display =
-            "none";
+                <p>Your cart is empty.</p>
 
-        cartItemsContainer.style.display =
-            "block";
+            </div>
 
+        `;
 
-        cart.forEach(item => {
-
-            const cartItem =
-                document.createElement("div");
-
-            cartItem.className =
-                "cart-item";
+    }
 
 
-            cartItem.innerHTML = `
+    let subtotal = 0;
 
-                <div class="cart-item-image">
-
-                    <img
-                        src="${item.image}"
-                        alt="${item.name}"
-                    >
-
-                </div>
+    let totalQuantity = 0;
 
 
-                <div class="cart-item-info">
+    cart.forEach((item, index) => {
 
-                    <h4>
-                        ${item.name}
-                    </h4>
+        const quantity =
+            Number(item.quantity || 1);
 
-                    <span>
-                        ${item.category}
+        const price =
+            Number(item.price || 0);
+
+        const itemTotal =
+            price * quantity;
+
+
+        subtotal += itemTotal;
+
+        totalQuantity += quantity;
+
+
+        const itemElement =
+            document.createElement("div");
+
+        itemElement.className =
+            "cart-item";
+
+
+        itemElement.innerHTML = `
+
+            <div class="cart-item-image">
+
+                <img
+                    src="${escapeHTML(item.image)}"
+                    alt="${escapeHTML(item.name)}"
+                >
+
+            </div>
+
+
+            <div class="cart-item-info">
+
+                <h4>
+                    ${escapeHTML(item.name)}
+                </h4>
+
+                <span>
+                    ₦${price.toLocaleString()}
+                </span>
+
+                ${
+                    item.size
+                    ?
+                    `
+                    <span class="cart-item-size">
+                        Size: ${escapeHTML(item.size)}
                     </span>
+                    `
+                    :
+                    ""
+                }
 
-                    ${
-                        item.size
-                        ?
-                        `
-                        <span class="cart-item-size">
-                            Size: ${item.size}
-                        </span>
-                        `
-                        :
-                        ""
-                    }
+                <div class="cart-item-price">
 
-                    <div class="cart-item-price">
-
-                        ${formatPrice(item.price)}
-
-                    </div>
+                    ₦${itemTotal.toLocaleString()}
 
                 </div>
 
+            </div>
 
-                <div class="cart-item-actions">
+
+            <div class="cart-item-actions">
+
+                <button
+                    class="remove-item"
+                    data-index="${index}"
+                    type="button"
+                >
+
+                    <i class="fa-solid fa-trash"></i>
+
+                </button>
+
+
+                <div class="quantity-control">
 
                     <button
-                        class="remove-item"
-                        data-key="${item.key}"
-                        aria-label="Remove item"
+                        type="button"
+                        class="quantity-minus"
+                        data-index="${index}"
                     >
-
-                        <i class="fa-solid fa-trash"></i>
-
+                        −
                     </button>
 
+                    <span>
+                        ${quantity}
+                    </span>
 
-                    <div class="quantity-control">
-
-                        <button
-                            class="quantity-minus"
-                            data-key="${item.key}"
-                        >
-                            −
-                        </button>
-
-
-                        <span>
-                            ${item.quantity}
-                        </span>
-
-
-                        <button
-                            class="quantity-plus"
-                            data-key="${item.key}"
-                        >
-                            +
-                        </button>
-
-                    </div>
+                    <button
+                        type="button"
+                        class="quantity-plus"
+                        data-index="${index}"
+                    >
+                        +
+                    </button>
 
                 </div>
 
-            `;
+            </div>
+
+        `;
 
 
-            cartItemsContainer.appendChild(
-                cartItem
+        cartItemsContainer.appendChild(
+            itemElement
+        );
+
+    });
+
+
+    if (cartCount) {
+
+        cartCount.textContent =
+            totalQuantity;
+
+    }
+
+
+    if (cartSubtotal) {
+
+        cartSubtotal.textContent =
+            "₦" +
+            subtotal.toLocaleString();
+
+    }
+
+
+    if (cartTotal) {
+
+        cartTotal.textContent =
+            "₦" +
+            subtotal.toLocaleString();
+
+    }
+
+
+    attachCartActions();
+
+}
+
+
+/* =========================================================
+   CART ACTIONS
+========================================================= */
+
+function attachCartActions() {
+
+
+    document
+        .querySelectorAll(".remove-item")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const index =
+                        Number(
+                            button.dataset.index
+                        );
+
+
+                    cart.splice(
+                        index,
+                        1
+                    );
+
+
+                    saveCart();
+
+                    updateCart();
+
+                }
             );
 
         });
 
-    }
+
+    document
+        .querySelectorAll(".quantity-minus")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const index =
+                        Number(
+                            button.dataset.index
+                        );
 
 
-    updateCartCount();
+                    if (
+                        cart[index].quantity > 1
+                    ) {
 
-    updateSubtotal();
+                        cart[index].quantity--;
 
-    updateProductButtons();
+                    } else {
 
-    saveCart();
+                        cart.splice(
+                            index,
+                            1
+                        );
 
-}
-
-
-/* =========================================================
-   ADD TO CART
-========================================================= */
-
-function addToCart(
-    product,
-    size = null
-) {
-
-    const key =
-        getCartKey(
-            product.id,
-            size
-        );
+                    }
 
 
-    const existing =
-        cart.find(
-            item =>
-                item.key === key
-        );
+                    saveCart();
 
+                    updateCart();
 
-    if (existing) {
-
-        existing.quantity += 1;
-
-        showToast(
-            `${product.name} quantity increased`
-        );
-
-    } else {
-
-        cart.push({
-
-            key:
-
-                key,
-
-            productId:
-
-                product.id,
-
-            name:
-
-                product.name,
-
-            price:
-
-                product.price,
-
-            image:
-
-                product.image,
-
-            category:
-
-                product.category,
-
-            size:
-
-                size,
-
-            quantity:
-
-                1
+                }
+            );
 
         });
 
 
-        showToast(
-            `${product.name} added to cart`
-        );
+    document
+        .querySelectorAll(".quantity-plus")
+        .forEach(button => {
 
-    }
+            button.addEventListener(
+                "click",
+                () => {
 
-
-    renderCart();
-
-}
-
-
-/* =========================================================
-   REMOVE CART ITEM
-========================================================= */
-
-function removeFromCart(key) {
-
-    const item =
-        cart.find(
-            product =>
-                product.key === key
-        );
+                    const index =
+                        Number(
+                            button.dataset.index
+                        );
 
 
-    cart =
-        cart.filter(
-            product =>
-                product.key !== key
-        );
+                    cart[index].quantity++;
 
 
-    renderCart();
+                    saveCart();
 
+                    updateCart();
 
-    if (item) {
+                }
+            );
 
-        showToast(
-            `${item.name} removed`
-        );
-
-    }
+        });
 
 }
 
 
 /* =========================================================
-   CHANGE QUANTITY
+   OPEN CART
 ========================================================= */
 
-function changeQuantity(
-    key,
-    amount
-) {
+function openCart() {
 
-    const item =
-        cart.find(
-            product =>
-                product.key === key
-        );
-
-
-    if (!item) return;
-
-
-    item.quantity += amount;
-
-
-    if (item.quantity <= 0) {
-
-        removeFromCart(key);
-
+    if (!cartDrawer)
         return;
 
+
+    cartDrawer.classList.add("open");
+
+
+    if (cartOverlay) {
+
+        cartOverlay.classList.add("open");
+
     }
 
 
-    renderCart();
+    document.body.classList.add(
+        "no-scroll"
+    );
 
 }
 
 
 /* =========================================================
-   ADD BUTTONS
+   CLOSE CART
 ========================================================= */
 
-addButtons.forEach(button => {
+function closeCart() {
+
+    if (cartDrawer) {
+
+        cartDrawer.classList.remove(
+            "open"
+        );
+
+    }
+
+
+    if (cartOverlay) {
+
+        cartOverlay.classList.remove(
+            "open"
+        );
+
+    }
+
+
+    document.body.classList.remove(
+        "no-scroll"
+    );
+
+}
+
+
+/* =========================================================
+   CART BUTTON
+========================================================= */
+
+const cartButtons =
+    document.querySelectorAll(
+        ".cart-button, .cart-icon, [data-cart]"
+    );
+
+
+cartButtons.forEach(button => {
 
     button.addEventListener(
         "click",
-        event => {
+        openCart
+    );
 
-            event.stopPropagation();
+});
 
 
-            const card =
-                button.closest(
-                    ".product-card"
-                );
+/* =========================================================
+   CLOSE CART
+========================================================= */
 
+if (cartClose) {
+
+    cartClose.addEventListener(
+        "click",
+        closeCart
+    );
+
+}
+
+
+if (cartOverlay) {
+
+    cartOverlay.addEventListener(
+        "click",
+        closeCart
+    );
+
+}
+
+
+/* =========================================================
+   PRODUCT ADD BUTTONS
+========================================================= */
+
+products.forEach(card => {
+
+    const addButton =
+        card.querySelector(
+            ".add-cart"
+        );
+
+
+    if (!addButton)
+        return;
+
+
+    addButton.addEventListener(
+        "click",
+        () => {
 
             const product =
                 getProductData(card);
 
 
             /*
-                Products with sizes should
-                open the product preview so
-                the customer can choose size.
+               If the product requires
+               size selection, open preview
+               instead of adding immediately.
             */
 
             if (product.hasSize) {
@@ -6378,34 +6358,8 @@ addButtons.forEach(button => {
 
 
             addToCart(
-                product
-            );
-
-
-            button.classList.add(
-                "added"
-            );
-
-
-            setTimeout(() => {
-
-                button.classList.remove(
-                    "added"
-                );
-
-            }, 450);
-
-
-            cartCount.classList.remove(
-                "bump"
-            );
-
-
-            void cartCount.offsetWidth;
-
-
-            cartCount.classList.add(
-                "bump"
+                product,
+                null
             );
 
         }
@@ -6415,144 +6369,28 @@ addButtons.forEach(button => {
 
 
 /* =========================================================
-   CART ITEM BUTTONS
-========================================================= */
-
-cartItemsContainer.addEventListener(
-    "click",
-    event => {
-
-        const removeButton =
-            event.target.closest(
-                ".remove-item"
-            );
-
-
-        const minusButton =
-            event.target.closest(
-                ".quantity-minus"
-            );
-
-
-        const plusButton =
-            event.target.closest(
-                ".quantity-plus"
-            );
-
-
-        if (removeButton) {
-
-            removeFromCart(
-                removeButton.dataset.key
-            );
-
-            return;
-
-        }
-
-
-        if (minusButton) {
-
-            changeQuantity(
-                minusButton.dataset.key,
-                -1
-            );
-
-            return;
-
-        }
-
-
-        if (plusButton) {
-
-            changeQuantity(
-                plusButton.dataset.key,
-                1
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   MOBILE MENU
-========================================================= */
-
-menuButton.addEventListener(
-    "click",
-    () => {
-
-        navLinks.classList.toggle(
-            "open"
-        );
-
-
-        const icon =
-            menuButton.querySelector("i");
-
-
-        if (
-            navLinks.classList.contains(
-                "open"
-            )
-        ) {
-
-            icon.classList.remove(
-                "fa-bars"
-            );
-
-            icon.classList.add(
-                "fa-xmark"
-            );
-
-        } else {
-
-            icon.classList.remove(
-                "fa-xmark"
-            );
-
-            icon.classList.add(
-                "fa-bars"
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   CLOSE MOBILE NAV
+   QUICK VIEW BUTTONS
 ========================================================= */
 
 document
-    .querySelectorAll(".nav-links a")
-    .forEach(link => {
+    .querySelectorAll(".quick-view")
+    .forEach(button => {
 
-        link.addEventListener(
+        button.addEventListener(
             "click",
             () => {
 
-                navLinks.classList.remove(
-                    "open"
-                );
-
-
-                const icon =
-                    menuButton.querySelector(
-                        "i"
+                const card =
+                    button.closest(
+                        ".product-card"
                     );
 
 
-                icon.classList.remove(
-                    "fa-xmark"
-                );
+                if (!card)
+                    return;
 
-                icon.classList.add(
-                    "fa-bars"
-                );
+
+                openPreview(card);
 
             }
         );
@@ -6561,8 +6399,416 @@ document
 
 
 /* =========================================================
-   PRODUCT FILTER
+   OPEN PRODUCT PREVIEW
 ========================================================= */
+
+function openPreview(card) {
+
+    if (!previewOverlay)
+        return;
+
+
+    previewProduct =
+        getProductData(card);
+
+
+    selectedSize = null;
+
+
+    if (sizeError) {
+
+        sizeError.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    if (previewImage) {
+
+        previewImage.src =
+            previewProduct.image;
+
+        previewImage.alt =
+            previewProduct.name;
+
+    }
+
+
+    if (previewName) {
+
+        previewName.textContent =
+            previewProduct.name;
+
+    }
+
+
+    if (previewPrice) {
+
+        previewPrice.textContent =
+            "₦" +
+            previewProduct.price
+                .toLocaleString();
+
+    }
+
+
+    if (previewDescription) {
+
+        previewDescription.textContent =
+            previewProduct.description;
+
+    }
+
+
+    if (previewSizes) {
+
+        previewSizes.innerHTML = "";
+
+
+        if (
+            previewProduct.hasSize &&
+            previewProduct.sizes.length
+        ) {
+
+            previewProduct.sizes.forEach(
+                size => {
+
+                    const sizeButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    sizeButton.type =
+                        "button";
+
+                    sizeButton.className =
+                        "size-option";
+
+                    sizeButton.textContent =
+                        size;
+
+
+                    sizeButton.addEventListener(
+                        "click",
+                        () => {
+
+                            document
+                                .querySelectorAll(
+                                    ".size-option"
+                                )
+                                .forEach(
+                                    button => {
+
+                                        button.classList
+                                            .remove(
+                                                "active"
+                                            );
+
+                                    }
+                                );
+
+
+                            sizeButton.classList
+                                .add("active");
+
+
+                            selectedSize =
+                                size;
+
+
+                            if (sizeError) {
+
+                                sizeError.classList
+                                    .remove(
+                                        "show"
+                                    );
+
+                            }
+
+                        }
+                    );
+
+
+                    previewSizes.appendChild(
+                        sizeButton
+                    );
+
+                }
+            );
+
+        } else {
+
+            previewSizes.innerHTML = "";
+
+        }
+
+    }
+
+
+    previewOverlay.classList.add(
+        "open"
+    );
+
+
+    document.body.classList.add(
+        "no-scroll"
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE PREVIEW
+========================================================= */
+
+function closePreview() {
+
+    if (previewOverlay) {
+
+        previewOverlay.classList.remove(
+            "open"
+        );
+
+    }
+
+
+    document.body.classList.remove(
+        "no-scroll"
+    );
+
+
+    previewProduct = null;
+
+    selectedSize = null;
+
+}
+
+
+if (previewClose) {
+
+    previewClose.addEventListener(
+        "click",
+        closePreview
+    );
+
+}
+
+
+if (previewOverlay) {
+
+    previewOverlay.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target ===
+                previewOverlay
+            ) {
+
+                closePreview();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ADD FROM PREVIEW
+========================================================= */
+
+if (previewAdd) {
+
+    previewAdd.addEventListener(
+        "click",
+        () => {
+
+            if (!previewProduct)
+                return;
+
+
+            /*
+               Make sure size is selected
+               for products that require it.
+            */
+
+            if (
+                previewProduct.hasSize &&
+                !selectedSize
+            ) {
+
+                if (sizeError) {
+
+                    sizeError.classList.add(
+                        "show"
+                    );
+
+                }
+
+                return;
+
+            }
+
+
+            addToCart(
+                previewProduct,
+                selectedSize
+            );
+
+
+            previewAdd.textContent =
+                "Added to Cart ✓";
+
+
+            setTimeout(
+                () => {
+
+                    closePreview();
+
+                    previewAdd.textContent =
+                        "Add to Cart";
+
+                },
+                700
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+const searchButton =
+    document.getElementById(
+        "searchButton"
+    );
+
+
+if (searchButton) {
+
+    searchButton.addEventListener(
+        "click",
+        () => {
+
+            const search =
+                prompt(
+                    "Search Zaku products:"
+                );
+
+
+            if (!search)
+                return;
+
+
+            const query =
+                search
+                    .toLowerCase()
+                    .trim();
+
+
+            let found = false;
+
+
+            products.forEach(
+                product => {
+
+                    const name =
+                        (
+                            product.dataset.name ||
+                            ""
+                        )
+                            .toLowerCase();
+
+
+                    const category =
+                        (
+                            product.dataset.category ||
+                            ""
+                        )
+                            .toLowerCase();
+
+
+                    const type =
+                        (
+                            product.dataset.type ||
+                            ""
+                        )
+                            .toLowerCase();
+
+
+                    const matches =
+                        name.includes(query) ||
+                        category.includes(query) ||
+                        type.includes(query);
+
+
+                    if (matches) {
+
+                        product.style.display =
+                            "";
+
+                        product.style.opacity =
+                            "1";
+
+                        found = true;
+
+                    } else {
+
+                        product.style.display =
+                            "none";
+
+                    }
+
+                }
+            );
+
+
+            const productSection =
+                document.getElementById(
+                    "products"
+                );
+
+
+            if (productSection) {
+
+                productSection.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+
+
+            if (!found) {
+
+                showToast(
+                    "No Zaku product found"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CATEGORY FILTERS
+========================================================= */
+
+const filters =
+    document.querySelectorAll(
+        ".filter"
+    );
+
 
 filters.forEach(filter => {
 
@@ -6570,13 +6816,15 @@ filters.forEach(filter => {
         "click",
         () => {
 
-            filters.forEach(item => {
+            filters.forEach(
+                button => {
 
-                item.classList.remove(
-                    "active"
-                );
+                    button.classList.remove(
+                        "active"
+                    );
 
-            });
+                }
+            );
 
 
             filter.classList.add(
@@ -6588,51 +6836,27 @@ filters.forEach(filter => {
                 filter.dataset.filter;
 
 
-            products.forEach(product => {
+            products.forEach(
+                product => {
 
-                const matches =
-                    category === "all" ||
-                    product.dataset.category ===
-                    category;
+                    if (
+                        category === "all" ||
+                        product.dataset.category ===
+                        category
+                    ) {
 
+                        product.style.display =
+                            "";
 
-                if (matches) {
-
-                    product.style.display =
-                        "";
-
-
-                    requestAnimationFrame(
-                        () => {
-
-                            product.style.opacity =
-                                "1";
-
-                            product.style.transform =
-                                "translateY(0)";
-
-                        }
-                    );
-
-                } else {
-
-                    product.style.opacity =
-                        "0";
-
-                    product.style.transform =
-                        "translateY(15px)";
-
-
-                    setTimeout(() => {
+                    } else {
 
                         product.style.display =
                             "none";
 
-                    }, 250);
+                    }
 
                 }
-
-            });
+            );
 
         }
     );
@@ -6674,11 +6898,19 @@ document
                 }
 
 
-                document
-                    .getElementById("products")
-                    .scrollIntoView({
+                const productsSection =
+                    document.getElementById(
+                        "products"
+                    );
+
+
+                if (productsSection) {
+
+                    productsSection.scrollIntoView({
                         behavior: "smooth"
                     });
+
+                }
 
             }
         );
@@ -6687,823 +6919,240 @@ document
 
 
 /* =========================================================
-   WISHLIST
+   CHECKOUT
 ========================================================= */
 
-const wishlistButtons =
-    document.querySelectorAll(
-        ".wishlist"
-    );
+if (checkoutButton) {
 
-
-wishlistButtons.forEach(button => {
-
-    button.addEventListener(
+    checkoutButton.addEventListener(
         "click",
-        event => {
-
-            event.stopPropagation();
-
-
-            const icon =
-                button.querySelector("i");
-
-
-            if (
-                icon.classList.contains(
-                    "fa-regular"
-                )
-            ) {
-
-                icon.classList.remove(
-                    "fa-regular"
-                );
-
-                icon.classList.add(
-                    "fa-solid"
-                );
-
-                button.style.color =
-                    "var(--gold-dark)";
-
-
-                showToast(
-                    "Added to wishlist"
-                );
-
-            } else {
-
-                icon.classList.remove(
-                    "fa-solid"
-                );
-
-                icon.classList.add(
-                    "fa-regular"
-                );
-
-                button.style.color =
-                    "";
-
-            }
-
-        }
-    );
-
-});
-
-
-/* =========================================================
-   CART DRAWER
-========================================================= */
-
-function openCart() {
-
-    renderCart();
-
-
-    cartDrawer.classList.add(
-        "open"
-    );
-
-    cartOverlay.classList.add(
-        "open"
-    );
-
-    document.body.classList.add(
-        "no-scroll"
-    );
-
-}
-
-
-function hideCart() {
-
-    cartDrawer.classList.remove(
-        "open"
-    );
-
-    cartOverlay.classList.remove(
-        "open"
-    );
-
-    document.body.classList.remove(
-        "no-scroll"
-    );
-
-}
-
-
-cartButton.addEventListener(
-    "click",
-    openCart
-);
-
-
-closeCart.addEventListener(
-    "click",
-    hideCart
-);
-
-
-cartOverlay.addEventListener(
-    "click",
-    hideCart
-);
-
-
-/* =========================================================
-   CREATE STARS
-========================================================= */
-
-function createStars(rating) {
-
-    let stars = "";
-
-
-    for (
-        let i = 1;
-        i <= 5;
-        i++
-    ) {
-
-        if (
-            i <=
-            Math.floor(rating)
-        ) {
-
-            stars +=
-                `<i class="fa-solid fa-star"></i>`;
-
-        } else {
-
-            stars +=
-                `<i class="fa-regular fa-star"></i>`;
-
-        }
-
-    }
-
-
-    return stars +
-        `<span>${rating}</span>`;
-
-}
-
-
-/* =========================================================
-   OPEN PRODUCT PREVIEW
-========================================================= */
-
-function openPreview(card) {
-
-    previewProduct =
-        getProductData(card);
-
-
-    selectedSize = null;
-
-
-    previewImage.src =
-        previewProduct.image;
-
-
-    previewImage.alt =
-        previewProduct.name;
-
-
-    previewName.textContent =
-        previewProduct.name;
-
-
-    previewCategory.textContent =
-        previewProduct.category;
-
-
-    previewRating.innerHTML =
-        createStars(
-            previewProduct.rating
-        );
-
-
-    previewDescription.textContent =
-        previewProduct.description;
-
-
-    previewPrice.textContent =
-        formatPrice(
-            previewProduct.price
-        );
-
-
-    sizeError.classList.remove(
-        "show"
-    );
-
-
-    sizeOptions.innerHTML = "";
-
-
-    /*
-        SIZE LOGIC
-    */
-
-    if (
-        previewProduct.hasSize &&
-        previewProduct.sizes.length > 0
-    ) {
-
-        sizeSection.style.display =
-            "block";
-
-
-        selectedSizeText.textContent =
-            "Required";
-
-
-        previewProduct.sizes
-            .forEach(size => {
-
-                const button =
-                    document.createElement(
-                        "button"
-                    );
-
-
-                button.type =
-                    "button";
-
-
-                button.className =
-                    "size-option";
-
-
-                button.textContent =
-                    size;
-
-
-                button.dataset.size =
-                    size;
-
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        document
-                            .querySelectorAll(
-                                ".size-option"
-                            )
-                            .forEach(
-                                item => {
-
-                                    item.classList.remove(
-                                        "selected"
-                                    );
-
-                                }
-                            );
-
-
-                        button.classList.add(
-                            "selected"
-                        );
-
-
-                        selectedSize =
-                            size;
-
-
-                        selectedSizeText.textContent =
-                            `Selected: ${size}`;
-
-
-                        sizeError.classList.remove(
-                            "show"
-                        );
-
-                    }
-                );
-
-
-                sizeOptions.appendChild(
-                    button
-                );
-
-            });
-
-    } else {
-
-        sizeSection.style.display =
-            "none";
-
-    }
-
-
-    previewAdd.textContent =
-        "Add to Cart";
-
-
-    previewAdd.style.background =
-        "";
-
-
-    previewOverlay.classList.add(
-        "open"
-    );
-
-
-    document.body.classList.add(
-        "no-scroll"
-    );
-
-}
-
-
-/* =========================================================
-   QUICK VIEW BUTTONS
-========================================================= */
-
-const quickViewButtons =
-    document.querySelectorAll(
-        ".quick-view"
-    );
-
-
-quickViewButtons.forEach(button => {
-
-    button.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-
-            const card =
-                button.closest(
-                    ".product-card"
-                );
-
-
-            openPreview(card);
-
-        }
-    );
-
-});
-
-
-/* =========================================================
-   CLOSE PREVIEW
-========================================================= */
-
-function closePreview() {
-
-    previewOverlay.classList.remove(
-        "open"
-    );
-
-
-    document.body.classList.remove(
-        "no-scroll"
-    );
-
-
-    previewProduct = null;
-
-    selectedSize = null;
-
-}
-
-
-previewClose.addEventListener(
-    "click",
-    closePreview
-);
-
-
-previewOverlay.addEventListener(
-    "click",
-    event => {
-
-        if (
-            event.target ===
-            previewOverlay
-        ) {
-
-            closePreview();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   ADD FROM PREVIEW
-========================================================= */
-
-previewAdd.addEventListener(
-    "click",
-    () => {
-
-        if (!previewProduct)
-            return;
-
-
-        /*
-            If product requires a size,
-            make sure customer selected one.
-        */
-
-        if (
-            previewProduct.hasSize &&
-            !selectedSize
-        ) {
-
-            sizeError.classList.add(
-                "show"
-            );
-
-            return;
-
-        }
-
-
-        addToCart(
-            previewProduct,
-            selectedSize
-        );
-
-
-        previewAdd.textContent =
-            "Added to Cart ✓";
-
-
-        previewAdd.style.background =
-            "var(--success)";
-
-
-        previewAdd.style.color =
-            "white";
-
-
-        setTimeout(() => {
-
-            closePreview();
-
-            previewAdd.textContent =
-                "Add to Cart";
-
-            previewAdd.style.background =
-                "";
-
-            previewAdd.style.color =
-                "";
-
-        }, 700);
-
-    }
-);
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-const searchButton =
-    document.getElementById(
-        "searchButton"
-    );
-
-
-searchButton.addEventListener(
-    "click",
-    () => {
-
-        const search =
-            prompt(
-                "Search Zaku products:"
-            );
-
-
-        if (!search)
-            return;
-
-
-        const query =
-            search
-                .toLowerCase()
-                .trim();
-
-
-        let found = false;
-
-
-        products.forEach(product => {
-
-            const name =
-                product.dataset.name
-                    .toLowerCase();
-
-
-            const category =
-                product.dataset.category
-                    .toLowerCase();
-
-
-            const type =
-                product.dataset.type
-                    .toLowerCase();
-
-
-            const matches =
-                name.includes(query) ||
-                category.includes(query) ||
-                type.includes(query);
-
-
-            if (matches) {
-
-                product.style.display =
-                    "";
-
-                product.style.opacity =
-                    "1";
-
-                found = true;
-
-            } else {
-
-                product.style.display =
-                    "none";
-
-            }
-
-        });
-
-
-        document
-            .getElementById("products")
-            .scrollIntoView({
-                behavior: "smooth"
-            });
-
-
-        if (!found) {
-
-            showToast(
-                "No Zaku product found"
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   CHECKOUT PLACEHOLDER
-========================================================= */
-
-checkoutButton.addEventListener(
-    "click",
-    () => {
-
-        if (cart.length === 0) {
-
-            showToast(
-                "Your cart is empty"
-            );
-
-            return;
-
-        }
-
-
-        /*
-            IMPORTANT:
-
-            This currently only shows a message.
-
-            The next stage will replace this
-            with the real Zaku checkout page.
-
-            That checkout will contain:
-
-            - Customer details
-            - Delivery details
-            - Order summary
-            - Bank account details
-            - Payment receipt upload
-            - Submit order
-            - Google Apps Script connection
-
-        */
-
-        showToast(
-            "Checkout will open here"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   NEWSLETTER
-========================================================= */
-
-const newsletter =
-    document.querySelector(
-        ".newsletter-form"
-    );
-
-
-newsletter.addEventListener(
-    "submit",
-    event => {
-
-        event.preventDefault();
-
-
-        const button =
-            newsletter.querySelector(
-                "button"
-            );
-
-
-        const original =
-            button.textContent;
-
-
-        button.textContent =
-            "Subscribed ✓";
-
-
-        setTimeout(() => {
-
-            button.textContent =
-                original;
-
-            newsletter.reset();
-
-        }, 2000);
-
-    }
-);
-
-
-/* =========================================================
-   ESC KEY
-========================================================= */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key === "Escape"
-        ) {
-
-            hideCart();
-
-            closePreview();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   PRELOADER
-========================================================= */
-
-const preloader =
-    document.getElementById(
-        "zaku-preloader"
-    );
-
-
-const progress =
-    document.getElementById(
-        "loading-progress"
-    );
-
-
-const percent =
-    document.getElementById(
-        "loading-percent"
-    );
-
-
-const status =
-    document.getElementById(
-        "loading-status"
-    );
-
-
-let loading = 0;
-
-
-const messages = [
-
-    "PREPARING ZAKU",
-
-    "LOADING COLLECTION",
-
-    "PREPARING PRODUCTS",
-
-    "CURATING YOUR STYLE",
-
-    "ALMOST READY"
-
-];
-
-
-const loader =
-    setInterval(
         () => {
 
-            loading +=
-                Math.floor(
-                    Math.random() * 4
-                ) + 1;
+            /*
+               Do not allow checkout
+               with an empty cart.
+            */
 
+            if (cart.length === 0) {
 
-            if (loading >= 100) {
-
-                loading = 100;
-
-                clearInterval(
-                    loader
+                showToast(
+                    "Your cart is empty"
                 );
 
+                return;
 
-                status.textContent =
-                    "WELCOME TO ZAKU";
+            }
 
 
-                setTimeout(
-                    () => {
+            /*
+               Calculate subtotal.
+            */
 
-                        preloader.classList.add(
-                            "hide"
-                        );
+            const subtotal =
+                cart.reduce(
+                    (
+                        total,
+                        item
+                    ) => {
+
+                        return total +
+                            (
+                                Number(item.price) *
+                                Number(item.quantity || 1)
+                            );
 
                     },
-                    600
+                    0
                 );
 
-            }
+
+            /*
+               Save checkout information
+               so zaku1.html can retrieve it.
+            */
+
+            const checkoutData = {
+
+                items:
+                    cart,
+
+                subtotal:
+                    subtotal,
+
+                delivery:
+                    0,
+
+                total:
+                    subtotal,
+
+                createdAt:
+                    new Date().toISOString()
+
+            };
 
 
-            progress.style.width =
-                loading + "%";
+            localStorage.setItem(
+                "zakuCheckout",
+                JSON.stringify(
+                    checkoutData
+                )
+            );
 
 
-            percent.textContent =
-                loading + "%";
+            /*
+               Open your actual checkout page.
+            */
 
+            window.location.href =
+                "zaku1.html";
 
-            if (loading < 25) {
-
-                status.textContent =
-                    messages[0];
-
-            } else if (loading < 50) {
-
-                status.textContent =
-                    messages[1];
-
-            } else if (loading < 75) {
-
-                status.textContent =
-                    messages[2];
-
-            } else if (loading < 95) {
-
-                status.textContent =
-                    messages[3];
-
-            } else {
-
-                status.textContent =
-                    messages[4];
-
-            }
-
-        },
-        45
+        }
     );
+
+}
 
 
 /* =========================================================
-   INITIALIZE
+   TOAST
 ========================================================= */
 
-renderCart();
+function showToast(message) {
 
-</script>
+    let toast =
+        document.getElementById(
+            "zakuToast"
+        );
+
+
+    if (!toast) {
+
+        toast =
+            document.createElement(
+                "div"
+            );
+
+
+        toast.id =
+            "zakuToast";
+
+
+        toast.style.position =
+            "fixed";
+
+        toast.style.bottom =
+            "25px";
+
+        toast.style.left =
+            "50%";
+
+        toast.style.transform =
+            "translateX(-50%)";
+
+        toast.style.zIndex =
+            "99999";
+
+        toast.style.padding =
+            "12px 20px";
+
+        toast.style.background =
+            "#111";
+
+        toast.style.color =
+            "#fff";
+
+        toast.style.borderRadius =
+            "8px";
+
+        toast.style.fontSize =
+            "13px";
+
+        toast.style.fontWeight =
+            "600";
+
+        toast.style.boxShadow =
+            "0 10px 30px rgba(0,0,0,.2)";
+
+
+        document.body.appendChild(
+            toast
+        );
+
+    }
+
+
+    toast.textContent =
+        message;
+
+
+    toast.style.opacity =
+        "1";
+
+
+    clearTimeout(
+        toast._timeout
+    );
+
+
+    toast._timeout =
+        setTimeout(
+            () => {
+
+                toast.style.opacity =
+                    "0";
+
+            },
+            2500
+        );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value || "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   INITIALIZE CART
+========================================================= */
+
+updateCart();
+
+
+/* =========================================================
+   DEBUG
+========================================================= */
+
+console.log(
+    "Zaku cart loaded:",
+    cart
+);
 
 </body>
 
