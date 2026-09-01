@@ -676,18 +676,42 @@
                                 </option>
 
                                 <option>Lagos</option>
-                                <option>Oyo</option>
                                 <option>Ogun</option>
-                                <option>Abuja (FCT)</option>
-                                <option>Rivers</option>
-                                <option>Enugu</option>
-                                <option>Imo</option>
+                                <option>Oyo</option>
+                                <option>Osun</option>
+                                <option>Ondo</option>
+                                <option>Ekiti</option>
+                                <option>Kwara</option>
                                 <option>Delta</option>
-                                <option>Anambra</option>
+                                <option>Edo</option>
+                                <option>Bayelsa</option>
+                                <option>Rivers</option>
+                                <option>Akwa Ibom</option>
+                                <option>Cross River</option>
                                 <option>Abia</option>
-                                <option>Kano</option>
+                                <option>Imo</option>
+                                <option>Enugu</option>
+                                <option>Anambra</option>
+                                <option>Ebonyi</option>
+                                <option>Benue</option>
+                                <option>Kogi</option>
+                                <option>Nasarawa</option>
+                                <option>Plateau</option>
+                                <option>Niger</option>
                                 <option>Kaduna</option>
-                                <option>Other</option>
+                                <option>Kano</option>
+                                <option>Katsina</option>
+                                <option>Jigawa</option>
+                                <option>Bauchi</option>
+                                <option>Gombe</option>
+                                <option>Yobe</option>
+                                <option>Borno</option>
+                                <option>Sokoto</option>
+                                <option>Kebbi</option>
+                                <option>Zamfara</option>
+                                <option>Adamawa</option>
+                                <option>Taraba</option>
+                                <option>Abuja (FCT)</option>
 
                             </select>
 
@@ -744,7 +768,7 @@
                         Pay by Bank Transfer
                     </strong>
 
-                    Transfer the exact order amount to the Zaku
+                    Transfer the exact order amount, including delivery, to the Zaku
                     account below. After making the transfer,
                     upload your payment receipt before submitting
                     your order.
@@ -937,9 +961,8 @@
 
             <div class="delivery-note">
 
-                🚚 Delivery charges may vary depending on your
-                location. You will be contacted by Zaku after
-                your order has been verified.
+                🚚 Delivery fee is automatically calculated
+                based on the state you select above.
 
             </div>
 
@@ -1162,7 +1185,59 @@
     =========================================
     */
 
-    const DELIVERY_FEE = 0;
+    /* =========================================
+       ZAKU DELIVERY FEES
+       State-based delivery charges (NGN)
+    ========================================= */
+
+    const DELIVERY_FEES = {
+        "Lagos": 3000,
+        "Ogun": 3500,
+        "Oyo": 4000,
+        "Osun": 4000,
+        "Ondo": 4500,
+        "Ekiti": 4500,
+        "Kwara": 5000,
+        "Delta": 5500,
+        "Edo": 5000,
+        "Bayelsa": 6500,
+        "Rivers": 6000,
+        "Akwa Ibom": 6000,
+        "Cross River": 6500,
+        "Abia": 6000,
+        "Imo": 6000,
+        "Enugu": 5500,
+        "Anambra": 5500,
+        "Ebonyi": 6000,
+        "Benue": 6500,
+        "Kogi": 5500,
+        "Nasarawa": 5500,
+        "Plateau": 6000,
+        "Niger": 6000,
+        "Kaduna": 6000,
+        "Kano": 6500,
+        "Katsina": 7000,
+        "Jigawa": 7000,
+        "Bauchi": 7000,
+        "Gombe": 7500,
+        "Yobe": 8000,
+        "Borno": 8500,
+        "Sokoto": 8000,
+        "Kebbi": 8000,
+        "Zamfara": 8000,
+        "Adamawa": 8000,
+        "Taraba": 8500,
+        "Abuja (FCT)": 5000
+    };
+
+    let DELIVERY_FEE = 0;
+
+    function getDeliveryFee() {
+        const selectedState =
+            document.getElementById("state").value;
+
+        return DELIVERY_FEES[selectedState] || 0;
+    }
 
 
     /*
@@ -1295,10 +1370,8 @@
 
         deliveryElement.textContent =
             DELIVERY_FEE === 0
-            ? "To be confirmed"
-            : formatNaira(
-                DELIVERY_FEE
-            );
+            ? "Select state"
+            : formatNaira(DELIVERY_FEE);
 
 
         totalElement.textContent =
@@ -1309,6 +1382,21 @@
             formatNaira(total);
 
     }
+
+
+    /* =========================================
+       DELIVERY FEE — UPDATE WHEN STATE CHANGES
+    ========================================= */
+
+    document
+        .getElementById("state")
+        .addEventListener("change", function() {
+
+            DELIVERY_FEE = getDeliveryFee();
+
+            updateTotals();
+
+        });
 
 
     /*
@@ -1584,6 +1672,24 @@
 
 
             /*
+               Delivery state check
+            */
+
+            DELIVERY_FEE = getDeliveryFee();
+
+            if (!DELIVERY_FEE) {
+
+                alert("Please select your delivery state.");
+
+                document
+                    .getElementById("state")
+                    .focus();
+
+                return;
+            }
+
+
+            /*
                Receipt check
             */
 
@@ -1658,6 +1764,8 @@
                 const orderNumber =
                     generateOrderNumber();
 
+
+                DELIVERY_FEE = getDeliveryFee();
 
                 const subtotal =
                     calculateSubtotal();
