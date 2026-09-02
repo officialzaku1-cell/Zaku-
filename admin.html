@@ -3,371 +3,2839 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>ZAKU — Admin</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="icon" type="image/x-icon" href="IMG_20250912_104016_293.webp">
+
+<link rel="icon" type="image/x-icon" href="IMG_20250912_104016_293.webp">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 <style>
-:root{--black:#0a0a0a;--dark:#111;--white:#fff;--off:#f6f5f1;--gold:#d4af37;--gold-dark:#a98416;--line:#e7e5df;--muted:#777;--success:#208a58;--danger:#b93838;--radius:12px}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,Arial,sans-serif;background:var(--off);color:var(--black);min-height:100vh}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.hidden{display:none!important}
-.login-screen{min-height:100vh;display:grid;place-items:center;padding:25px;background:var(--black)}
-.login-card{width:min(430px,100%);background:#fff;border-radius:18px;padding:38px;box-shadow:0 25px 80px rgba(0,0,0,.3)}
-.brand{font-family:"Space Grotesk";font-size:38px;letter-spacing:-.07em}
-.brand span{color:var(--gold)}
-.kicker{font-size:9px;font-weight:800;letter-spacing:.18em;color:var(--gold-dark);margin:10px 0 12px}
-h1{font-family:"Space Grotesk";letter-spacing:-.04em}
-.login-card h1{font-size:28px}
-.login-card p{font-size:13px;color:var(--muted);line-height:1.6;margin:9px 0 25px}
-.field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
-.field label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
-input,select,textarea{width:100%;border:1px solid var(--line);background:#fff;border-radius:9px;padding:12px 13px;outline:none;color:var(--black)}
-input:focus,select:focus,textarea:focus{border-color:var(--gold-dark);box-shadow:0 0 0 3px rgba(212,175,55,.12)}
-textarea{min-height:105px;resize:vertical}
-.btn{border:0;border-radius:9px;padding:12px 16px;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.2s}
-.btn-dark{background:var(--black);color:#fff}.btn-dark:hover{background:#222}
-.btn-gold{background:var(--gold);color:var(--black)}.btn-gold:hover{background:#e2c14d}
-.btn-light{background:#fff;border:1px solid var(--line)}.btn-danger{background:#fff;color:var(--danger);border:1px solid #efd2d2}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.error,.notice{font-size:11px;padding:10px 12px;border-radius:8px;margin-top:12px}
-.error{background:#fff0f0;color:var(--danger)}.notice{background:#f0faf5;color:var(--success)}
-.app{min-height:100vh}
-.topbar{height:72px;background:var(--black);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;position:sticky;top:0;z-index:20}
-.topbar .brand{font-size:27px}
-.topbar-right{display:flex;align-items:center;gap:10px}
-.topbar-right span{font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.12em}
-.logout{border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;border-radius:8px;padding:9px 12px;font-size:10px}
-.container{width:min(1300px,92%);margin:auto}
-main{padding:42px 0 80px}
-.hero-row{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:25px}
-.hero-row h1{font-size:clamp(32px,5vw,55px)}
-.hero-row p{max-width:620px;color:var(--muted);font-size:12px;line-height:1.6;margin-top:8px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:25px}
-.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
-.stat small{font-size:8px;font-weight:800;letter-spacing:.14em;color:var(--muted)}
-.stat strong{display:block;font-family:"Space Grotesk";font-size:30px;margin-top:8px}
-.layout{display:grid;grid-template-columns:390px 1fr;gap:18px;align-items:start}
-.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px}
-.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
-.panel-head h2{font-family:"Space Grotesk";font-size:20px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.full{grid-column:1/-1}
-.check-row{display:flex;align-items:center;gap:9px;font-size:11px;margin:2px 0 15px}
-.check-row input{width:auto}
-.preview{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#f2f1ec;margin-bottom:15px;aspect-ratio:1/1;display:grid;place-items:center}
-.preview img{width:100%;height:100%;object-fit:cover;display:block}
-.preview span{font-size:10px;color:var(--muted)}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-.table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:760px}
-th{text-align:left;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:11px;border-bottom:1px solid var(--line)}
-td{padding:12px 11px;border-bottom:1px solid #f0efe9;font-size:11px;vertical-align:middle}
-.product-mini{display:flex;align-items:center;gap:10px;min-width:210px}
-.product-mini img{width:45px;height:45px;object-fit:cover;border-radius:7px;background:#eee}
-.product-mini strong{display:block;font-size:11px}
-.product-mini span{display:block;color:var(--muted);font-size:8px;margin-top:3px}
-.price{font-family:"Space Grotesk";font-weight:700}
-.status{display:inline-flex;padding:5px 7px;border-radius:999px;font-size:8px;font-weight:800;white-space:nowrap}
-.status.available{background:#eaf8f1;color:var(--success)}
-.status.finish{background:#fff6d9;color:#8a6911}
-.status.sold{background:#fdecec;color:var(--danger)}
-.row-actions{display:flex;gap:6px}
-.icon-btn{width:32px;height:32px;border:1px solid var(--line);background:#fff;border-radius:7px}
-.icon-btn:hover{background:var(--off)}
-.empty{padding:45px 15px;text-align:center;color:var(--muted);font-size:11px}
-.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}
-.search{max-width:260px}
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.58);display:grid;place-items:center;padding:20px;z-index:50}
-.modal{width:min(560px,100%);background:#fff;border-radius:15px;padding:25px}
-.modal h3{font-family:"Space Grotesk";font-size:21px;margin-bottom:8px}
-.modal p{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:18px}
-.toast{position:fixed;bottom:25px;right:25px;background:var(--black);color:#fff;padding:12px 16px;border-radius:9px;font-size:10px;z-index:100;opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s}
-.toast.show{opacity:1;transform:translateY(0)}
-@media(max-width:1000px){.layout{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:650px){.topbar{padding:0 4%}.topbar-right span{display:none}main{padding-top:25px}.stats{grid-template-columns:1fr}.hero-row{display:block}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.panel{padding:16px}.login-card{padding:28px 22px}}
+
+:root{
+    --black:#0a0a0a;
+    --dark:#111;
+    --white:#fff;
+    --off:#f6f5f1;
+    --gold:#d4af37;
+    --gold-dark:#a98416;
+    --line:#e7e5df;
+    --muted:#777;
+    --success:#208a58;
+    --danger:#b93838;
+    --radius:12px
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0
+}
+
+body{
+    font-family:Inter,Arial,sans-serif;
+    background:var(--off);
+    color:var(--black);
+    min-height:100vh
+}
+
+button,input,select,textarea{
+    font:inherit
+}
+
+button{
+    cursor:pointer
+}
+
+.hidden{
+    display:none!important
+}
+
+/* LOGIN */
+
+.login-screen{
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    padding:25px;
+    background:var(--black)
+}
+
+.login-card{
+    width:min(430px,100%);
+    background:#fff;
+    border-radius:18px;
+    padding:38px;
+    box-shadow:0 25px 80px rgba(0,0,0,.3)
+}
+
+.brand{
+    font-family:"Space Grotesk";
+    font-size:38px;
+    letter-spacing:-.07em
+}
+
+.brand span{
+    color:var(--gold)
+}
+
+.kicker{
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:.18em;
+    color:var(--gold-dark);
+    margin:10px 0 12px
+}
+
+h1{
+    font-family:"Space Grotesk";
+    letter-spacing:-.04em
+}
+
+.login-card h1{
+    font-size:28px
+}
+
+.login-card p{
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.6;
+    margin:9px 0 25px
+}
+
+/* FORM */
+
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    margin-bottom:16px
+}
+
+.field label{
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.08em
+}
+
+input,select,textarea{
+    width:100%;
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:9px;
+    padding:12px 13px;
+    outline:none;
+    color:var(--black)
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:var(--gold-dark);
+    box-shadow:0 0 0 3px rgba(212,175,55,.12)
+}
+
+textarea{
+    min-height:105px;
+    resize:vertical
+}
+
+/* BUTTONS */
+
+.btn{
+    border:0;
+    border-radius:9px;
+    padding:12px 16px;
+    font-size:11px;
+    font-weight:800;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:.2s
+}
+
+.btn-dark{
+    background:var(--black);
+    color:#fff
+}
+
+.btn-dark:hover{
+    background:#222
+}
+
+.btn-gold{
+    background:var(--gold);
+    color:var(--black)
+}
+
+.btn-gold:hover{
+    background:#e2c14d
+}
+
+.btn-light{
+    background:#fff;
+    border:1px solid var(--line)
+}
+
+.btn-danger{
+    background:#fff;
+    color:var(--danger);
+    border:1px solid #efd2d2
+}
+
+.btn:disabled{
+    opacity:.5;
+    cursor:not-allowed
+}
+
+/* MESSAGES */
+
+.error,
+.notice{
+    font-size:11px;
+    padding:10px 12px;
+    border-radius:8px;
+    margin-top:12px
+}
+
+.error{
+    background:#fff0f0;
+    color:var(--danger)
+}
+
+.notice{
+    background:#f0faf5;
+    color:var(--success)
+}
+
+/* APP */
+
+.app{
+    min-height:100vh
+}
+
+/* TOP BAR */
+
+.topbar{
+    height:72px;
+    background:var(--black);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 5vw;
+    position:sticky;
+    top:0;
+    z-index:20
+}
+
+.topbar .brand{
+    font-size:27px
+}
+
+.topbar-right{
+    display:flex;
+    align-items:center;
+    gap:10px
+}
+
+.topbar-right span{
+    font-size:9px;
+    color:rgba(255,255,255,.6);
+    letter-spacing:.12em
+}
+
+.logout{
+    border:1px solid rgba(255,255,255,.2);
+    background:transparent;
+    color:#fff;
+    border-radius:8px;
+    padding:9px 12px;
+    font-size:10px
+}
+
+/* MAIN */
+
+.container{
+    width:min(1300px,92%);
+    margin:auto
+}
+
+main{
+    padding:42px 0 80px
+}
+
+.hero-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:20px;
+    margin-bottom:25px
+}
+
+.hero-row h1{
+    font-size:clamp(32px,5vw,55px)
+}
+
+.hero-row p{
+    max-width:620px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+    margin-top:8px
+}
+
+/* STATS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:25px
+}
+
+.stat{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px
+}
+
+.stat small{
+    font-size:8px;
+    font-weight:800;
+    letter-spacing:.14em;
+    color:var(--muted)
+}
+
+.stat strong{
+    display:block;
+    font-family:"Space Grotesk";
+    font-size:30px;
+    margin-top:8px
+}
+
+/* LAYOUT */
+
+.layout{
+    display:grid;
+    grid-template-columns:390px 1fr;
+    gap:18px;
+    align-items:start
+}
+
+.panel{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:22px
+}
+
+.panel-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px
+}
+
+.panel-head h2{
+    font-family:"Space Grotesk";
+    font-size:20px
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px
+}
+
+.full{
+    grid-column:1/-1
+}
+
+.check-row{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:11px;
+    margin:2px 0 15px
+}
+
+.check-row input{
+    width:auto
+}
+
+/* IMAGE PREVIEW */
+
+.preview{
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    background:#f2f1ec;
+    margin-bottom:15px;
+    aspect-ratio:1/1;
+    display:grid;
+    place-items:center
+}
+
+.preview img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block
+}
+
+.preview span{
+    font-size:10px;
+    color:var(--muted)
+}
+
+/* ACTIONS */
+
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:4px
+}
+
+/* TABLE */
+
+.table-wrap{
+    overflow:auto
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:760px
+}
+
+th{
+    text-align:left;
+    font-size:8px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    padding:11px;
+    border-bottom:1px solid var(--line)
+}
+
+td{
+    padding:12px 11px;
+    border-bottom:1px solid #f0efe9;
+    font-size:11px;
+    vertical-align:middle
+}
+
+.product-mini{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:210px
+}
+
+.product-mini img{
+    width:45px;
+    height:45px;
+    object-fit:cover;
+    border-radius:7px;
+    background:#eee
+}
+
+.product-mini strong{
+    display:block;
+    font-size:11px
+}
+
+.product-mini span{
+    display:block;
+    color:var(--muted);
+    font-size:8px;
+    margin-top:3px
+}
+
+.price{
+    font-family:"Space Grotesk";
+    font-weight:700
+}
+
+/* STATUS */
+
+.status{
+    display:inline-flex;
+    padding:5px 7px;
+    border-radius:999px;
+    font-size:8px;
+    font-weight:800;
+    white-space:nowrap
+}
+
+.status.available{
+    background:#eaf8f1;
+    color:var(--success)
+}
+
+.status.finish{
+    background:#fff6d9;
+    color:#8a6911
+}
+
+.status.sold{
+    background:#fdecec;
+    color:var(--danger)
+}
+
+/* ROW ACTIONS */
+
+.row-actions{
+    display:flex;
+    gap:6px
+}
+
+.icon-btn{
+    width:32px;
+    height:32px;
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:7px
+}
+
+.icon-btn:hover{
+    background:var(--off)
+}
+
+.empty{
+    padding:45px 15px;
+    text-align:center;
+    color:var(--muted);
+    font-size:11px
+}
+
+/* TOOLBAR */
+
+.toolbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:15px
+}
+
+.search{
+    max-width:260px
+}
+
+/* MODAL */
+
+.modal-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.58);
+    display:grid;
+    place-items:center;
+    padding:20px;
+    z-index:50
+}
+
+.modal{
+    width:min(560px,100%);
+    background:#fff;
+    border-radius:15px;
+    padding:25px
+}
+
+.modal h3{
+    font-family:"Space Grotesk";
+    font-size:21px;
+    margin-bottom:8px
+}
+
+.modal p{
+    font-size:11px;
+    color:var(--muted);
+    line-height:1.6;
+    margin-bottom:18px
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    bottom:25px;
+    right:25px;
+    background:var(--black);
+    color:#fff;
+    padding:12px 16px;
+    border-radius:9px;
+    font-size:10px;
+    z-index:100;
+    opacity:0;
+    transform:translateY(10px);
+    pointer-events:none;
+    transition:.25s
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateY(0)
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1000px){
+
+    .layout{
+        grid-template-columns:1fr
+    }
+
+    .form-grid{
+        grid-template-columns:1fr 1fr
+    }
+
+}
+
+@media(max-width:650px){
+
+    .topbar{
+        padding:0 4%
+    }
+
+    .topbar-right span{
+        display:none
+    }
+
+    main{
+        padding-top:25px
+    }
+
+    .stats{
+        grid-template-columns:1fr
+    }
+
+    .hero-row{
+        display:block
+    }
+
+    .form-grid{
+        grid-template-columns:1fr
+    }
+
+    .full{
+        grid-column:auto
+    }
+
+    .panel{
+        padding:16px
+    }
+
+    .login-card{
+        padding:28px 22px
+    }
+
+}
+
 </style>
 </head>
+
 <body>
+
+<!-- LOGIN SCREEN -->
+
 <section class="login-screen" id="loginScreen">
+
     <div class="login-card">
-        <div class="brand">ZA<span>KU</span></div>
-        <div class="kicker">PRIVATE ADMIN AREA</div>
-        <h1>Manage your collection.</h1>
-        <p>Sign in to add, edit, remove and update the products displayed on the Zaku shop.</p>
+
+        <div class="brand">
+            ZA<span>KU</span>
+        </div>
+
+        <div class="kicker">
+            PRIVATE ADMIN AREA
+        </div>
+
+        <h1>
+            Manage your collection.
+        </h1>
+
+        <p>
+            Sign in to add, edit, remove and update the products displayed on the Zaku shop.
+        </p>
+
         <form id="loginForm">
+
             <div class="field">
-                <label for="password">Admin Password</label>
-                <input id="password" type="password" autocomplete="current-password" required placeholder="Enter admin password">
+
+                <label for="password">
+                    Admin Password
+                </label>
+
+                <input
+                    id="password"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                    placeholder="Enter admin password"
+                >
+
             </div>
-            <button class="btn btn-dark" type="submit" id="loginBtn"><i class="fa-solid fa-lock"></i> Sign In</button>
+
+            <button
+                class="btn btn-dark"
+                type="submit"
+                id="loginBtn"
+            >
+                <i class="fa-solid fa-lock"></i>
+                Sign In
+            </button>
+
             <div id="loginMessage"></div>
+
         </form>
+
     </div>
+
 </section>
+
+
+<!-- ADMIN APP -->
 
 <section class="app hidden" id="app">
+
     <header class="topbar">
-        <div class="brand">ZA<span>KU</span></div>
-        <div class="topbar-right">
-            <span>PRODUCT ADMIN</span>
-            <button class="logout" id="logoutBtn">Log out</button>
+
+        <div class="brand">
+            ZA<span>KU</span>
         </div>
+
+        <div class="topbar-right">
+
+            <span>
+                PRODUCT ADMIN
+            </span>
+
+            <button
+                class="logout"
+                id="logoutBtn"
+            >
+                Log out
+            </button>
+
+        </div>
+
     </header>
 
+
     <main>
+
         <div class="container">
+
             <div class="hero-row">
+
                 <div>
-                    <div class="kicker">ZAKU COLLECTION CONTROL</div>
-                    <h1>Products.</h1>
-                    <p>Everything you add here is stored in Google Sheets and automatically becomes available on the Zaku shop page.</p>
+
+                    <div class="kicker">
+                        ZAKU COLLECTION CONTROL
+                    </div>
+
+                    <h1>
+                        Products.
+                    </h1>
+
+                    <p>
+                        Everything you add here is stored in Google Sheets and automatically becomes available on the Zaku shop page.
+                    </p>
+
                 </div>
-                <button class="btn btn-gold" id="importBtn"><i class="fa-solid fa-cloud-arrow-up"></i> Import Current Products</button>
+
+                <button
+                    class="btn btn-gold"
+                    id="importBtn"
+                >
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    Import Current Products
+                </button>
+
             </div>
+
+
+            <!-- STATS -->
 
             <div class="stats">
-                <div class="stat"><small>TOTAL PRODUCTS</small><strong id="statTotal">0</strong></div>
-                <div class="stat"><small>AVAILABLE</small><strong id="statAvailable">0</strong></div>
-                <div class="stat"><small>SOLD OUT</small><strong id="statSold">0</strong></div>
+
+                <div class="stat">
+
+                    <small>
+                        TOTAL PRODUCTS
+                    </small>
+
+                    <strong id="statTotal">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <small>
+                        AVAILABLE
+                    </small>
+
+                    <strong id="statAvailable">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <small>
+                        SOLD OUT
+                    </small>
+
+                    <strong id="statSold">
+                        0
+                    </strong>
+
+                </div>
+
             </div>
+
 
             <div class="layout">
-                <section class="panel">
-                    <div class="panel-head">
-                        <h2 id="formTitle">Add product</h2>
-                        <button class="btn btn-light hidden" id="cancelEdit">Cancel</button>
-                    </div>
-                    <form id="productForm">
-                        <input type="hidden" id="productId">
-                        <div class="field"><label>Product Name</label><input id="name" required placeholder="e.g. Zaku Premium Polo"></div>
-                        <div class="form-grid">
-                            <div class="field"><label>Price (₦)</label><input id="price" type="number" min="0" step="1" required placeholder="18000"></div>
-                            <div class="field"><label>Rating</label><input id="rating" type="number" min="0" max="5" step="0.1" value="5"></div>
-                            <div class="field">
-                                <label>Category</label>
-                                <select id="category">
-                                    <option value="shirts">Shirts</option>
-                                    <option value="jerseys">Jerseys</option>
-                                    <option value="watches">Watches</option>
-                                    <option value="perfumes">Perfumes</option>
-                                    <option value="shoes">Shoes</option>
-                                    <option value="trousers">Trousers</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div class="field"><label>Display Type</label><input id="type" placeholder="POLO SHIRT"></div>
-                            <div class="field"><label>Stock Quantity</label><input id="stockQty" type="number" min="0" step="1" value="10"></div>
-                            <div class="field">
-                                <label>Status</label>
-                                <select id="status">
-                                    <option>Available</option>
-                                    <option>About to finish</option>
-                                    <option>Sold out</option>
-                                </select>
-                            </div>
-                            <div class="field"><label>Badge</label><input id="badge" placeholder="NEW / POPULAR / PREMIUM"></div>
-                            <div class="field">
-                                <label>Badge Style</label>
-                                <select id="badgeStyle"><option value="">Normal</option><option value="sale">Gold</option></select>
-                            </div>
-                            <div class="field full"><label>Image URL</label><input id="image" type="url" required placeholder="https://example.com/product.jpg"></div>
-                            <div class="full preview" id="imagePreview"><span>Image preview appears here</span></div>
-                            <div class="field full"><label>Description</label><textarea id="description" placeholder="Describe the product..."></textarea></div>
-                            <div class="field full"><label>Sizes (comma separated)</label><input id="sizes" placeholder="S,M,L,XL,XXL"></div>
-                            <label class="check-row full"><input type="checkbox" id="hasSize"> This product requires a size selection</label>
-                        </div>
-                        <div class="actions">
-                            <button class="btn btn-dark" type="submit" id="saveBtn"><i class="fa-solid fa-plus"></i> Add Product</button>
-                            <button class="btn btn-light" type="button" id="resetBtn">Clear</button>
-                        </div>
-                        <div id="formMessage"></div>
-                    </form>
-                </section>
+
+
+                <!-- PRODUCT FORM -->
 
                 <section class="panel">
-                    <div class="toolbar">
-                        <div class="panel-head" style="margin:0"><h2>Collection</h2></div>
-                        <input class="search" id="searchProducts" placeholder="Search products...">
+
+                    <div class="panel-head">
+
+                        <h2 id="formTitle">
+                            Add product
+                        </h2>
+
+                        <button
+                            class="btn btn-light hidden"
+                            id="cancelEdit"
+                            type="button"
+                        >
+                            Cancel
+                        </button>
+
                     </div>
-                    <div class="table-wrap">
-                        <table>
-                            <thead><tr><th>Product</th><th>Price</th><th>Status</th><th>Stock</th><th>Actions</th></tr></thead>
-                            <tbody id="productRows"></tbody>
-                        </table>
-                        <div class="empty hidden" id="emptyState">No products found.</div>
-                    </div>
+
+
+                    <form id="productForm">
+
+                        <input
+                            type="hidden"
+                            id="productId"
+                        >
+
+
+                        <div class="field">
+
+                            <label>
+                                Product Name
+                            </label>
+
+                            <input
+                                id="name"
+                                required
+                                placeholder="e.g. Zaku Premium Polo"
+                            >
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+
+                            <div class="field">
+
+                                <label>
+                                    Price (₦)
+                                </label>
+
+                                <input
+                                    id="price"
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    required
+                                    placeholder="18000"
+                                >
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    Rating
+                                </label>
+
+                                <input
+                                    id="rating"
+                                    type="number"
+                                    min="0"
+                                    max="5"
+                                    step="0.1"
+                                    value="5"
+                                >
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    Category
+                                </label>
+
+                                <select id="category">
+
+                                    <option value="shirts">
+                                        Shirts
+                                    </option>
+
+                                    <option value="jerseys">
+                                        Jerseys
+                                    </option>
+
+                                    <option value="watches">
+                                        Watches
+                                    </option>
+
+                                    <option value="perfumes">
+                                        Perfumes
+                                    </option>
+
+                                    <option value="shoes">
+                                        Shoes
+                                    </option>
+
+                                    <option value="trousers">
+                                        Trousers
+                                    </option>
+
+                                    <option value="other">
+                                        Other
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    Display Type
+                                </label>
+
+                                <input
+                                    id="type"
+                                    placeholder="POLO SHIRT"
+                                >
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    Stock Quantity
+                                </label>
+
+                                <input
+                                    id="stockQty"
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    value="10"
+                                >
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    Status
+                                </label>
+
+                                <select id="status">
+
+                                    <option>
+                                        Available
+                                    </option>
+
+                                    <option>
+                                        About to finish
+                                    </option>
+
+                                    <option>
+                                        Sold out
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    Badge
+                                </label>
+
+                                <input
+                                    id="badge"
+                                    placeholder="NEW / POPULAR / PREMIUM"
+                                >
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    Badge Style
+                                </label>
+
+                                <select id="badgeStyle">
+
+                                    <option value="">
+                                        Normal
+                                    </option>
+
+                                    <option value="sale">
+                                        Gold
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field full">
+
+                                <label>
+                                    Image URL
+                                </label>
+
+                                <input
+                                    id="image"
+                                    type="url"
+                                    required
+                                    placeholder="https://example.com/product.jpg"
+                                >
+
+                            </div>
+
+
+                            <div
+                                class="full preview"
+                                id="imagePreview"
+                            >
+
+                                <span>
+                                    Image preview appears here
+                                </span>
+
+                            </div>
+
+
+                            <div class="field full">
+
+                                <label>
+                                    Description
+                                </label>
+
+                                <textarea
+                                    id="description"
+                                    placeholder="Describe the product..."
+                                ></textarea>
+
+                            </div>
+
+
+                            <div class="field full">
+
+                                <label>
+                                    Sizes (comma separated)
+                                </label>
+
+                                <input
+                                    id="sizes"
+                                    placeholder="S,M,L,XL,XXL"
+                                >
+
+                            </div>
+
+
+                            <label class="check-row full">
+
+                                <input
+                                    type="checkbox"
+                                    id="hasSize"
+                                >
+
+                                This product requires a size selection
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="actions">
+
+                            <button
+                                class="btn btn-dark"
+                                type="submit"
+                                id="saveBtn"
+                            >
+
+                                <i class="fa-solid fa-plus"></i>
+
+                                Add Product
+
+                            </button>
+
+
+                            <button
+                                class="btn btn-light"
+                                type="button"
+                                id="resetBtn"
+                            >
+                                Clear
+                            </button>
+
+                        </div>
+
+
+                        <div id="formMessage"></div>
+
+                    </form>
+
                 </section>
+
+
+                <!-- PRODUCT COLLECTION -->
+
+                <section class="panel">
+
+                    <div class="toolbar">
+
+                        <div
+                            class="panel-head"
+                            style="margin:0"
+                        >
+
+                            <h2>
+                                Collection
+                            </h2>
+
+                        </div>
+
+                        <input
+                            class="search"
+                            id="searchProducts"
+                            placeholder="Search products..."
+                        >
+
+                    </div>
+
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Product
+                                    </th>
+
+                                    <th>
+                                        Price
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Stock
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="productRows"></tbody>
+
+                        </table>
+
+
+                        <div
+                            class="empty hidden"
+                            id="emptyState"
+                        >
+                            No products found.
+                        </div>
+
+                    </div>
+
+                </section>
+
             </div>
+
         </div>
+
     </main>
+
 </section>
 
-<div class="modal-backdrop hidden" id="importModal">
+
+<!-- IMPORT MODAL -->
+
+<div
+    class="modal-backdrop hidden"
+    id="importModal"
+>
+
     <div class="modal">
-        <h3>Import current Zaku products?</h3>
-        <p>This will place the 13 products currently in your shop page into the Products sheet. Existing rows with the same product ID will be updated rather than duplicated.</p>
+
+        <h3>
+            Import current Zaku products?
+        </h3>
+
+        <p>
+            This will place the current products into the Products sheet.
+            Existing rows with the same product ID will be updated rather than duplicated.
+        </p>
+
         <div class="actions">
-            <button class="btn btn-dark" id="confirmImport">Yes, import</button>
-            <button class="btn btn-light" id="cancelImport">Cancel</button>
+
+            <button
+                class="btn btn-dark"
+                id="confirmImport"
+                type="button"
+            >
+                Yes, import
+            </button>
+
+            <button
+                class="btn btn-light"
+                id="cancelImport"
+                type="button"
+            >
+                Cancel
+            </button>
+
         </div>
+
     </div>
+
 </div>
 
-<div class="toast" id="toast"></div>
+
+<!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbz8aTVu0qd5Egd50jaaLQgeheDFUbWrkYXxxto26Ez20xv0JFWrR6yNsDD1ScFdMBSzMw/exec";
+
+/* =========================================================
+   ZAKU ADMIN CONFIGURATION
+========================================================= */
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbz8aTVu0qd5Egd50jaaLQgeheDFUbWrkYXxxto26Ez20xv0JFWrR6yNsDD1ScFdMBSzMw/exec";
+
 
 /*
-  ZAKU ADMIN PASSWORD
-  NOTE: This password is visible to anyone who can inspect this HTML/JS.
-  It is only a client-side access gate, not secure server authentication.
+    ADMIN PASSWORD
+
+    IMPORTANT:
+    This password is visible in the frontend source code.
+
+    It is being used as a simple access gate for this project.
 */
+
 const ADMIN_PASSWORD = "ZakuAdmin2026!";
+
 const ADMIN_LOGIN_KEY = "zakuAdminLoggedIn";
-const DEFAULT_PRODUCTS = [{"id":"white-tshirt","name":"White Tshirt","price":7500.0,"image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6fUZ0ZQ7XTmHmE0Xmw5OiXC01Eq5ltYujTaw51tMdjA&s=10","category":"shirts","type":"POLO SHIRT","rating":4.9,"sizes":"S,M,L,XL,XXL","hasSize":true,"description":"A clean and versatile tshirt designed for everyday comfort, casual outings and smart-casual looks.","badge":"NEW","badgeStyle":"","status":"Available","stockQty":10},{"id":"black-tshirt","name":"Black Tshirt","price":7500.0,"image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS07NgkyTfP0w1krFVe6gq331FdqI4-Nat2IzZrrKGong&s=10","category":"shirts","type":"POLO SHIRT","rating":4.9,"sizes":"S,M,L,XL,XXL","hasSize":true,"description":"A clean and versatile tshirt designed for everyday comfort, casual outings and smart-casual looks.","badge":"NEW","badgeStyle":"","status":"Available","stockQty":10},{"id":"grey-tshirt","name":"Grey Tshirt","price":7500.0,"image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrZF9B45oa8ed5P2AaF62s29NXig_8-id2xnRWkouohQ&s=10","category":"shirts","type":"POLO SHIRT","rating":4.9,"sizes":"S,M,L,XL,XXL","hasSize":true,"description":"A clean and versatile tshirt designed for everyday comfort, casual outings and smart-casual looks.","badge":"NEW","badgeStyle":"","status":"Available","stockQty":10},{"id":"zaku-corporate-shirt","name":"Zaku Corporate Shirt","price":18000.0,"image":"https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80","category":"shirts","type":"CORPORATE SHIRT","rating":4.8,"sizes":"S,M,L,XL,XXL","hasSize":true,"description":"A polished corporate shirt made for meetings, workdays, events and anyone who wants a sharp appearance.","badge":"POPULAR","badgeStyle":"sale","status":"Available","stockQty":10},{"id":"zaku-football-jersey","name":"Zaku Football Jersey","price":20000.0,"image":"https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=800&q=80","category":"jerseys","type":"JERSEY","rating":4.9,"sizes":"S,M,L,XL,XXL","hasSize":true,"description":"A stylish football jersey designed for match days, casual wear and football lovers.","badge":"NEW","badgeStyle":"","status":"Available","stockQty":10},{"id":"black-leather-watch","name":"Black Leather Watch","price":8000.0,"image":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUSExMVFhUXGBcYFRUVFxYVFRcVFhUXFxcXFRUYHSggGBolHRUXITEiJSktLi4uFx8zODMsNygtLisBCgoKDg0OGhAQGy0fIB8tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAOEA4QMBIgACEQEDEQH/xAAbAAABBQEBAAAAAAAAAAAAAAAFAAIDBAYBB//EAEEQAAEDAgQDBgMGBAUDBQEAAAEAAhEDIQQSMUEFUWEGEyJxgZEyofAUQlKxwdFicuHxBxUjgpIWM6I0Q4OywiT/xAAZAQADAQEBAAAAAAAAAAAAAAABAgMABAX/xAAlEQACAgICAQQDAQEAAAAAAAAAAQIRAxIhMUEEEzJRImGBcUL/2gAMAwEAAhEDEQA/APNsXw9BsRhSFua+FQ3FYEFaxnEx8kKehiIV7F8PIQypSIWBdBnD4iUWwOIhZGlWIRPC4xK0UjI2rfEEOxOGumcN4gNCib8rhIXLOLizshJSRSpMsuuYrAZCZUIWXJnwVwnAlNc5MuVVRJORIXphcSuGBqqeIxnJOok2y1UrBqF4ziPJVMTikNq1JTCtkuIxZO6qOeSuOXExJuxSuteQuJLAL+ExpC0OB4kRqVjwURweIQaKRkeh8O4nG6KY52dktWCweLIWk4ZxDY6Lky4vKOzFl8MFVse5rkn8UJGql7R4H77dFme9KEUmjSk4sL1OJHmmM4ieaDvqJlOrdU1J7s0H29JB+8SQ1QdzfGnKhq4aUSLFE6mq2JQCxGCQfG8NnZbGpS5qnWwoKZSJygef4nAkKlBC3eKwPRA8bwxOTaoFYfGkIrhuMEboPWwpCgghCgqbRrGcY6p/+ZN5rICoU8Vihqhvc+zV/wCYtUVTiSzYrld75GjbBipjZ3VSrXVPvF3MgG0dqFQkKYCU9tJEVqyrkXO7V8UkjTWs2gPLU1XnUlA+mtYriQKWk6E1zEmogC2HqSEUwWIhAMK+ESpvSlUzX4OuHtyO3WZ43ww03EgWKv4DEaI1UY2szKdVzSWjs6otTVM8+eF2hSJRHHcNLHERZP4ewA3VFK1wRaplb7KeRSR2WpLUY1qbokKgK4XBAYReFCaSeRyTmogorVqMoZicMjjmqGpSCZSFcTLYnATsg+K4atnWo9FSrYdUTJOJhquFIVctWxr4EFDsTwxERozyUq9XwBGyqPpELAOAp7XKJIFYKZdpFXGoUx6sU66BRSL5CY5qYyspM6ASF6gcVacFXexYDInKJwT3JsoiMdSciNB9kLVug9YaLDGDrQUewVeIWXpuRjAV1OcbRWDphniNEPEoJjOHuAzN9locK8OEKAvyuLXaFcybi6OpxUkZTvnciktN9iYup/dJe0WHyE6lVO6JjDAqOtgOSrZOiOjWU7HyqbqZCko1IQoNlktTC1SmoAC4kAASSdAhvZzHjGVnUhUbSiS0OaXF0Ha+sXQb1VsPbotPaCqdektT/wBMP2qsPm0t/Uqni+BV2/czDm0z/VLHPB9MLxSXgyz6XRQPpotjGimCX+EDXMI/NUaFZtRudoJbMZotPmrqSIuIPq0AVUrcOBRl1IHRQPplNYjiZvEcJ5IdWwLgtgWpjqAOyIrRiHMISBWoxPD2lDK/DOSwKBraikZXSq4RwUBaQsFNoutrJ2cKgHJwqIUNuWKjVC4LoqrpesB0yNyfSeuEJsQsL0FcNUsr2FqQUFw1RE6bkCqNNgquis8Sp5myNUL4fUsi4u1cuVU7OrE7VAL7Q7mkrfdLqWxqNRhsSCnV82yq0mq0x8KxEo1g4aqGZ80Ua6dkO448UqZfvo3zKKYGjM9oeNmTRbpo88+nkg2GeWuDmnKQZBBgjrKY6mXuMa/VypyIGVv/ACOpPXkOiolwQk3Z6T2a7asflpYjwusG1SQGuIH3vwn5LU4viTaTc5LgybvDXOaJ5uaIA6rwvCl0homZ09oPmvSewvb6lh3sweJaXMEMbVYJyucfhcwXcL6i/QrjyekjdxOrH6h1TNRjsfTdSLnhlSmRY2cCF5zwXtB9mdUbSpt7ovJyESOscl61xXsvhKjDWwlbuXOv/pgPpPO+ajpPlBWbp9h8OB3mJc0RM93NNp5ze/oEMeNRtPmwyntyuDM1cdQryabBTdNxMAiNh5qtRoVHvc0UXw0TmLXBp6NMQStkzjPDcN4aNNpI3YySf/kMn3VU9qqRqGs2jVkNg/CWgSSNNJJiSrLZKkhHq3yzL1sA/em8ebHD5wqJp6wR1AXo2F/xEpizqL48x+hKMUOO8MxnhqsZP8bR8t/kqKUl2ibS8HlvCuCuxGbxBjWwMzgTc7ADWwJ9uascW7H1qQLmltVoEks1i18u4uBaV6g7sTSE1cFUGkFhOZjuUkXBG081ncViMRQhtYPoEE58odUpub/CQCCCOYtBiyjkzZIS64KQxwnHh8nljsLKqV+Hjkj2PdmqOcBALiQOQJVdzV1p2jmcaZmK/D1TfhiFqquHlVKuETC0ZotIXEZrYToqdTDIAKYcuynvokKMtWMOpugophKkoQFawtSCgx4s02AejuEdZZnBPuFpMIFDMuDpwvkUBJTd2ElynULD4g2gomysCgfdlS06xtyXW0ciYcETMrKdsscXPFMGzRJ/mP8ARGRiCYWH4tVLqryTfMfzhaK5BJ8DGWHn+X9/yU4dZVQZKuYWnJCqRZ2tU7qnnB8ZsBE2O4OoPoiv+HPZ6picR3kEU6XxPIn/AFXbN5uAM9LIbw7hr8di20WWGpds1o1edrT6kjmvTeOcSp4Gg3B4YAQMttZPxSdyZlx3mFPI7/FFMar8mXuJdoaOEaKGHGZ97jxeI7n8R0vp8lh+J4ytUeTWc4uBu0zAI2hUJMkkyTqUTxtbv2d8f+42G1f4hENqedoPoea0YKIHNzsoZkW4a4MZimEiXUGOb1k06kD/AGEoGXIhia+VtJ8AipQdTPnTqOZPoAwqkhIopucoy5cc5WuB4UVa7GOIDZl2Y5Za25bPMxHqi/sCRouH8Yq4JlJ/eEueJLLgtbqLmxER4SN+i3/B+1WHx9M0qobJEEHS/nofkfkvH+0HEu/rvfPh0bcnwjcTzMn1VDDY11NwewwR9QRuFLS0Vclf+G+7TdjjReXtdNFx+IguNM/xAXLfmNboBxPs1iKQzFmZpEh9M52kbEEXhbfsz2sbiKOWpEgQ4G8dD05H6ITiuJq4Yiphqk0nEgM1a12pbGx3+r87yyg6RdY1JcmIghR1FqRx/D1TGMwwBP8A7lP/AE3++jvdWHdk2V/Fgqzaw1yOIbUHvY/JXj6hPvgjPA11yYSq2VTrUUfxPDy0lpBBBIIOoIsQVW+xq9pkWmjPVKSgdTWhrYNDcRhSFqAC3UgoRYq29sKGqyVgBHAV1ruFvkBYDCvgrXcExNwFPIrRfFLk0PdpJ2ddXFR3WRtMidlE4W/hlPzxr6BQPrbcl1as47Q8mGk7RIWDrVpJJ11+a27q7bg6bLH8VweR0fdN2n9CmihJvgrUHXRSvVDKZ5wg9A3AdO1xqPLmOiu4gGrVp0ZBBc1stNiJuYOlrwnJ9m7/AMNG/ZsPWruEPeGnMeRBc0DoG+I/zN5INicSaj3VHb6dAtB2vxAZQp022zwYHKB+mUeio4DjjcjaNem11MDKCB4gJ15je4jXdRhfyrsvNL4XVAkuXaddzZymJBB6g6hX+JYCkIdQqhzXEwxxAcIOmaw3FjB81RwVOagBsW3IdYyNAWmCTMWF+ismmRacSJ8gkEEEWIOoPIjZFK7c2Ap1N6WIew9G1WNcP/IIfjnkwZto0S42FpbmuGyDAOiMcBpd7gMfS1LRTrN5ywyY9GrSNEz5cmlyjzrhciKPc5dwuGqVXinSaXvdYNbr/QDcmw3UBcpaOOexrmMOUO+IizjG2bWEH+hl+w3hMVTwNUgv72oPDVDD/pAfeDXRLi0x4tDcC1z6JSwdOvhC2mBBEjKPvRIIHUH5rxR5XqH+EnEszXUCbtsPIy5vt4x6hc+bHasviyc0d4VQa9hFRjXC4cDBuFQr9l303ivw+saTxfuyZb1DeXkifEScPj30/uVG5m+Yg26Q4+yIMqh2hgrmTaOl8maxlIlxzg5zd06knU+6qVMJK2dZragIqNkDR248ig2O4O9pzMJezp8Q8xurwyeCUoeTM1cLCoV8PK07aYKq4nBCLLojk+yEsZjcXgUIq0iCtriMGRsg2OwMqnZFqjOVGbopwfFQQqmIw5CrNJaZCDNF0zc/b+qSyf29JJqi/uM21OvMA/L9JTazRfKVJRw9pA9d/TknMpwb6bx+qZySF1bKb6J8+ip4ukHtLXD9weYRarzFwojQ3InySPIH2zIVMKWOh2gMg8xr+mik7NNz4oHkHH3GUf8A2Wodw6lVb3dSWOM5KouWkxILNHNMCYg8jsXcI4CcI5hfBLns8bfExzQfuu89jBFpASyyKqGjiakmWO3Dv/6Gt/C3TrJH5Qs/mWg7Z4ao/GuDGlxLQ6AJtAE+Uoeez+JGtL0L6c+2aU0GlFCzTcgcXIvgqjwwZpLXANaHNIcL27uoWkEBsmL7+HdCCMroePhdDmzexuJCs1sW0EFgBhpAJbl8RJ8QaHECOUxrAEpyfI7GUsxJpQ5jBEAQ8Aauc3f+YTaJIR7/AA1xLe/q0nEAVaLm30Mf0JWRa4ggiQdo1naI3Wt4Nwqq2oytiaRpx4m1MzGOqONgx7Jkk5tYB5kylm6Q8FbMiWZSWzMEtnnBIn5Lkol2gwHdPcWsIpTAdOZubkT903FnQdYshUop2hZJp0dlNK7K4SiLZwrS/wCHeK7vGNM2Iv8A7SHfkD7qhh+L02MDfslBxAALn5nlxjWDYH5KzwHiWbE0mtpUmy4glrAHQ5jgbjz+SSTbT4KRStcnpv8AikKVBrMS9p8JDM7buZJIzBtsw8VxIm1xCzOKwGJpw8tLqeoq0Zc2Ni5nxM9iBzWv/wASWd5h6THAEPPiBjQAHdZyn20+xMZ3rC9ktY0s+PTlobDouTzSOpXrZHgOKmBJD2/iEH3RqhWBgtMeSpcZ41wzE0DXoCMQ6ILQab5JAzVGxDgOvKFWwtSIA9+aDQydqwhicAyr4iCx+kjQ+Y3QXG8PqUviFtnC7T67FGWYoTldodCrshwIIDmkxlibIqTQGjHOvsq2L4bIsjnE+G9yDUb4qep/FT8+beu26ovqECRvorxn5RKUU+zIY/h+xCzuNwpb5L0etTDtRqg2P4aLq8Zp9nPPG10YPIktJ/lYSTk6ZpcPiiPM/pf0BUpAcZtB5bdSOfpzUNFgiYIMbXkEH5LrDqC3fXyUJI6UxOBi0n2JnnddouMxfn/f3U7WwPOAR8QcJt+ajfXAMDWNIItuCTopsqiemA4Ea9eUbiNFBi6hbTIEkBzXNPkd/wB0/Cu5R1mDraysVRmaWkSSDuLbT6FI0OmUe3dcitTe0kZ6eoJEgmYttGyy4f1Wh7TU+9wVN41onI7oBAE+mQeqxTK5Cvi5ic2W1IKKzgMDUrPFOm0ucfYDdzjo1o5lDKFcumATAl0AmG8zGg6lFcDjS4FkhjGse+G6FzGEhzjq4zz02hO3SJxVvk2nAqGFwh8AGLxeVzmwf9JpaLhjouZIbm3JiRMJuMrVsVkxD2MxNIiMjfD3ToILTTPxX8O5kiys8FaynS8MZoBA/gY0RBA3Icdd5VnCPlznNYAHSKroABJHMWnrykbXhtfLL1XRj+LYF+FPe0SabXa0iQ7w2u5pEFhJiDv5rNgLb8TwrC45yO8dh6ggCWjIZaWO2sd72usPKpjd2ieRVR0rkriu8KbRL4rlzWZTBYJId930VG6JpWymj/Y/Dg16RjxZnkfytpn/APRAUWO7Ova3vKThWp82XItMEbkfwz6I12CptDzWcYbTaGS63jc/O75NaPVTlNatjxxtSSZtf8RcT48LSH3nVB8m5T/4uXkPbTHl1d1MXFKWiN3/AHvODb/atR297Qj7TnaQRSpw3cGo6zD6F1T/AIrzQEucJJPU6z16pMUP+imWVLUuta6WhhMtEggwRzIHNHMF2nxLHBlSHwNCPEYtBLYdIjfRUaGMePvWOoMOaY0lpkFXcNiKbj46bHC8tzCkw6xECNrBUkr7RKLa6YdwfbOi6z2vYeuV4925SP8AiVouFcdpOIDKrXToGmXf8Pjj0XnGPwVLVwdSB+GWhoJH4KhBDhe8FD6vDDIyO15aDqSTop+2n1wUWWS/Z7lRxlOSA9ltWy22syNVmeJ06VOsW0ntcwgODQZ7txN2zpGhA2lebUMbimRlrOMbFxIBHR23XRGey2erWJqPzBozATaTYHrqUqxuLux/cvwaaSm1nDSFYiE3JKYLB3cNSRHuuiSNi6ganWM33VqhWYLOFtBsRPUeugVFxEaxA31vrbfko2vvcj1vbaVdxTIKYaDJMB1juRrF/wDbtzVatTdJuDzIm9tI56e6YK4tlnbWBEdU12JztMzF7zYfy7qbxsopoeHAaR5ajT9lYdibgTY9DEb2G3qhVTFAcwOt/mdfzTW41sifIb+kn9lJxZRTQSoEd66i/wD7eIEDTw1Bp0kz8xyWSdwYU67qdeoKbGeIn7z2zYUxFyfWORR/E1GVGZAYOxBktcIg2+fmUq9L/MKUG2KoiHD8beY8/wAzO8jQbQZpMz+O42XNNGi3uaH4G/E8j71V+r3RzMcrKhg8U6m9rxqD/ex1Udei5ji1wIIsQdQU1jptF+SvxRz3ybzh/Fa1amGPdUeSJe1kNqPpzarSePEQNC0bhHGcWdn7imfA1ud5czM8tLuQuTvzMA3JWMxtU4I0qTDmdkD6jXnNTD3fC6kQQ6m4t1LS06Spf+s6oJdTpsa9wAc4ue4HKIBiQZ9fdQcZP4l9kuw92rxBY3M7K0OpmnTaGljiXOBc8NOjckTNwYH3gsTKi4jUr1MuIrFzu8zBryRfIYIDR8IBOkAXPVVBVIVYRpEZtsIlKVY4ZVFWk6iQBUbNSm6AC4R42E76A35cgqBqJrF1oJ8Lr1WO7yk5zSCIy3zPNmty7k6dJXo+Ipd3hwK0OyNLqpzC9VxzO1Mm5DQeiA9nME2jSbiqjdJ+ysd8T3HWu8bADT35IPxjETne6SxviqOP33bM5XNvKei5sy3eq/p04fwju/4ZfjeKLn338ZHKR4RB0hpmNi8qnQG6Y55eS5xu4kk66nkrAZaxafI39jBXVVHI3btje9IUhxEQJ0+f1+qrzumErAYSocVez4Kj2zqGuLQf5gPiGuqTuKSZcxpP4mf6Tv8AwhpPm0oYuhCkFSYQ+1ifDnnTxOadeRDQtV2KweRlSqRMwB+Z19FkcFRlwH1J0XpfDg2nTawXgX891OfHCLY1fLJH1jOUrjaoJvZWZY61lWq4IjQyElliTO1cUfcFJYxnKjHTIAtMWvBNvqykImIM/wBVSweLboTB2Nz6Qr1PFbECdje/K22i6rOOjjmZTE+dv20333Tck9fLXkrLQIJI1N40567XTQwCflCNmobTweYGSDpOvP6/oosRw/NYDS31CuNAF4P112Ti4HS/ne/kCgEAVuH1G35e/wDT+iqsxNSk8VGktqNNiNfXUR0PNacuBGs6RlFveVQxOHFScwEn+vyug4pmUqL1Oph+JAAxSxUabP6t/F/L8Q6jQZguBfZsSx2J8DGS9roJa5zbtAItMwYJGkIbieEuBzMPr12Rbh/bGvSaaWJYK9PQ54zgbQ8gh3+4HzUpRa6KqUW7Zm+IVnVaj6rhBe4mAAAOQAFgAIHoqwJW1P8Alle7arsO4/deCG+92/MJv/STX3pYmg/yeyfYOKymjODYBqVScGzkK7mjp/p5nfm32Q6QVtKfZJ3dOpvxGGptzB8uf4iYyw2+WI5+6qt4Lw+kZrYvvf4aAzT0LhYf8kFJILi2ZnDNdnb3cl8+HKCTPQDVb2jwKjSP2rFsDXuhzME05rx8VZ2wJE5QI87hVaHG2sGTAYYU+dRwz1iOebRvnfzUVJrge8rEkkzJ8QJB+870U55H4KY8a8l6vXq4mpmcYneCA1uzWDZBO3+OpxTw9On3ZAzVIdII0ZaLbmL7LS4bEUXNAzFpufFdpMz8Q09vVef8d4fiGvdUq03Q4znbD6UaNaKjJbpAiZ0sthps3qG0qBM7rmZJ4gw6QeREH2KWTqus4rOgE6AnyE/knZD+E+xTMh/slJ6rAH5DyPsU5jUwIjwjBGq8NGmpgTbn5JW6VjxjbDPZbh+Y5jo35uOy09RmXT2/dVMNR7sBrR4QZHU7E+qnDzvvoSNJXNduzrUaQ9p0y2JHqPNXaOIsAeSp0wCQdbmOX9lIMNBP17LMITzt5hJB+5/i+YSWMYriHDa1F0PEgE3HM7pmExkXGu+v5L17EYEOmQ09Df5FZPjHZJr/ABM8DulhN0YZ/sSWH6AlLHAgggR1iDysrza4cIBi17GCOU7LOY3AVqB8Tdz4hoen6ruHx52PmJsYnTcf0XQpJ9EGq7NbRaPXbkY2Chf7c9fqVRwGPaRDrEwdjfa2yuAtOh8wTdGzUcGhJ/smDnlv+4UjZDoAHTy+uS65lv1B0RsDQ0VQfIjnBk/om18KHCzdtxN/PSVxjCSSdfK1k0uJi61goG4ngQMkWPS3rCEV+FVG7T6Ba1tSYt77xvC7UpB+xvvGsc5WNyYulTId4h5xbzujmFp0SJDNr5pMWudVefw8HRt9hbX6+gq7cK5m3WFKcL6KQnXYTpY5oDW6W5ATfkLHdPp4ggwCf4RBPh6E3I0QhjndY57k/omiuethzg66nn5KXtst7iDdRzHgy3xfibDSI1zQbn0UTaUHwvJ0lukjXxEfEJGkIbSxxtIknewnr8t08Y02953N+f1qsoMzyBCtVDwAYO9/EeUmZQqvwuiQS5gBOmWQbnpZOfi4094XGVptEj+yrGNE5NMH1uB09Q5w9QR+UqB/AztUHq0j9UZMkaH3/NJmHN5kfP6/NM5InpYEo8JcXRmHoFqeE4NtIQJki/rOsbWUbcPl2i17SY6H60V6hrE22PQaaa7KOR7F8cdS3h8jmgb6kg6XgWGxT8g0AJGw6nQdFBRkQRI5nSQBb8tFYw9UnMQ4cxP4R6/UKaVFLOPpE6G1xGvmnGrBby2jy808O9pOsCbTI/JSZQ4NjUaRpA2PumAchn8PskmzU/G33P7LqFIJpC76uE5zZ/XWfmFOKZPL2Tcmy5rLA7F8OZUBa4A9CPoLG8Y7GRLqXhOtrgr0IC6jNP26fsmjNx6FlBPs8TxmGq0jD2wOY09VJgsWW3mesnTQ7r1rGcMp1AQQCsRx3scR4qdumxXTDOn2c08LXRHh+KgxIHLp6WkFW6TA67SL6XOkc/RZGpRfSMPBb1GnurOH4oWHpym2nTUq6/RL/TStAvr/ACnWQdU4YYXgfRiVTwPFGO+KL8zby+QRrBDcEO5A6i+k/og5DJWVBhY/Py/SNVKylAkiRYWMnoUTpVAZtcWI05c7+y5Xoi5i17k/pul3Y2oM7lpIdF9J38iQNOiZisP+G3Q2E+Q113Wmqdnq7WNqd0S0gEQLgeWyFV8OACTAOmwNj7oLImbQDfZZi29+X10BUb8IeQ+uX90TrRMD1PLl5JzG/CLXm/Xzv0R2BqBX8NgzA03sn/YJERP1si0tuIym+8k3vyhcpUo89yNtZ6/stsw6gluAkXFtiYMjZObw6Ntrb3HnpZF3YedLAbwSdj7KSo1rhcb6xAAH4Z1sD9WS2FRKVDCtzRbyAJExuNNvy5qU4Fo3i8Sb6kRI3udP6KRhInKAd5zWESBp81ewha+3MRB5AfISYPK3qrsZA+jhhlaXa3EDxSZB01Ow2SfhReBobC4aY5GTrGg/Sxh9G5lpy2Ek3mZNzb3F7Kvj6XhBGs3BnbnzQCDy0WJmJuemxExIBhLDkHwiwB5mLbG3SP7qSvh3h0lsjkTInSban9/RQZ9YkncG59LaW16wjQLLDXRJta5iDBsLibafIqzSpieREjfR259Z9IQwVgNYJ9xmGn6p7MTqCOcaG45A3t+yzQbLv2Mch7JKH7ZS6e64hQbNzP0EoHKEmE7p2VchYbI5z7JEfUJ+QDUJEDqhYSs6lv8AXzTHNGkfKytOaoy3yWswD4pwOnWbGUH0/ZYLjHY51Mk0/wDivVEytSa6Q4eX0U8MriLLGpHhtQOYYcC06XRHA8UcwQNNzrpovROL9nWVAbBYTi3ZapSMsMjl/RdcM0ZdnNPFKPKC+E4u1w8Uzsd5GqMcMxQD2ucc7RBcNJtYH1Xmxe5phwIPI80UwXFi2xvty9k043F6ghLn8j3ThfanYkEfhd+hV7EYbB4oeJoY7nofdeL4PjkaOjodFoOH9oxoSW9fib+4XnuU4fJHTpF8xZqOKdiKjJfSIqCLA2MeehWQxeEczwvYQQNCDr025LbcL4+4AEO8PMHM3+iOfb6FduWtTaZ3if7KsM19Mm4tdo8jpPi8TIv59dp6pzA6wjncCDdbLi/Zii6pFBziIuNhyg7FXMH2FY5hu5pPr7qnurwgamHfULQ6IMxcXP8AVdw5B2gi4J1iST4fMIz2j7NVcNBddhtnEj0PVAxOokaWE5o/RUTTXApNiCAW6wbyeX1Khp1PFuIk63BmICkLJkkHNEAW08z5/JVnUyN45H0RMEcLXLpEZvugXAIvp19FNTMi5E7aWIsRzNkMp1IsRbp90kWI81YaCd4n3J5ygEtVWWMjNINjG3WbcrjzQvEQHECSfS2hBkGxt81cqTsXESJNryIPkZULaeYG94tN4NtTPoiBor0wZF7DU31Niutp2BF9LX1v6A+mw1T+5gXJ39ed9tFIG3+GJ0AtpzM2WtGSZH3Z+mj911S+jv8AiV1C19hpm4CkbskkuMuRu1KckkgY6VG5dSQCiGroqz9l1JKxkO2P1uhnHNAkkmh2Z9HmvaZBmbeY/JJJenj6OHJ2TjQIvgt0klH1PQ+Dya7sdq5azh2pSSXlx+bOuXQd4LofNHMLukku3F0ckyj20/8AR1PJeT0viP8AL+pSSTR7Y2P4ibv5J/L65pJJZFETYf8AZFxoF1JSl0OW6OitYdJJQMy+1XqS4kgxWWEkkkRD/9k=","category":"watches","type":"WATCH","rating":4.7,"sizes":"","hasSize":false,"description":"A clean and sophisticated watch designed to complement both casual and formal outfits.","badge":"ZAKU PICK","badgeStyle":"","status":"Available","stockQty":10},{"id":"brown-leather-watch","name":"Brown Leather Watch","price":8000.0,"image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlN72gSGuecFwn-B0cE9HACPpqoNeFnPyYIo3kcvz-sA&s","category":"watches","type":"WATCH","rating":4.7,"sizes":"","hasSize":false,"description":"A clean and sophisticated watch designed to complement both casual and formal outfits.","badge":"ZAKU PICK","badgeStyle":"","status":"Available","stockQty":10},{"id":"sliver-watch","name":"Sliver Watch","price":8000.0,"image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhHYcVjalYK93djiTkEDbijbYd-PWYeOkhaSeK6mKk2Q&s","category":"watches","type":"WATCH","rating":4.7,"sizes":"","hasSize":false,"description":"A nice watch designed to complement both casual and formal outfits.","badge":"ZAKU PICK","badgeStyle":"","status":"Available","stockQty":10},{"id":"zaku-signature-perfume","name":"Zaku Signature Perfume","price":12000.0,"image":"https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80","category":"perfumes","type":"PERFUME","rating":4.8,"sizes":"","hasSize":false,"description":"A premium fragrance with a confident character, perfect for everyday wear and special occasions.","badge":"BESTSELLER","badgeStyle":"","status":"Available","stockQty":10},{"id":"zaku-street-sneakers","name":"Zaku Street Sneakers","price":35000.0,"image":"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80","category":"shoes","type":"SHOES","rating":4.8,"sizes":"39,40,41,42,43,44,45","hasSize":true,"description":"Comfortable everyday sneakers built for casual outfits, movement and modern street style.","badge":"NEW","badgeStyle":"","status":"Available","stockQty":10},{"id":"zaku-cargo-trousers","name":"Zaku Cargo Trousers","price":22000.0,"image":"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80","category":"trousers","type":"TROUSERS","rating":4.6,"sizes":"30,32,34,36,38,40","hasSize":true,"description":"Modern cargo trousers designed for comfort, versatility and everyday streetwear.","badge":"","badgeStyle":"","status":"Available","stockQty":10},{"id":"zaku-premium-polo","name":"Zaku Premium Polo","price":18000.0,"image":"https://images.unsplash.com/photo-1625910513413-5fc45e3e0d99?auto=format&fit=crop&w=800&q=80","category":"shirts","type":"POLO SHIRT","rating":4.9,"sizes":"S,M,L,XL,XXL","hasSize":true,"description":"A premium polo with a clean silhouette and versatile look suitable for casual and smart-casual styling.","badge":"PREMIUM","badgeStyle":"","status":"Available","stockQty":10},{"id":"zaku-elegance-perfume","name":"Zaku Elegance Perfume","price":15000.0,"image":"https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80","category":"perfumes","type":"PERFUME","rating":4.7,"sizes":"","hasSize":false,"description":"An elegant fragrance designed for people who want to leave a memorable impression.","badge":"","badgeStyle":"","status":"Available","stockQty":10}];
-let isAdminLoggedIn = localStorage.getItem(ADMIN_LOGIN_KEY) === "true";
+
+
+/* =========================================================
+   DEFAULT PRODUCTS
+========================================================= */
+
+const DEFAULT_PRODUCTS = [
+
+    {
+        id:"white-tshirt",
+        name:"White Tshirt",
+        price:7500,
+        image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6fUZ0ZQ7XTmHmE0Xmw5OiXC01Eq5ltYujTaw51tMdjA&s=10",
+        category:"shirts",
+        type:"POLO SHIRT",
+        rating:4.9,
+        sizes:"S,M,L,XL,XXL",
+        hasSize:true,
+        description:"A clean and versatile tshirt designed for everyday comfort, casual outings and smart-casual looks.",
+        badge:"NEW",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"black-tshirt",
+        name:"Black Tshirt",
+        price:7500,
+        image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS07NgkyTfP0w1krFVe6gq331FdqI4-Nat2IzZrrKGong&s=10",
+        category:"shirts",
+        type:"POLO SHIRT",
+        rating:4.9,
+        sizes:"S,M,L,XL,XXL",
+        hasSize:true,
+        description:"A clean and versatile tshirt designed for everyday comfort, casual outings and smart-casual looks.",
+        badge:"NEW",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"grey-tshirt",
+        name:"Grey Tshirt",
+        price:7500,
+        image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrZF9B45oa8ed5P2AaF62s29NXig_8-id2xnRWkouohQ&s=10",
+        category:"shirts",
+        type:"POLO SHIRT",
+        rating:4.9,
+        sizes:"S,M,L,XL,XXL",
+        hasSize:true,
+        description:"A clean and versatile tshirt designed for everyday comfort, casual outings and smart-casual looks.",
+        badge:"NEW",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"zaku-corporate-shirt",
+        name:"Zaku Corporate Shirt",
+        price:18000,
+        image:"https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80",
+        category:"shirts",
+        type:"CORPORATE SHIRT",
+        rating:4.8,
+        sizes:"S,M,L,XL,XXL",
+        hasSize:true,
+        description:"A polished corporate shirt made for meetings, workdays, events and anyone who wants a sharp appearance.",
+        badge:"POPULAR",
+        badgeStyle:"sale",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"zaku-football-jersey",
+        name:"Zaku Football Jersey",
+        price:20000,
+        image:"https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=800&q=80",
+        category:"jerseys",
+        type:"JERSEY",
+        rating:4.9,
+        sizes:"S,M,L,XL,XXL",
+        hasSize:true,
+        description:"A stylish football jersey designed for match days, casual wear and football lovers.",
+        badge:"NEW",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"black-leather-watch",
+        name:"Black Leather Watch",
+        price:8000,
+        image:"https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=80",
+        category:"watches",
+        type:"WATCH",
+        rating:4.7,
+        sizes:"",
+        hasSize:false,
+        description:"A clean and sophisticated watch designed to complement both casual and formal outfits.",
+        badge:"ZAKU PICK",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"brown-leather-watch",
+        name:"Brown Leather Watch",
+        price:8000,
+        image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlN72gSGuecFwn-B0cE9HACPpqoNeFnPyYIo3kcvz-sA&s",
+        category:"watches",
+        type:"WATCH",
+        rating:4.7,
+        sizes:"",
+        hasSize:false,
+        description:"A clean and sophisticated watch designed to complement both casual and formal outfits.",
+        badge:"ZAKU PICK",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"sliver-watch",
+        name:"Sliver Watch",
+        price:8000,
+        image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhHYcVjalYK93djiTkEDbijbYd-PWYeOkhaSeK6mKk2Q&s",
+        category:"watches",
+        type:"WATCH",
+        rating:4.7,
+        sizes:"",
+        hasSize:false,
+        description:"A nice watch designed to complement both casual and formal outfits.",
+        badge:"ZAKU PICK",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"zaku-signature-perfume",
+        name:"Zaku Signature Perfume",
+        price:12000,
+        image:"https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80",
+        category:"perfumes",
+        type:"PERFUME",
+        rating:4.8,
+        sizes:"",
+        hasSize:false,
+        description:"A premium fragrance with a confident character, perfect for everyday wear and special occasions.",
+        badge:"BESTSELLER",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"zaku-street-sneakers",
+        name:"Zaku Street Sneakers",
+        price:35000,
+        image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80",
+        category:"shoes",
+        type:"SHOES",
+        rating:4.8,
+        sizes:"39,40,41,42,43,44,45",
+        hasSize:true,
+        description:"Comfortable everyday sneakers built for casual outfits, movement and modern street style.",
+        badge:"NEW",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"zaku-cargo-trousers",
+        name:"Zaku Cargo Trousers",
+        price:22000,
+        image:"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
+        category:"trousers",
+        type:"TROUSERS",
+        rating:4.6,
+        sizes:"30,32,34,36,38,40",
+        hasSize:true,
+        description:"Modern cargo trousers designed for comfort, versatility and everyday streetwear.",
+        badge:"",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"zaku-premium-polo",
+        name:"Zaku Premium Polo",
+        price:18000,
+        image:"https://images.unsplash.com/photo-1625910513413-5fc45e3e0d99?auto=format&fit=crop&w=800&q=80",
+        category:"shirts",
+        type:"POLO SHIRT",
+        rating:4.9,
+        sizes:"S,M,L,XL,XXL",
+        hasSize:true,
+        description:"A premium polo with a clean silhouette and versatile look suitable for casual and smart-casual styling.",
+        badge:"PREMIUM",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    },
+
+    {
+        id:"zaku-elegance-perfume",
+        name:"Zaku Elegance Perfume",
+        price:15000,
+        image:"https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80",
+        category:"perfumes",
+        type:"PERFUME",
+        rating:4.7,
+        sizes:"",
+        hasSize:false,
+        description:"An elegant fragrance designed for people who want to leave a memorable impression.",
+        badge:"",
+        badgeStyle:"",
+        status:"Available",
+        stockQty:10
+    }
+
+];
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let isAdminLoggedIn =
+    localStorage.getItem(ADMIN_LOGIN_KEY) === "true";
+
 let allProducts = [];
+
 let editingId = "";
+
+
+/* =========================================================
+   HELPER
+========================================================= */
 
 const $ = id => document.getElementById(id);
 
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
 function showMessage(target, message, type="notice") {
-    $(target).innerHTML = message ? `<div class="${type}">${escapeHtml(message)}</div>` : "";
+
+    $(target).innerHTML =
+        message
+            ? `<div class="${type}">${escapeHtml(message)}</div>`
+            : "";
+
 }
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
 function escapeHtml(value) {
-    return String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
 }
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
 function showToast(message) {
-    const t=$("toast"); t.textContent=message; t.classList.add("show");
-    setTimeout(()=>t.classList.remove("show"),2200);
+
+    const t = $("toast");
+
+    t.textContent = message;
+
+    t.classList.add("show");
+
+    setTimeout(() => {
+
+        t.classList.remove("show");
+
+    },2200);
+
 }
+
+
+/* =========================================================
+   API CHECK
+========================================================= */
+
 function requireApi() {
-    if (!API_URL || API_URL.includes("PASTE_YOUR_")) throw new Error("Paste your Google Apps Script Web App URL into admin.html first.");
-}
-async function post(action, payload={}) {
-    requireApi();
-    const response = await fetch(API_URL, {
-        method:"POST",
-        headers:{"Content-Type":"text/plain;charset=utf-8"},
-        body:JSON.stringify({action, adminKey: ADMIN_PASSWORD, ...payload})
-    });
-    const result=await response.json();
-    if (!result.success) throw new Error(result.message || "Request failed");
-    return result;
-}
-async function getAllProducts() {
-    requireApi();
-    const response=await fetch(`${API_URL}?action=getAllProducts&adminKey=${encodeURIComponent(ADMIN_PASSWORD)}&t=${Date.now()}`,{cache:"no-store"});
-    const result=await response.json();
-    if (!result.success) throw new Error(result.message || "Could not load products");
-    allProducts=result.products || [];
-    renderProducts();
-}
-function updateStats() {
-    $("statTotal").textContent=allProducts.filter(p=>p.status!=="Deleted").length;
-    $("statAvailable").textContent=allProducts.filter(p=>p.status==="Available").length;
-    $("statSold").textContent=allProducts.filter(p=>p.status==="Sold out").length;
-}
-function statusClass(status) { return status==="Sold out"?"sold":status==="About to finish"?"finish":"available"; }
-function renderProducts() {
-    const query=$("searchProducts").value.toLowerCase().trim();
-    const list=allProducts.filter(p=>p.status!=="Deleted").filter(p=>
-        !query || [p.name,p.category,p.type,p.status].some(v=>String(v||"").toLowerCase().includes(query))
-    );
-    const tbody=$("productRows");
-    tbody.innerHTML=list.map(p=>`        <tr>            <td><div class="product-mini"><img src="${escapeHtml(p.image)}" alt=""><div><strong>${escapeHtml(p.name)}</strong><span>${escapeHtml(p.type || p.category)}</span></div></div></td>            <td class="price">₦${Number(p.price||0).toLocaleString("en-NG")}</td>            <td><span class="status ${statusClass(p.status)}">${escapeHtml(p.status)}</span></td>            <td>${Number(p.stockQty||0).toLocaleString()}</td>            <td><div class="row-actions"><button class="icon-btn edit" data-id="${escapeHtml(p.id)}" title="Edit"><i class="fa-solid fa-pen"></i></button><button class="icon-btn delete" data-id="${escapeHtml(p.id)}" title="Delete"><i class="fa-solid fa-trash"></i></button></div></td>        </tr>`).join("");
-    $("emptyState").classList.toggle("hidden",list.length>0);
-    updateStats();
-}
-function resetForm() {
-    $("productForm").reset(); $("productId").value=""; $("rating").value="5"; $("stockQty").value="10"; $("status").value="Available";
-    $("formTitle").textContent="Add product"; $("saveBtn").innerHTML='<i class="fa-solid fa-plus"></i> Add Product'; $("cancelEdit").classList.add("hidden"); editingId="";
-    $("imagePreview").innerHTML='<span>Image preview appears here</span>'; showMessage("formMessage","");
-}
-function fillForm(p) {
-    editingId=p.id; $("productId").value=p.id; $("name").value=p.name||""; $("price").value=p.price||0; $("rating").value=p.rating||0;
-    $("category").value=p.category||"other"; $("type").value=p.type||""; $("stockQty").value=p.stockQty||0; $("status").value=p.status||"Available";
-    $("badge").value=p.badge||""; $("badgeStyle").value=p.badgeStyle||""; $("image").value=p.image||""; $("description").value=p.description||"";
-    $("sizes").value=Array.isArray(p.sizes)?p.sizes.join(","):String(p.sizes||""); $("hasSize").checked=Boolean(p.hasSize);
-    updatePreview(); $("formTitle").textContent="Edit product"; $("saveBtn").innerHTML='<i class="fa-solid fa-floppy-disk"></i> Save Changes'; $("cancelEdit").classList.remove("hidden"); window.scrollTo({top:0,behavior:"smooth"});
-}
-function updatePreview() {
-    const url=$("image").value.trim(); const box=$("imagePreview");
-    if(!url) { box.innerHTML='<span>Image preview appears here</span>'; return; }
-    box.innerHTML=`<img src="${escapeHtml(url)}" alt="Preview" onerror="this.remove();this.parentElement.innerHTML='<span>Could not load image URL</span>'">`;
-}
-function collectForm() {
-    return {
-        id:editingId || $("name").value.trim(), name:$("name").value.trim(), price:Number($("price").value||0), rating:Number($("rating").value||0),
-        category:$("category").value, type:$("type").value.trim().toUpperCase(), stockQty:Number($("stockQty").value||0), status:$("status").value,
-        badge:$("badge").value.trim(), badgeStyle:$("badgeStyle").value, image:$("image").value.trim(), description:$("description").value.trim(),
-        sizes:$("sizes").value.split(",").map(s=>s.trim()).filter(Boolean), hasSize:$("hasSize").checked
-    };
-}
-function login(password) {
-    if (password !== ADMIN_PASSWORD) {
-        throw new Error("Incorrect admin password.");
+
+    if (
+        !API_URL ||
+        API_URL.includes("PASTE_YOUR_")
+    ) {
+
+        throw new Error(
+            "Paste your Google Apps Script Web App URL into admin.html first."
+        );
+
     }
+
+}
+
+
+/* =========================================================
+   POST REQUEST
+========================================================= */
+
+async function post(action,payload={}) {
+
+    requireApi();
+
+    const response = await fetch(
+        API_URL,
+        {
+            method:"POST",
+
+            headers:{
+                "Content-Type":
+                    "text/plain;charset=utf-8"
+            },
+
+            body:JSON.stringify({
+
+                action,
+
+                adminKey:
+                    ADMIN_PASSWORD,
+
+                ...payload
+
+            })
+
+        }
+    );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            `Server error: ${response.status}`
+        );
+
+    }
+
+
+    const result =
+        await response.json();
+
+
+    if (!result.success) {
+
+        throw new Error(
+            result.message ||
+            "Request failed"
+        );
+
+    }
+
+
+    return result;
+
+}
+
+
+/* =========================================================
+   GET ALL PRODUCTS
+========================================================= */
+
+async function getAllProducts() {
+
+    requireApi();
+
+
+    const response = await fetch(
+
+        `${API_URL}?action=getAllProducts&adminKey=${encodeURIComponent(ADMIN_PASSWORD)}&t=${Date.now()}`,
+
+        {
+            cache:"no-store"
+        }
+
+    );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            `Server error: ${response.status}`
+        );
+
+    }
+
+
+    const result =
+        await response.json();
+
+
+    if (!result.success) {
+
+        throw new Error(
+            result.message ||
+            "Could not load products"
+        );
+
+    }
+
+
+    allProducts =
+        result.products || [];
+
+
+    renderProducts();
+
+}
+
+
+/* =========================================================
+   UPDATE STATS
+========================================================= */
+
+function updateStats() {
+
+    const activeProducts =
+        allProducts.filter(
+            p => p.status !== "Deleted"
+        );
+
+
+    $("statTotal").textContent =
+        activeProducts.length;
+
+
+    $("statAvailable").textContent =
+        activeProducts.filter(
+            p => p.status === "Available"
+        ).length;
+
+
+    $("statSold").textContent =
+        activeProducts.filter(
+            p => p.status === "Sold out"
+        ).length;
+
+}
+
+
+/* =========================================================
+   STATUS CLASS
+========================================================= */
+
+function statusClass(status) {
+
+    if(status === "Sold out")
+        return "sold";
+
+    if(status === "About to finish")
+        return "finish";
+
+    return "available";
+
+}
+
+
+/* =========================================================
+   RENDER PRODUCTS
+========================================================= */
+
+function renderProducts() {
+
+    const query =
+        $("searchProducts")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    const list =
+        allProducts
+
+            .filter(
+                p => p.status !== "Deleted"
+            )
+
+            .filter(
+
+                p =>
+
+                    !query ||
+
+                    [
+                        p.name,
+                        p.category,
+                        p.type,
+                        p.status
+                    ]
+
+                    .some(
+
+                        v =>
+
+                            String(v || "")
+                                .toLowerCase()
+                                .includes(query)
+
+                    )
+
+            );
+
+
+    const tbody =
+        $("productRows");
+
+
+    tbody.innerHTML =
+        list.map(
+
+            p => `
+
+            <tr>
+
+                <td>
+
+                    <div class="product-mini">
+
+                        <img
+                            src="${escapeHtml(p.image)}"
+                            alt=""
+                            onerror="this.style.visibility='hidden'"
+                        >
+
+                        <div>
+
+                            <strong>
+                                ${escapeHtml(p.name)}
+                            </strong>
+
+                            <span>
+                                ${escapeHtml(
+                                    p.type ||
+                                    p.category
+                                )}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+
+                <td class="price">
+
+                    ₦${Number(
+                        p.price || 0
+                    ).toLocaleString("en-NG")}
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="status ${statusClass(p.status)}"
+                    >
+
+                        ${escapeHtml(
+                            p.status
+                        )}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    ${Number(
+                        p.stockQty || 0
+                    ).toLocaleString()}
+
+                </td>
+
+
+                <td>
+
+                    <div class="row-actions">
+
+                        <button
+                            class="icon-btn edit"
+                            data-id="${escapeHtml(p.id)}"
+                            title="Edit"
+                            type="button"
+                        >
+
+                            <i class="fa-solid fa-pen"></i>
+
+                        </button>
+
+
+                        <button
+                            class="icon-btn delete"
+                            data-id="${escapeHtml(p.id)}"
+                            title="Delete"
+                            type="button"
+                        >
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            `
+
+        ).join("");
+
+
+    $("emptyState")
+        .classList
+        .toggle(
+            "hidden",
+            list.length > 0
+        );
+
+
+    updateStats();
+
+}
+
+
+/* =========================================================
+   RESET FORM
+========================================================= */
+
+function resetForm() {
+
+    $("productForm").reset();
+
+
+    $("productId").value = "";
+
+
+    $("rating").value = "5";
+
+
+    $("stockQty").value = "10";
+
+
+    $("status").value =
+        "Available";
+
+
+    $("formTitle").textContent =
+        "Add product";
+
+
+    $("saveBtn").innerHTML =
+        '<i class="fa-solid fa-plus"></i> Add Product';
+
+
+    $("cancelEdit")
+        .classList
+        .add("hidden");
+
+
+    editingId = "";
+
+
+    $("imagePreview").innerHTML =
+        "<span>Image preview appears here</span>";
+
+
+    showMessage(
+        "formMessage",
+        ""
+    );
+
+}
+
+
+/* =========================================================
+   FILL EDIT FORM
+========================================================= */
+
+function fillForm(p) {
+
+    editingId = p.id;
+
+
+    $("productId").value =
+        p.id;
+
+
+    $("name").value =
+        p.name || "";
+
+
+    $("price").value =
+        p.price || 0;
+
+
+    $("rating").value =
+        p.rating || 0;
+
+
+    $("category").value =
+        p.category || "other";
+
+
+    $("type").value =
+        p.type || "";
+
+
+    $("stockQty").value =
+        p.stockQty || 0;
+
+
+    $("status").value =
+        p.status || "Available";
+
+
+    $("badge").value =
+        p.badge || "";
+
+
+    $("badgeStyle").value =
+        p.badgeStyle || "";
+
+
+    $("image").value =
+        p.image || "";
+
+
+    $("description").value =
+        p.description || "";
+
+
+    $("sizes").value =
+        Array.isArray(p.sizes)
+
+            ? p.sizes.join(",")
+
+            : String(p.sizes || "");
+
+
+    $("hasSize").checked =
+        Boolean(p.hasSize);
+
+
+    updatePreview();
+
+
+    $("formTitle").textContent =
+        "Edit product";
+
+
+    $("saveBtn").innerHTML =
+        '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
+
+
+    $("cancelEdit")
+        .classList
+        .remove("hidden");
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
+
+function updatePreview() {
+
+    const url =
+        $("image").value.trim();
+
+
+    const box =
+        $("imagePreview");
+
+
+    if(!url) {
+
+        box.innerHTML =
+            "<span>Image preview appears here</span>";
+
+        return;
+
+    }
+
+
+    box.innerHTML = `
+
+        <img
+            src="${escapeHtml(url)}"
+            alt="Preview"
+            onerror="
+                this.remove();
+                this.parentElement.innerHTML =
+                '<span>Could not load image URL</span>'
+            "
+        >
+
+    `;
+
+}
+
+
+/* =========================================================
+   COLLECT FORM
+========================================================= */
+
+function collectForm() {
+
+    return {
+
+        id:
+            editingId ||
+            $("name").value.trim(),
+
+        name:
+            $("name").value.trim(),
+
+        price:
+            Number(
+                $("price").value || 0
+            ),
+
+        rating:
+            Number(
+                $("rating").value || 0
+            ),
+
+        category:
+            $("category").value,
+
+        type:
+            $("type")
+                .value
+                .trim()
+                .toUpperCase(),
+
+        stockQty:
+            Number(
+                $("stockQty").value || 0
+            ),
+
+        status:
+            $("status").value,
+
+        badge:
+            $("badge")
+                .value
+                .trim(),
+
+        badgeStyle:
+            $("badgeStyle").value,
+
+        image:
+            $("image")
+                .value
+                .trim(),
+
+        description:
+            $("description")
+                .value
+                .trim(),
+
+        sizes:
+            $("sizes")
+                .value
+                .split(",")
+                .map(
+                    s => s.trim()
+                )
+                .filter(Boolean),
+
+        hasSize:
+            $("hasSize").checked
+
+    };
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+function login(password) {
+
+    if(password !== ADMIN_PASSWORD) {
+
+        throw new Error(
+            "Incorrect admin password."
+        );
+
+    }
+
 
     isAdminLoggedIn = true;
-    localStorage.setItem(ADMIN_LOGIN_KEY, "true");
-}
-function showApp() { $("loginScreen").classList.add("hidden"); $("app").classList.remove("hidden"); }
-function showLogin() { $("app").classList.add("hidden"); $("loginScreen").classList.remove("hidden"); }
 
-$("loginForm").addEventListener("submit",async e=>{
-    e.preventDefault(); const btn=$("loginBtn"); btn.disabled=true; showMessage("loginMessage","");
-    try { login($("password").value); $("password").value=""; await getAllProducts(); } catch(err) { showMessage("loginMessage",err.message,"error"); } finally { btn.disabled=false; }
-});
-$("logoutBtn").addEventListener("click",()=>{
-    isAdminLoggedIn = false;
-    localStorage.removeItem(ADMIN_LOGIN_KEY);
-    showLogin();
-});
-$("productForm").addEventListener("submit",async e=>{
-    e.preventDefault(); const product=collectForm(); const btn=$("saveBtn"); btn.disabled=true; showMessage("formMessage","");
-    if(!/^https?:\/\//i.test(product.image)) { showMessage("formMessage","Use a direct http/https image URL.","error"); btn.disabled=false; return; }
-    try {
-        const action=editingId?"updateProduct":"addProduct"; const result=await post(action,{product}); showToast(result.message); resetForm(); await getAllProducts();
-    } catch(err) {
-        showMessage("formMessage",err.message,"error");
-    } finally {
-        btn.disabled=false;
+
+    localStorage.setItem(
+        ADMIN_LOGIN_KEY,
+        "true"
+    );
+
+}
+
+
+/* =========================================================
+   SHOW APP
+========================================================= */
+
+function showApp() {
+
+    $("loginScreen")
+        .classList
+        .add("hidden");
+
+
+    $("app")
+        .classList
+        .remove("hidden");
+
+}
+
+
+/* =========================================================
+   SHOW LOGIN
+========================================================= */
+
+function showLogin() {
+
+    $("app")
+        .classList
+        .add("hidden");
+
+
+    $("loginScreen")
+        .classList
+        .remove("hidden");
+
+}
+
+
+/* =========================================================
+   LOGIN FORM
+========================================================= */
+
+$("loginForm")
+.addEventListener(
+    "submit",
+    async e => {
+
+        e.preventDefault();
+
+
+        const btn =
+            $("loginBtn");
+
+
+        btn.disabled = true;
+
+
+        showMessage(
+            "loginMessage",
+            ""
+        );
+
+
+        try {
+
+            login(
+                $("password").value
+            );
+
+
+            $("password").value =
+                "";
+
+
+            /*
+                IMPORTANT:
+                Show dashboard first.
+            */
+
+            showApp();
+
+
+            /*
+                Then load products.
+            */
+
+            await getAllProducts();
+
+
+        }
+
+        catch(err) {
+
+            console.error(err);
+
+
+            isAdminLoggedIn =
+                false;
+
+
+            localStorage.removeItem(
+                ADMIN_LOGIN_KEY
+            );
+
+
+            showLogin();
+
+
+            showMessage(
+                "loginMessage",
+                err.message ||
+                "Could not log in.",
+                "error"
+            );
+
+        }
+
+        finally {
+
+            btn.disabled = false;
+
+        }
+
     }
-});
-$("resetBtn").addEventListener("click",resetForm); $("cancelEdit").addEventListener("click",resetForm); $("image").addEventListener("input",updatePreview); $("searchProducts").addEventListener("input",renderProducts);
-$("productRows").addEventListener("click",async e=>{
-    const edit=e.target.closest(".edit"), del=e.target.closest(".delete");
-    if(edit) { const p=allProducts.find(x=>x.id===edit.dataset.id); if(p) fillForm(p); return; }
-    if(del) { const p=allProducts.find(x=>x.id===del.dataset.id); if(!p) return; if(!confirm(`Delete "${p.name}" from Zaku?`)) return; try{const r=await post("deleteProduct",{id:p.id});showToast(r.message);await getAllProducts();}catch(err){alert(err.message);} }
-});
-$("importBtn").addEventListener("click",()=>$("importModal").classList.remove("hidden")); $("cancelImport").addEventListener("click",()=>$("importModal").classList.add("hidden"));
-$("confirmImport").addEventListener("click",async()=>{
-    const btn=$("confirmImport"); btn.disabled=true;
-    try{const r=await post("seedProducts",{products:DEFAULT_PRODUCTS});$("importModal").classList.add("hidden");showToast(`${r.added} added, ${r.updated} updated`);await getAllProducts();}catch(err){alert(err.message);}finally{btn.disabled=false;}
-});
+);
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+$("logoutBtn")
+.addEventListener(
+    "click",
+    () => {
+
+        isAdminLoggedIn =
+            false;
+
+
+        localStorage.removeItem(
+            ADMIN_LOGIN_KEY
+        );
+
+
+        showLogin();
+
+
+        showMessage(
+            "loginMessage",
+            ""
+        );
+
+    }
+);
+
+
+/* =========================================================
+   ADD / UPDATE PRODUCT
+========================================================= */
+
+$("productForm")
+.addEventListener(
+    "submit",
+    async e => {
+
+        e.preventDefault();
+
+
+        const product =
+            collectForm();
+
+
+        const btn =
+            $("saveBtn");
+
+
+        btn.disabled = true;
+
+
+        showMessage(
+            "formMessage",
+            ""
+        );
+
+
+        if(
+            !/^https?:\/\//i
+            .test(product.image)
+        ) {
+
+            showMessage(
+                "formMessage",
+                "Use a direct http/https image URL.",
+                "error"
+            );
+
+
+            btn.disabled = false;
+
+
+            return;
+
+        }
+
+
+        try {
+
+            const action =
+                editingId
+
+                    ? "updateProduct"
+
+                    : "addProduct";
+
+
+            const result =
+                await post(
+                    action,
+                    {
+                        product
+                    }
+                );
+
+
+            showToast(
+                result.message ||
+                "Product saved."
+            );
+
+
+            resetForm();
+
+
+            await getAllProducts();
+
+        }
+
+        catch(err) {
+
+            console.error(err);
+
+
+            showMessage(
+                "formMessage",
+                err.message ||
+                "Could not save product.",
+                "error"
+            );
+
+        }
+
+        finally {
+
+            btn.disabled = false;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+$("resetBtn")
+.addEventListener(
+    "click",
+    resetForm
+);
+
+
+/* =========================================================
+   CANCEL EDIT
+========================================================= */
+
+$("cancelEdit")
+.addEventListener(
+    "click",
+    resetForm
+);
+
+
+/* =========================================================
+   IMAGE INPUT
+========================================================= */
+
+$("image")
+.addEventListener(
+    "input",
+    updatePreview
+);
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+$("searchProducts")
+.addEventListener(
+    "input",
+    renderProducts
+);
+
+
+/* =========================================================
+   EDIT / DELETE
+========================================================= */
+
+$("productRows")
+.addEventListener(
+    "click",
+    async e => {
+
+        const edit =
+            e.target.closest(".edit");
+
+
+        const del =
+            e.target.closest(".delete");
+
+
+        /* EDIT */
+
+        if(edit) {
+
+            const p =
+                allProducts.find(
+                    x =>
+                        x.id ===
+                        edit.dataset.id
+                );
+
+
+            if(p) {
+
+                fillForm(p);
+
+            }
+
+
+            return;
+
+        }
+
+
+        /* DELETE */
+
+        if(del) {
+
+            const p =
+                allProducts.find(
+                    x =>
+                        x.id ===
+                        del.dataset.id
+                );
+
+
+            if(!p)
+                return;
+
+
+            if(
+                !confirm(
+                    `Delete "${p.name}" from Zaku?`
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const result =
+                    await post(
+                        "deleteProduct",
+                        {
+                            id:p.id
+                        }
+                    );
+
+
+                showToast(
+                    result.message ||
+                    "Product deleted."
+                );
+
+
+                await getAllProducts();
+
+            }
+
+            catch(err) {
+
+                console.error(err);
+
+
+                alert(
+                    err.message ||
+                    "Could not delete product."
+                );
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   IMPORT MODAL
+========================================================= */
+
+$("importBtn")
+.addEventListener(
+    "click",
+    () => {
+
+        $("importModal")
+            .classList
+            .remove("hidden");
+
+    }
+);
+
+
+/* =========================================================
+   CANCEL IMPORT
+========================================================= */
+
+$("cancelImport")
+.addEventListener(
+    "click",
+    () => {
+
+        $("importModal")
+            .classList
+            .add("hidden");
+
+    }
+);
+
+
+/* =========================================================
+   CONFIRM IMPORT
+========================================================= */
+
+$("confirmImport")
+.addEventListener(
+    "click",
+    async () => {
+
+        const btn =
+            $("confirmImport");
+
+
+        btn.disabled = true;
+
+
+        try {
+
+            /*
+                Only import products with
+                valid http/https image URLs.
+            */
+
+            const validProducts =
+                DEFAULT_PRODUCTS.filter(
+                    p =>
+                        /^https?:\/\//i
+                        .test(p.image)
+                );
+
+
+            const result =
+                await post(
+                    "seedProducts",
+                    {
+                        products:
+                            validProducts
+                    }
+                );
+
+
+            $("importModal")
+                .classList
+                .add("hidden");
+
+
+            showToast(
+                `${result.added || 0} added, ${result.updated || 0} updated`
+            );
+
+
+            await getAllProducts();
+
+        }
+
+        catch(err) {
+
+            console.error(err);
+
+
+            alert(
+                err.message ||
+                "Could not import products."
+            );
+
+        }
+
+        finally {
+
+            btn.disabled = false;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   BOOT
+========================================================= */
+
+/*
+    THIS IS THE PART THAT WAS BROKEN.
+
+    OLD:
+        await openAdmin();
+
+    openAdmin() does not exist.
+
+    NEW:
+        showApp();
+        await getAllProducts();
+*/
 
 (async function boot() {
-    if (!isAdminLoggedIn) {
+
+    if(!isAdminLoggedIn) {
+
         showLogin();
+
         return;
+
     }
 
+
     try {
-        await openAdmin();
-    } catch (err) {
-        console.error(err);
-        isAdminLoggedIn = false;
-        localStorage.removeItem(ADMIN_LOGIN_KEY);
-        showLogin();
-        showMessage("loginMessage", "Could not load products. Check your Apps Script Web App URL and deployment settings.", "error");
+
+        /*
+            Show the dashboard.
+        */
+
+        showApp();
+
+
+        /*
+            Load products from
+            Google Apps Script.
+        */
+
+        await getAllProducts();
+
     }
+
+    catch(err) {
+
+        console.error(
+            "Admin boot error:",
+            err
+        );
+
+
+        /*
+            If the saved login is
+            no longer accepted by
+            the API, return to login.
+        */
+
+        isAdminLoggedIn =
+            false;
+
+
+        localStorage.removeItem(
+            ADMIN_LOGIN_KEY
+        );
+
+
+        showLogin();
+
+
+        showMessage(
+            "loginMessage",
+            "Could not load products. Check your Apps Script Web App URL and deployment settings.",
+            "error"
+        );
+
+    }
+
 })();
+
 </script>
+
 </body>
 </html>
