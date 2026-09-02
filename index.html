@@ -1172,6 +1172,41 @@ button {
    PRODUCT GRID
 ========================================================= */
 
+.zaku-products-loading {
+    min-height: 180px;
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .14em;
+}
+
+.zaku-loading-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: zakuPulse 1s ease-in-out infinite;
+}
+
+@keyframes zakuPulse {
+    0%, 100% { transform: scale(.65); opacity: .45; }
+    50% { transform: scale(1); opacity: 1; }
+}
+
+.add-cart:disabled {
+    cursor: not-allowed;
+    opacity: .65;
+}
+
+.product-card[data-status="Sold out"] .product-image img {
+    filter: grayscale(.25);
+}
+
 .product-grid {
 
     display:
@@ -4303,1298 +4338,11 @@ button {
             class="product-grid"
             id="productGrid"
         >
-
-
-            <!-- =================================================
-                 PRODUCT 1
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="white-tshirt"
-                data-category="shirts"
-                data-name="White Tshirt"
-                data-price="7500"
-                data-image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6fUZ0ZQ7XTmHmE0Xmw5OiXC01Eq5ltYujTaw51tMdjA&s=10"
-                data-type="POLO SHIRT"
-                data-rating="4.9"
-                data-sizes="S,M,L,XL,XXL"
-                data-has-size="true"
-                data-description="A clean and versatile tshirt designed for everyday comfort, casual outings and smart-casual looks."
-            >
-
-                <div class="product-image">
-
-                    <span class="badge">
-                        NEW
-                    </span>
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6fUZ0ZQ7XTmHmE0Xmw5OiXC01Eq5ltYujTaw51tMdjA&s=10"
-                        alt="Zaku Classic Polo"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        POLO SHIRT
-                    </span>
-
-
-                    <h3>
-                        White Tshirt
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-
-                        <span>
-                            4.9
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦7500
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 PRODUCT 1.1
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="black-tshirt"
-                data-category="shirts"
-                data-name="Black Tshirt"
-                data-price="7500"
-                data-image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS07NgkyTfP0w1krFVe6gq331FdqI4-Nat2IzZrrKGong&s=10"
-                data-type="POLO SHIRT"
-                data-rating="4.9"
-                data-sizes="S,M,L,XL,XXL"
-                data-has-size="true"
-                data-description="A clean and versatile tshirt designed for everyday comfort, casual outings and smart-casual looks."
-            >
-
-                <div class="product-image">
-
-                    <span class="badge">
-                        NEW
-                    </span>
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS07NgkyTfP0w1krFVe6gq331FdqI4-Nat2IzZrrKGong&s=10"
-                        alt="Zaku Classic Polo"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        POLO SHIRT
-                    </span>
-
-
-                    <h3>
-                        Black Tshirt
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-
-                        <span>
-                            4.9
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦7500
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-
-
-
-            <!-- =================================================
-                 PRODUCT 1.2
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="grey-tshirt"
-                data-category="shirts"
-                data-name="Grey Tshirt"
-                data-price="7500"
-                data-image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrZF9B45oa8ed5P2AaF62s29NXig_8-id2xnRWkouohQ&s=10"
-                data-type="POLO SHIRT"
-                data-rating="4.9"
-                data-sizes="S,M,L,XL,XXL"
-                data-has-size="true"
-                data-description="A clean and versatile tshirt designed for everyday comfort, casual outings and smart-casual looks."
-            >
-
-                <div class="product-image">
-
-                    <span class="badge">
-                        NEW
-                    </span>
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrZF9B45oa8ed5P2AaF62s29NXig_8-id2xnRWkouohQ&s=10"
-                        alt="Zaku Classic Polo"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        POLO SHIRT
-                    </span>
-
-
-                    <h3>
-                        Grey Tshirt
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-
-                        <span>
-                            4.9
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦7500
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-            
-            
-
-            <!-- =================================================
-                 PRODUCT 2
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="zaku-corporate-shirt"
-                data-category="shirts"
-                data-name="Zaku Corporate Shirt"
-                data-price="18000"
-                data-image="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80"
-                data-type="CORPORATE SHIRT"
-                data-rating="4.8"
-                data-sizes="S,M,L,XL,XXL"
-                data-has-size="true"
-                data-description="A polished corporate shirt made for meetings, workdays, events and anyone who wants a sharp appearance."
-            >
-
-                <div class="product-image">
-
-                    <span class="badge sale">
-                        POPULAR
-                    </span>
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80"
-                        alt="Zaku Corporate Shirt"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        CORPORATE SHIRT
-                    </span>
-
-
-                    <h3>
-                        Zaku Corporate Shirt
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-regular fa-star"></i>
-
-                        <span>
-                            4.8
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦18,000
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 PRODUCT 3
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="zaku-football-jersey"
-                data-category="jerseys"
-                data-name="Zaku Football Jersey"
-                data-price="20000"
-                data-image="https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=800&q=80"
-                data-type="JERSEY"
-                data-rating="4.9"
-                data-sizes="S,M,L,XL,XXL"
-                data-has-size="true"
-                data-description="A stylish football jersey designed for match days, casual wear and football lovers."
-            >
-
-                <div class="product-image">
-
-                    <span class="badge">
-                        NEW
-                    </span>
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=800&q=80"
-                        alt="Zaku Football Jersey"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        JERSEY
-                    </span>
-
-
-                    <h3>
-                        Zaku Football Jersey
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-
-                        <span>
-                            4.9
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦20,000
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 PRODUCT 4
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="black-leather-watch"
-                data-category="watches"
-                data-name="Black Leather Watch"
-                data-price="8000"
-                data-image="data:image/jpeg;base64,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"
-                data-type="WATCH"
-                data-rating="4.7"
-                data-sizes=""
-                data-has-size="false"
-                data-description="A clean and sophisticated watch designed to complement both casual and formal outfits."
-            >
-
-                <div class="product-image">
-
-                    <span class="badge">
-                        ZAKU PICK
-                    </span>
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="data:image/jpeg;base64,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"
-                        alt="Zaku Classic Watch"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        WATCH
-                    </span>
-
-
-                    <h3>
-                        Black Leather Watch
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-regular fa-star"></i>
-
-                        <span>
-                            4.7
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦8000
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-
-             <!-- =================================================
-                 PRODUCT 4.1
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="brown-leather-watch"
-                data-category="watches"
-                data-name="Brown Leather Watch"
-                data-price="8000"
-                data-image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlN72gSGuecFwn-B0cE9HACPpqoNeFnPyYIo3kcvz-sA&s"
-                data-type="WATCH"
-                data-rating="4.7"
-                data-sizes=""
-                data-has-size="false"
-                data-description="A clean and sophisticated watch designed to complement both casual and formal outfits."
-            >
-
-                <div class="product-image">
-
-                    <span class="badge">
-                        ZAKU PICK
-                    </span>
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlN72gSGuecFwn-B0cE9HACPpqoNeFnPyYIo3kcvz-sA&s"
-                        alt="Zaku Classic Watch"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        WATCH
-                    </span>
-
-
-                    <h3>
-                        Brown Leather Watch
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-regular fa-star"></i>
-
-                        <span>
-                            4.7
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦8000
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-
-
-             <!-- =================================================
-                 PRODUCT 4.2
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="sliver-watch"
-                data-category="watches"
-                data-name="Sliver Watch"
-                data-price="8000"
-                data-image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhHYcVjalYK93djiTkEDbijbYd-PWYeOkhaSeK6mKk2Q&s"
-                data-type="WATCH"
-                data-rating="4.7"
-                data-sizes=""
-                data-has-size="false"
-                data-description="A nice watch designed to complement both casual and formal outfits."
-            >
-
-                <div class="product-image">
-
-                    <span class="badge">
-                        ZAKU PICK
-                    </span>
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhHYcVjalYK93djiTkEDbijbYd-PWYeOkhaSeK6mKk2Q&s"
-                        alt="Zaku Classic Watch"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        WATCH
-                    </span>
-
-
-                    <h3>
-                        Sliver Watch
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-regular fa-star"></i>
-
-                        <span>
-                            4.7
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦8000
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-            
-
-            <!-- =================================================
-                 PRODUCT 5
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="zaku-signature-perfume"
-                data-category="perfumes"
-                data-name="Zaku Signature Perfume"
-                data-price="12000"
-                data-image="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80"
-                data-type="PERFUME"
-                data-rating="4.8"
-                data-sizes=""
-                data-has-size="false"
-                data-description="A premium fragrance with a confident character, perfect for everyday wear and special occasions."
-            >
-
-                <div class="product-image">
-
-                    <span class="badge">
-                        BESTSELLER
-                    </span>
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80"
-                        alt="Zaku Signature Perfume"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        PERFUME
-                    </span>
-
-
-                    <h3>
-                        Zaku Signature Perfume
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-regular fa-star"></i>
-
-                        <span>
-                            4.8
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦12,000
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 PRODUCT 6
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="zaku-street-sneakers"
-                data-category="shoes"
-                data-name="Zaku Street Sneakers"
-                data-price="35000"
-                data-image="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80"
-                data-type="SHOES"
-                data-rating="4.8"
-                data-sizes="39,40,41,42,43,44,45"
-                data-has-size="true"
-                data-description="Comfortable everyday sneakers built for casual outfits, movement and modern street style."
-            >
-
-                <div class="product-image">
-
-                    <span class="badge">
-                        NEW
-                    </span>
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80"
-                        alt="Zaku Street Sneakers"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        SHOES
-                    </span>
-
-
-                    <h3>
-                        Zaku Street Sneakers
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-regular fa-star"></i>
-
-                        <span>
-                            4.8
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦35,000
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 PRODUCT 7
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="zaku-cargo-trousers"
-                data-category="trousers"
-                data-name="Zaku Cargo Trousers"
-                data-price="22000"
-                data-image="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80"
-                data-type="TROUSERS"
-                data-rating="4.6"
-                data-sizes="30,32,34,36,38,40"
-                data-has-size="true"
-                data-description="Modern cargo trousers designed for comfort, versatility and everyday streetwear."
-            >
-
-                <div class="product-image">
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80"
-                        alt="Zaku Cargo Trousers"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        TROUSERS
-                    </span>
-
-
-                    <h3>
-                        Zaku Cargo Trousers
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-regular fa-star"></i>
-
-                        <span>
-                            4.6
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦22,000
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 PRODUCT 8
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="zaku-premium-polo"
-                data-category="shirts"
-                data-name="Zaku Premium Polo"
-                data-price="18000"
-                data-image="https://images.unsplash.com/photo-1625910513413-5fc45e3e0d99?auto=format&fit=crop&w=800&q=80"
-                data-type="POLO SHIRT"
-                data-rating="4.9"
-                data-sizes="S,M,L,XL,XXL"
-                data-has-size="true"
-                data-description="A premium polo with a clean silhouette and versatile look suitable for casual and smart-casual styling."
-            >
-
-                <div class="product-image">
-
-                    <span class="badge">
-                        PREMIUM
-                    </span>
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://images.unsplash.com/photo-1625910513413-5fc45e3e0d99?auto=format&fit=crop&w=800&q=80"
-                        alt="Zaku Premium Polo"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        POLO SHIRT
-                    </span>
-
-
-                    <h3>
-                        Zaku Premium Polo
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-
-                        <span>
-                            4.9
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦18,000
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-
-
-            <!-- =================================================
-                 PRODUCT 9
-            ================================================= -->
-
-            <article
-                class="product-card"
-                data-id="zaku-elegance-perfume"
-                data-category="perfumes"
-                data-name="Zaku Elegance Perfume"
-                data-price="15000"
-                data-image="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80"
-                data-type="PERFUME"
-                data-rating="4.7"
-                data-sizes=""
-                data-has-size="false"
-                data-description="An elegant fragrance designed for people who want to leave a memorable impression."
-            >
-
-                <div class="product-image">
-
-
-                    <button
-                        class="wishlist"
-                        aria-label="Add to wishlist"
-                    >
-
-                        <i class="fa-regular fa-heart"></i>
-
-                    </button>
-
-
-                    <img
-                        src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80"
-                        alt="Zaku Elegance Perfume"
-                    >
-
-
-                    <button class="quick-view">
-                        Quick View
-                    </button>
-
-                </div>
-
-
-                <div class="product-info">
-
-                    <span class="product-category">
-                        PERFUME
-                    </span>
-
-
-                    <h3>
-                        Zaku Elegance Perfume
-                    </h3>
-
-
-                    <div class="rating">
-
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-regular fa-star"></i>
-
-                        <span>
-                            4.7
-                        </span>
-
-                    </div>
-
-
-                    <div class="product-bottom">
-
-                        <strong>
-                            ₦15,000
-                        </strong>
-
-
-                        <button class="add-cart">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                            <span class="add-text">
-                                Add
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
+        <div class="zaku-products-loading" id="zakuProductsLoading">
+            <div class="zaku-loading-dot"></div>
+            <span>LOADING ZAKU COLLECTION</span>
         </div>
+    </div>
 
     </div>
 
@@ -6105,11 +4853,11 @@ const navLinks =
 const filters =
     document.querySelectorAll(".filter");
 
-const products =
-    document.querySelectorAll(".product-card");
+let products =
+    Array.from(document.querySelectorAll(".product-card"));
 
-const addButtons =
-    document.querySelectorAll(".add-cart");
+let addButtons =
+    Array.from(document.querySelectorAll(".add-cart"));
 
 const cartCount =
     document.getElementById("cartCount");
@@ -6146,6 +4894,14 @@ const toast =
 
 const toastMessage =
     document.getElementById("toastMessage");
+
+/* =========================================================
+   ZAKU PRODUCTS API
+   Paste your deployed Google Apps Script Web App URL here.
+========================================================= */
+const ZAKU_PRODUCTS_API = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+let zakuProductsReady = false;
 
 
 /* =========================================================
@@ -6330,6 +5086,18 @@ function getProductData(card) {
 
         description:
             card.dataset.description || "",
+
+        status:
+            card.dataset.status || "Available",
+
+        stockQty:
+            Number(card.dataset.stockQty || 0),
+
+        badge:
+            card.dataset.badge || "",
+
+        badgeStyle:
+            card.dataset.badgeStyle || "",
 
         hasSize:
             card.dataset.hasSize === "true",
@@ -6744,6 +5512,7 @@ function addToCart(
 
 
     renderCart();
+loadZakuProducts();
 
 }
 
@@ -6820,92 +5589,47 @@ function changeQuantity(
 
 
 /* =========================================================
-   ADD BUTTONS
+   ADD BUTTONS — EVENT DELEGATION
+   This keeps Add buttons working for products loaded from Sheets.
 ========================================================= */
+document.addEventListener(
+    "click",
+    event => {
+        const button = event.target.closest(".add-cart");
+        if (!button) return;
 
-addButtons.forEach(
-    button => {
+        event.stopPropagation();
 
-        button.addEventListener(
-            "click",
-            event => {
+        const card = button.closest(".product-card");
+        if (!card || button.disabled) return;
 
-                event.stopPropagation();
+        const product = getProductData(card);
 
+        if (product.status === "Sold out") {
+            showToast("This product is sold out");
+            return;
+        }
 
-                const card =
-                    button.closest(
-                        ".product-card"
-                    );
+        if (product.hasSize) {
+            openPreview(card);
+            return;
+        }
 
+        addToCart(product);
+        button.classList.add("added");
 
-                if (!card)
-                    return;
-
-
-                const product =
-                    getProductData(card);
-
-
-                /*
-                    Products with sizes should
-                    open the product preview so
-                    the customer can choose size.
-                */
-
-                if (product.hasSize) {
-
-                    openPreview(card);
-
-                    return;
-
-                }
-
-
-                addToCart(
-                    product
-                );
-
-
-                button.classList.add(
-                    "added"
-                );
-
-
-                setTimeout(
-                    () => {
-
-                        button.classList.remove(
-                            "added"
-                        );
-
-                    },
-                    450
-                );
-
-
-                if (cartCount) {
-
-                    cartCount.classList.remove(
-                        "bump"
-                    );
-
-
-                    void cartCount.offsetWidth;
-
-
-                    cartCount.classList.add(
-                        "bump"
-                    );
-
-                }
-
-            }
+        setTimeout(
+            () => button.classList.remove("added"),
+            450
         );
 
+        if (cartCount) {
+            cartCount.classList.remove("bump");
+            void cartCount.offsetWidth;
+            cartCount.classList.add("bump");
+        }
     }
 );
-
 
 /* =========================================================
    CART ITEM BUTTONS
@@ -7089,93 +5813,42 @@ document
 /* =========================================================
    PRODUCT FILTER
 ========================================================= */
+function applyProductFilter(category) {
+    filters.forEach(item => item.classList.remove("active"));
 
-filters.forEach(
-    filter => {
+    const active = document.querySelector(
+        `.filter[data-filter="${CSS.escape(category)}"]`
+    );
+    if (active) active.classList.add("active");
 
-        filter.addEventListener(
-            "click",
-            () => {
+    products.forEach(product => {
+        const matches =
+            category === "all" ||
+            product.dataset.category === category;
 
-                filters.forEach(
-                    item => {
+        if (matches) {
+            product.style.display = "";
+            requestAnimationFrame(() => {
+                product.style.opacity = "1";
+                product.style.transform = "translateY(0)";
+            });
+        } else {
+            product.style.opacity = "0";
+            product.style.transform = "translateY(15px)";
+            setTimeout(() => {
+                if (product.dataset.category !== category) {
+                    product.style.display = "none";
+                }
+            }, 250);
+        }
+    });
+}
 
-                        item.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                filter.classList.add(
-                    "active"
-                );
-
-
-                const category =
-                    filter.dataset.filter;
-
-
-                products.forEach(
-                    product => {
-
-                        const matches =
-                            category === "all" ||
-                            product.dataset.category ===
-                            category;
-
-
-                        if (matches) {
-
-                            product.style.display =
-                                "";
-
-
-                            requestAnimationFrame(
-                                () => {
-
-                                    product.style.opacity =
-                                        "1";
-
-
-                                    product.style.transform =
-                                        "translateY(0)";
-
-                                }
-                            );
-
-                        } else {
-
-                            product.style.opacity =
-                                "0";
-
-
-                            product.style.transform =
-                                "translateY(15px)";
-
-
-                            setTimeout(
-                                () => {
-
-                                    product.style.display =
-                                        "none";
-
-                                },
-                                250
-                            );
-
-                        }
-
-                    }
-                );
-
-            }
-        );
-
-    }
-);
-
+filters.forEach(filter => {
+    filter.addEventListener("click", () => {
+        applyProductFilter(filter.dataset.filter);
+    });
+});
 
 /* =========================================================
    CATEGORY CARDS
@@ -7235,82 +5908,31 @@ document
 
 
 /* =========================================================
-   WISHLIST
+   WISHLIST — EVENT DELEGATION
 ========================================================= */
+document.addEventListener(
+    "click",
+    event => {
+        const button = event.target.closest(".wishlist");
+        if (!button) return;
 
-const wishlistButtons =
-    document.querySelectorAll(
-        ".wishlist"
-    );
+        event.stopPropagation();
 
+        const icon = button.querySelector("i");
+        if (!icon) return;
 
-wishlistButtons.forEach(
-    button => {
-
-        button.addEventListener(
-            "click",
-            event => {
-
-                event.stopPropagation();
-
-
-                const icon =
-                    button.querySelector(
-                        "i"
-                    );
-
-
-                if (!icon)
-                    return;
-
-
-                if (
-                    icon.classList.contains(
-                        "fa-regular"
-                    )
-                ) {
-
-                    icon.classList.remove(
-                        "fa-regular"
-                    );
-
-
-                    icon.classList.add(
-                        "fa-solid"
-                    );
-
-
-                    button.style.color =
-                        "var(--gold-dark)";
-
-
-                    showToast(
-                        "Added to wishlist"
-                    );
-
-                } else {
-
-                    icon.classList.remove(
-                        "fa-solid"
-                    );
-
-
-                    icon.classList.add(
-                        "fa-regular"
-                    );
-
-
-                    button.style.color =
-                        "";
-
-                }
-
-            }
-        );
-
+        if (icon.classList.contains("fa-regular")) {
+            icon.classList.remove("fa-regular");
+            icon.classList.add("fa-solid");
+            button.style.color = "var(--gold-dark)";
+            showToast("Added to wishlist");
+        } else {
+            icon.classList.remove("fa-solid");
+            icon.classList.add("fa-regular");
+            button.style.color = "";
+        }
     }
 );
-
 
 /* =========================================================
    CART DRAWER
@@ -7684,43 +6306,20 @@ function openPreview(card) {
 
 
 /* =========================================================
-   QUICK VIEW BUTTONS
+   QUICK VIEW BUTTONS — EVENT DELEGATION
 ========================================================= */
+document.addEventListener(
+    "click",
+    event => {
+        const button = event.target.closest(".quick-view");
+        if (!button) return;
 
-const quickViewButtons =
-    document.querySelectorAll(
-        ".quick-view"
-    );
+        event.stopPropagation();
 
-
-quickViewButtons.forEach(
-    button => {
-
-        button.addEventListener(
-            "click",
-            event => {
-
-                event.stopPropagation();
-
-
-                const card =
-                    button.closest(
-                        ".product-card"
-                    );
-
-
-                if (!card)
-                    return;
-
-
-                openPreview(card);
-
-            }
-        );
-
+        const card = button.closest(".product-card");
+        if (card) openPreview(card);
     }
 );
-
 
 /* =========================================================
    CLOSE PREVIEW
@@ -8390,6 +6989,181 @@ if (
 
 }
 
+
+/* =========================================================
+   GOOGLE SHEETS PRODUCT STORE
+========================================================= */
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function normalizeProduct(raw) {
+    const sizes = Array.isArray(raw.sizes)
+        ? raw.sizes
+        : String(raw.sizes || "")
+            .split(",")
+            .map(s => s.trim())
+            .filter(Boolean);
+
+    return {
+        id: String(raw.id || ""),
+        name: String(raw.name || "Product"),
+        price: Number(raw.price || 0),
+        image: String(raw.image || ""),
+        category: String(raw.category || ""),
+        type: String(raw.type || raw.category || ""),
+        rating: Number(raw.rating || 0),
+        description: String(raw.description || ""),
+        hasSize: raw.hasSize === true || String(raw.hasSize).toLowerCase() === "true",
+        sizes,
+        badge: String(raw.badge || ""),
+        badgeStyle: String(raw.badgeStyle || ""),
+        status: String(raw.status || "Available"),
+        stockQty: Number(raw.stockQty || 0)
+    };
+}
+
+function renderBuiltInProducts() {
+    const grid = document.getElementById("productGrid");
+    if (!grid) return;
+
+    grid.innerHTML = ZAKU_DEFAULT_PRODUCTS
+        .map(renderProductCard)
+        .join("");
+
+    products = Array.from(
+        grid.querySelectorAll(".product-card")
+    );
+    addButtons = Array.from(
+        grid.querySelectorAll(".add-cart")
+    );
+    updateProductButtons();
+}
+
+function renderProductCard(raw) {
+    const p = normalizeProduct(raw);
+    const status = p.status;
+    const statusBadge =
+        status === "Sold out"
+            ? "SOLD OUT"
+            : status === "About to finish"
+                ? "ABOUT TO FINISH"
+                : p.badge;
+    const badgeClass =
+        status === "Sold out" || p.badgeStyle === "sale"
+            ? "badge sale"
+            : "badge";
+    const hasBadge = Boolean(statusBadge);
+    const disabled = status === "Sold out";
+    const sizes = p.sizes.join(",");
+
+    return `
+        <article
+            class="product-card"
+            data-id="${escapeHtml(p.id)}"
+            data-category="${escapeHtml(p.category)}"
+            data-name="${escapeHtml(p.name)}"
+            data-price="${p.price}"
+            data-image="${escapeHtml(p.image)}"
+            data-type="${escapeHtml(p.type)}"
+            data-rating="${p.rating}"
+            data-sizes="${escapeHtml(sizes)}"
+            data-has-size="${p.hasSize}"
+            data-description="${escapeHtml(p.description)}"
+            data-status="${escapeHtml(status)}"
+            data-stock-qty="${p.stockQty}"
+            data-badge="${escapeHtml(p.badge)}"
+            data-badge-style="${escapeHtml(p.badgeStyle)}"
+        >
+            <div class="product-image">
+                ${hasBadge ? `<span class="${badgeClass}">${escapeHtml(statusBadge)}</span>` : ""}
+
+                <button class="wishlist" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart"></i>
+                </button>
+
+                <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" loading="lazy">
+
+                <button class="quick-view">Quick View</button>
+            </div>
+
+            <div class="product-info">
+                <span class="product-category">${escapeHtml(p.type)}</span>
+
+                <h3>${escapeHtml(p.name)}</h3>
+
+                <div class="rating">
+                    ${createStars(p.rating)}
+                </div>
+
+                <div class="product-bottom">
+                    <strong>${formatPrice(p.price)}</strong>
+
+                    <button class="add-cart" ${disabled ? "disabled" : ""}>
+                        <i class="${disabled ? "fa-solid fa-ban" : "fa-solid fa-plus"}"></i>
+                        <span class="add-text">${disabled ? "Sold Out" : "Add"}</span>
+                    </button>
+                </div>
+            </div>
+        </article>
+    `;
+}
+
+async function loadZakuProducts() {
+    const grid = document.getElementById("productGrid");
+    if (!grid) return;
+
+    if (!ZAKU_PRODUCTS_API || ZAKU_PRODUCTS_API.includes("PASTE_YOUR_")) {
+        updateProductButtons();
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `${ZAKU_PRODUCTS_API}?action=getProducts&t=${Date.now()}`,
+            { cache: "no-store" }
+        );
+        const result = await response.json();
+
+        if (!result.success || !Array.isArray(result.products)) {
+            throw new Error(result.message || "Product API error");
+        }
+
+        if (result.products.length === 0) {
+            updateProductButtons();
+            return;
+        }
+
+        grid.innerHTML = result.products
+            .map(renderProductCard)
+            .join("");
+
+        products = Array.from(
+            grid.querySelectorAll(".product-card")
+        );
+        addButtons = Array.from(
+            grid.querySelectorAll(".add-cart")
+        );
+        zakuProductsReady = true;
+
+        updateProductButtons();
+
+        const activeFilter = document.querySelector(
+            ".filter.active"
+        );
+        if (activeFilter) {
+            applyProductFilter(activeFilter.dataset.filter);
+        }
+    } catch (error) {
+        console.warn("Zaku product store unavailable. Using built-in products.", error);
+        updateProductButtons();
+    }
+}
 
 /* =========================================================
    INITIALIZE
