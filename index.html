@@ -6993,6 +6993,7 @@ if (
 /* =========================================================
    GOOGLE SHEETS PRODUCT STORE
 ========================================================= */
+
 function escapeHtml(value) {
     return String(value ?? "")
         .replace(/&/g, "&amp;")
@@ -7002,7 +7003,9 @@ function escapeHtml(value) {
         .replace(/'/g, "&#039;");
 }
 
+
 function normalizeProduct(raw) {
+
     const sizes = Array.isArray(raw.sizes)
         ? raw.sizes
         : String(raw.sizes || "")
@@ -7010,167 +7013,648 @@ function normalizeProduct(raw) {
             .map(s => s.trim())
             .filter(Boolean);
 
+
     return {
-        id: String(raw.id || ""),
-        name: String(raw.name || "Product"),
-        price: Number(raw.price || 0),
-        image: String(raw.image || ""),
-        category: String(raw.category || ""),
-        type: String(raw.type || raw.category || ""),
-        rating: Number(raw.rating || 0),
-        description: String(raw.description || ""),
-        hasSize: raw.hasSize === true || String(raw.hasSize).toLowerCase() === "true",
-        sizes,
-        badge: String(raw.badge || ""),
-        badgeStyle: String(raw.badgeStyle || ""),
-        status: String(raw.status || "Available"),
-        stockQty: Number(raw.stockQty || 0)
+
+        id:
+            String(raw.id || ""),
+
+        name:
+            String(raw.name || "Product"),
+
+        price:
+            Number(raw.price || 0),
+
+        image:
+            String(raw.image || ""),
+
+        category:
+            String(raw.category || "").toLowerCase(),
+
+        type:
+            String(
+                raw.type ||
+                raw.category ||
+                ""
+            ),
+
+        rating:
+            Number(raw.rating || 0),
+
+        description:
+            String(raw.description || ""),
+
+        hasSize:
+            raw.hasSize === true ||
+            String(raw.hasSize).toLowerCase() === "true",
+
+        sizes:
+            sizes,
+
+        badge:
+            String(raw.badge || ""),
+
+        badgeStyle:
+            String(raw.badgeStyle || ""),
+
+        status:
+            String(raw.status || "Available"),
+
+        stockQty:
+            Number(raw.stockQty || 0)
+
     };
+
 }
 
-function renderBuiltInProducts() {
-    const grid = document.getElementById("productGrid");
-    if (!grid) return;
 
-    grid.innerHTML = ZAKU_DEFAULT_PRODUCTS
-        .map(renderProductCard)
-        .join("");
-
-    products = Array.from(
-        grid.querySelectorAll(".product-card")
-    );
-    addButtons = Array.from(
-        grid.querySelectorAll(".add-cart")
-    );
-    updateProductButtons();
-}
+/* =========================================================
+   RENDER PRODUCT CARD
+========================================================= */
 
 function renderProductCard(raw) {
-    const p = normalizeProduct(raw);
-    const status = p.status;
-    const statusBadge =
-        status === "Sold out"
-            ? "SOLD OUT"
-            : status === "About to finish"
-                ? "ABOUT TO FINISH"
-                : p.badge;
-    const badgeClass =
-        status === "Sold out" || p.badgeStyle === "sale"
-            ? "badge sale"
-            : "badge";
-    const hasBadge = Boolean(statusBadge);
-    const disabled = status === "Sold out";
-    const sizes = p.sizes.join(",");
 
-    return `
-        <article
-            class="product-card"
-            data-id="${escapeHtml(p.id)}"
-            data-category="${escapeHtml(p.category)}"
-            data-name="${escapeHtml(p.name)}"
-            data-price="${p.price}"
-            data-image="${escapeHtml(p.image)}"
-            data-type="${escapeHtml(p.type)}"
-            data-rating="${p.rating}"
-            data-sizes="${escapeHtml(sizes)}"
-            data-has-size="${p.hasSize}"
-            data-description="${escapeHtml(p.description)}"
-            data-status="${escapeHtml(status)}"
-            data-stock-qty="${p.stockQty}"
-            data-badge="${escapeHtml(p.badge)}"
-            data-badge-style="${escapeHtml(p.badgeStyle)}"
-        >
-            <div class="product-image">
-                ${hasBadge ? `<span class="${badgeClass}">${escapeHtml(statusBadge)}</span>` : ""}
+    const p =
+        normalizeProduct(raw);
 
-                <button class="wishlist" aria-label="Add to wishlist">
-                    <i class="fa-regular fa-heart"></i>
-                </button>
 
-                <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" loading="lazy">
+    const status =
+        p.status;
 
-                <button class="quick-view">Quick View</button>
-            </div>
 
-            <div class="product-info">
-                <span class="product-category">${escapeHtml(p.type)}</span>
+    let statusBadge = "";
 
-                <h3>${escapeHtml(p.name)}</h3>
 
-                <div class="rating">
-                    ${createStars(p.rating)}
-                </div>
+    if (status === "Sold out") {
 
-                <div class="product-bottom">
-                    <strong>${formatPrice(p.price)}</strong>
+        statusBadge =
+            "SOLD OUT";
 
-                    <button class="add-cart" ${disabled ? "disabled" : ""}>
-                        <i class="${disabled ? "fa-solid fa-ban" : "fa-solid fa-plus"}"></i>
-                        <span class="add-text">${disabled ? "Sold Out" : "Add"}</span>
-                    </button>
-                </div>
-            </div>
-        </article>
-    `;
-}
+    } else if (status === "About to finish") {
 
-async function loadZakuProducts() {
-    const grid = document.getElementById("productGrid");
-    if (!grid) return;
+        statusBadge =
+            "ABOUT TO FINISH";
 
-    if (!ZAKU_PRODUCTS_API || ZAKU_PRODUCTS_API.includes("PASTE_YOUR_")) {
-        updateProductButtons();
-        return;
+    } else {
+
+        statusBadge =
+            p.badge;
+
     }
 
-    try {
-        const response = await fetch(
-            `${ZAKU_PRODUCTS_API}?action=getProducts&t=${Date.now()}`,
-            { cache: "no-store" }
+
+    const badgeClass =
+        status === "Sold out" ||
+        p.badgeStyle === "sale"
+            ? "badge sale"
+            : "badge";
+
+
+    const hasBadge =
+        Boolean(statusBadge);
+
+
+    const disabled =
+        status === "Sold out";
+
+
+    const sizes =
+        p.sizes.join(",");
+
+
+    return `
+
+        <article
+
+            class="product-card"
+
+            data-id="${escapeHtml(p.id)}"
+
+            data-category="${escapeHtml(p.category)}"
+
+            data-name="${escapeHtml(p.name)}"
+
+            data-price="${p.price}"
+
+            data-image="${escapeHtml(p.image)}"
+
+            data-type="${escapeHtml(p.type)}"
+
+            data-rating="${p.rating}"
+
+            data-sizes="${escapeHtml(sizes)}"
+
+            data-has-size="${p.hasSize}"
+
+            data-description="${escapeHtml(p.description)}"
+
+            data-status="${escapeHtml(status)}"
+
+            data-stock-qty="${p.stockQty}"
+
+            data-badge="${escapeHtml(p.badge)}"
+
+            data-badge-style="${escapeHtml(p.badgeStyle)}"
+
+        >
+
+            <div class="product-image">
+
+                ${
+                    hasBadge
+                        ? `
+                            <span class="${badgeClass}">
+                                ${escapeHtml(statusBadge)}
+                            </span>
+                          `
+                        : ""
+                }
+
+
+                <button
+                    class="wishlist"
+                    aria-label="Add to wishlist"
+                >
+
+                    <i class="fa-regular fa-heart"></i>
+
+                </button>
+
+
+                <img
+
+                    src="${escapeHtml(p.image)}"
+
+                    alt="${escapeHtml(p.name)}"
+
+                    loading="lazy"
+
+                    onerror="this.style.display='none';"
+
+                >
+
+
+                <button class="quick-view">
+
+                    Quick View
+
+                </button>
+
+            </div>
+
+
+            <div class="product-info">
+
+
+                <span class="product-category">
+
+                    ${escapeHtml(p.type)}
+
+                </span>
+
+
+                <h3>
+
+                    ${escapeHtml(p.name)}
+
+                </h3>
+
+
+                <div class="rating">
+
+                    ${createStars(p.rating)}
+
+                </div>
+
+
+                <div class="product-bottom">
+
+
+                    <strong>
+
+                        ${formatPrice(p.price)}
+
+                    </strong>
+
+
+                    <button
+                        class="add-cart"
+                        ${disabled ? "disabled" : ""}
+                    >
+
+                        <i class="${
+                            disabled
+                                ? "fa-solid fa-ban"
+                                : "fa-solid fa-plus"
+                        }"></i>
+
+
+                        <span class="add-text">
+
+                            ${
+                                disabled
+                                    ? "Sold Out"
+                                    : "Add"
+                            }
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+/* =========================================================
+   RENDER BUILT-IN PRODUCTS
+========================================================= */
+
+function renderBuiltInProducts() {
+
+    const grid =
+        document.getElementById(
+            "productGrid"
         );
-        const result = await response.json();
 
-        if (!result.success || !Array.isArray(result.products)) {
-            throw new Error(result.message || "Product API error");
-        }
 
-        if (result.products.length === 0) {
-            updateProductButtons();
-            return;
-        }
+    if (!grid)
+        return;
 
-        grid.innerHTML = result.products
+
+    if (
+        typeof ZAKU_DEFAULT_PRODUCTS ===
+        "undefined"
+    ) {
+
+        console.warn(
+            "ZAKU_DEFAULT_PRODUCTS is not defined."
+        );
+
+        grid.innerHTML = `
+            <p style="grid-column:1/-1;text-align:center;">
+                Unable to load products.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+        ZAKU_DEFAULT_PRODUCTS
             .map(renderProductCard)
             .join("");
 
-        products = Array.from(
-            grid.querySelectorAll(".product-card")
-        );
-        addButtons = Array.from(
-            grid.querySelectorAll(".add-cart")
-        );
-        zakuProductsReady = true;
 
-        updateProductButtons();
-
-        const activeFilter = document.querySelector(
-            ".filter.active"
+    products =
+        Array.from(
+            grid.querySelectorAll(
+                ".product-card"
+            )
         );
-        if (activeFilter) {
-            applyProductFilter(activeFilter.dataset.filter);
-        }
-    } catch (error) {
-        console.warn("Zaku product store unavailable. Using built-in products.", error);
-        updateProductButtons();
-    }
+
+
+    addButtons =
+        Array.from(
+            grid.querySelectorAll(
+                ".add-cart"
+            )
+        );
+
+
+    updateProductButtons();
+
 }
 
+
 /* =========================================================
-   INITIALIZE
+   LOAD PRODUCTS FROM GOOGLE SHEETS
 ========================================================= */
 
-renderCart();
+async function loadZakuProducts() {
 
+    const grid =
+        document.getElementById(
+            "productGrid"
+        );
+
+
+    if (!grid) {
+
+        console.error(
+            "productGrid element was not found."
+        );
+
+        return;
+
+    }
+
+
+    /*
+        Show loading message
+    */
+
+    grid.innerHTML = `
+
+        <div
+            class="zaku-products-loading"
+            id="zakuProductsLoading"
+        >
+
+            <div class="zaku-loading-dot"></div>
+
+            <span>
+                LOADING ZAKU COLLECTION
+            </span>
+
+        </div>
+
+    `;
+
+
+    /*
+        Check API URL
+    */
+
+    if (
+        !ZAKU_PRODUCTS_API ||
+        ZAKU_PRODUCTS_API.includes(
+            "PASTE_YOUR_"
+        )
+    ) {
+
+        console.warn(
+            "Zaku API URL is missing."
+        );
+
+
+        if (
+            typeof ZAKU_DEFAULT_PRODUCTS !==
+            "undefined"
+        ) {
+
+            renderBuiltInProducts();
+
+        }
+
+
+        return;
+
+    }
+
+
+    try {
+
+        console.log(
+            "Loading Zaku products..."
+        );
+
+
+        const response =
+            await fetch(
+
+                `${ZAKU_PRODUCTS_API}?action=getProducts&t=${Date.now()}`,
+
+                {
+                    method: "GET",
+
+                    cache: "no-store"
+
+                }
+
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `HTTP Error ${response.status}`
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Zaku API response:",
+            result
+        );
+
+
+        if (
+            !result.success ||
+            !Array.isArray(
+                result.products
+            )
+        ) {
+
+            throw new Error(
+                result.message ||
+                "Invalid product API response"
+            );
+
+        }
+
+
+        /*
+            If Sheet has no products,
+            show built-in products instead.
+        */
+
+        if (
+            result.products.length === 0
+        ) {
+
+            console.warn(
+                "Google Sheet returned zero products."
+            );
+
+
+            if (
+                typeof ZAKU_DEFAULT_PRODUCTS !==
+                "undefined"
+            ) {
+
+                renderBuiltInProducts();
+
+            } else {
+
+                grid.innerHTML = `
+
+                    <p
+                        style="
+                            grid-column:1/-1;
+                            text-align:center;
+                        "
+                    >
+                        No products available yet.
+                    </p>
+
+                `;
+
+            }
+
+
+            return;
+
+        }
+
+
+        /*
+            Render Google Sheet products
+        */
+
+        grid.innerHTML =
+            result.products
+                .map(
+                    renderProductCard
+                )
+                .join("");
+
+
+        products =
+            Array.from(
+                grid.querySelectorAll(
+                    ".product-card"
+                )
+            );
+
+
+        addButtons =
+            Array.from(
+                grid.querySelectorAll(
+                    ".add-cart"
+                )
+            );
+
+
+        zakuProductsReady =
+            true;
+
+
+        updateProductButtons();
+
+
+        /*
+            Restore active category filter
+        */
+
+        const activeFilter =
+            document.querySelector(
+                ".filter.active"
+            );
+
+
+        if (activeFilter) {
+
+            applyProductFilter(
+                activeFilter.dataset.filter
+            );
+
+        }
+
+
+        console.log(
+            `${result.products.length} Zaku products loaded successfully.`
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Zaku product API failed:",
+            error
+        );
+
+
+        /*
+            IMPORTANT:
+            Do not leave the product
+            section completely blank.
+        */
+
+        if (
+            typeof ZAKU_DEFAULT_PRODUCTS !==
+            "undefined"
+        ) {
+
+            console.warn(
+                "Using built-in Zaku products."
+            );
+
+
+            renderBuiltInProducts();
+
+        } else {
+
+            grid.innerHTML = `
+
+                <div
+                    style="
+                        grid-column:1/-1;
+                        text-align:center;
+                        padding:40px 20px;
+                    "
+                >
+
+                    <h3>
+                        Products could not be loaded.
+                    </h3>
+
+                    <p>
+                        Please refresh the page.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIALIZE ZAKU SHOP
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        /*
+            Render saved cart
+        */
+
+        renderCart();
+
+
+        /*
+            Load products from
+            Google Sheets
+        */
+
+        loadZakuProducts();
+
+    }
+);
+    
+    
     </script>
 
 </body>
